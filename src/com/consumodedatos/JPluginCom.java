@@ -19,9 +19,12 @@ public class JPluginCom extends CordovaPlugin {
  
 	private void isclaro(String message, CallbackContext callbackContext) {
 		if (message != null && message.length() > 0) { 
-            callbackContext.success(message);
+            //callbackContext.success(message);
+			ConsumoWSBasico consumir = new ConsumoWSBasico();
+			String resultado = consumir.ValidarNumero(message);
+			callbackContext.success(resultado);
         } else {
-            callbackContext.error("Expected one non-empty string argument.");
+            callbackContext.error("Se esperaba un argumento no vacio.");
         }
     }
 }

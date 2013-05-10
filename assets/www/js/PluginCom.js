@@ -1,7 +1,7 @@
 window.validar = function(str, callback) {
   cordova.exec(
     callback,
-    function(err) { callback('Nothing to validate.'); },
+    function(err) { callback('¡Nada que validar!'); },
     "JPluginCom",
     "isclaro",
     [str]
