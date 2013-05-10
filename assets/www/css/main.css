@@ -16,3 +16,11 @@
   font-weight: 700;
   src: local('Open Sans Bold'), local('OpenSans-Bold'), url(http://themes.googleusercontent.com/static/fonts/opensans/v6/k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff) format('woff');
 }
+
+/*----------Estilos propios de la aplicacion------------------*/
+.center-wrapper{
+  text-align: center;
+}
+.center-wrapper * {
+  /*margin: 0 auto;*/
+}

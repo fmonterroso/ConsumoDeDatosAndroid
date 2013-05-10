@@ -10,6 +10,7 @@
 	    <link rel="stylesheet"  href="css/main.css">	    
 	    <script src="js/jquery.js"></script>
 	    <script src="js/jquery.mobile-1.3.1.js"></script>
+	    <script src="js/PluginCom.js"></script>
 	    <script src="js/funciones.js"></script>
 	    
 	    <script>
@@ -26,22 +27,10 @@
 			    //window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
 			}
 
-			function alertDismissed() {
-			    // hacer algo
-			}
-
-			function showAlert() {
-			    navigator.notification.alert(
-			    'Mostrando detalles del numero',     // mensaje (message)
-			    alertDismissed,         // función 'callback' (alertCallback)
-			    'Consumo de Datos',            // titulo (title)
-			    'Cerrar'                // nombre del botón (buttonName)
-			    );
-		    }
-
-		    // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
+			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
 			$(document).ready(function(){
 
+				
 
 			});//fin de document ready
 		</script>
@@ -55,11 +44,10 @@
 			<div data-role="content">
 				<span style="font-size: 16px;"><strong>Consumo de Datos</strong></span>
 				<a href="configurar.html" data-role="button" data-icon="plus" data-theme="a">Agregar Número</a>
-
 				<ul id="listado" data-role="listview" data-inset="true">
 					<li>Números Vinculados</li>
 					<li>
-						<a href="#" onclick="showAlert(); return false;">
+						<a href="#" onclick="showAlert('Seleccionaste un numero','Accion','Cerrar'); return false;">
 							<h3>55383520</h3>
 							<p>SIM</p>
 						</a>
