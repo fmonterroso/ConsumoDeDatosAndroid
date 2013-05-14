@@ -14,17 +14,20 @@
 	    <script src="js/funciones.js"></script>
 	    
 	    <script>
+			// Wait for Cordova to load
+		    //
+		    document.addEventListener("deviceready", onDeviceReady, false);
+
 			$( document ).on( "pageshow", function(){
 				$( "#Demo" ).hide().delay( 1500 ).show( "fast" );
 			});
 
-			function onLoad() {
-		        document.addEventListener("deviceready", onDeviceReady, false);
-		    }
-			
 			function onDeviceReady() {
 			    // Now safe to use the Cordova API
-			    //window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+			    //Abriendo Base de datos
+			    alert("Empezando la validacion");
+			    var db = abrirBD();
+			    
 			}
 
 			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
