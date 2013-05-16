@@ -21,26 +21,43 @@ function handleBackButton(){
 }
 
 
+
 // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
 $(document).ready(function(){
 
-	$("body").on("click",".number_element",function(){
-        showAlert("Seleccionaste un:"+$(this).attr("id")+" Con contenido:"+$(this).text(),"Accion","Cerrar"); return false;
+	$("body").on("click","#btnConfigurar",function(){
+        currentId = "";
+        $.mobile.changePage("configurar.html", { transition: "slide" });
         return false;
     });
-	
+
+    $("body").on("click",".number_element",function(){
+        //showAlert("Seleccionaste un:"+$(this).attr("id")+" Con contenido:"+$(this).text(),"Accion","Cerrar"); return false;
+        currentId = $(this).attr("id");
+        //alert("Codigo actual:"+currentId+", Estado actual:"+$(this).attr("state"));  
+
+        //validando si el numero ya fue activado o no
+        if($(this).attr("state") == "NO VALIDADO"){
+            //redireccionando a la pantalla de configuracion
+            //alert("Cambio pagina config");
+            $.mobile.changePage("configurar.html", { transition: "slide" });            
+        }
+
+        return false;
+    });
+
     //Funcion para validar si el numero ingresado es o no claro.
 	$("body").on("click","#btnValidar",function(){
         window.validar($("#phone").val(), function(echoValue) {
 		  if (echoValue != "0"){
             console.log("El número ingresado SI es un número Claro.");
-            //Validando que el numero no este dentro de la base de datos
             
-            //Insertando el numero en la base dedatos
-            insertarBD();
+            //Validando para luego insetar, si la funcion validar llega al final se llama a la funcion insertar
+            validarNumeroBD();
+
           }else{
-            console.log("El número ingresado NO es un número Claro.");
-            showAlert("El número ingresado no es un número Claro.","Número Inválido","OK")
+            console.log("El número ingresado no es un número Claro.");
+            showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
           }
 		  //alert(echoValue);		  
 		});		
@@ -49,6 +66,18 @@ $(document).ready(function(){
 
     $("body").on("click","#btnConfirmar",function(){
         alert("Confirmaste");
+        return false;
+    });
+
+    $("body").on("click","#btnElimiar",function(){
+        if (currentId != ""){
+            alert("Eliminaras el registro:"+currentId);
+            eliminarBD(currentId);
+            //Actualizando listado y regresando
+            consultarBD();
+            navigator.app.backHistory();
+        }else
+            alert("Nada que eliminar!");
         return false;
     });
 
@@ -116,10 +145,9 @@ function fcorrecto_transac() {
 
 //------ Insert a la base de datos
 function insertarBD(){
-    //var dbShell = window.openDatabase(name, version, display_name, size);
+    //realizando la insercion
     var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
     db.transaction(insertar, errorCB, fcorrecto_tran_insert);
-    
     return db;
 }
 
@@ -127,20 +155,25 @@ function insertar(tx){
     //Pruebas: 50159519
     //realizando inserts
     var codigo = generar_codigo($("#phone").val());
-    showAlert("Codigo enviado:"+codigo,"Mensaje a enviar","OK");
+    //showAlert("Codigo enviado:"+codigo,"Mensaje a enviar","OK");
     tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date ) VALUES (?,?,?,?,date("now"),date("now"))',[$("#phone").val(),"NO DEFINIDO","NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
     //se procede a enviar el codigo
-    codigo = "El codigo para validar tu telefono es: "+codigo;
-    window.enviarsms("502" + $("#phone").val(), codigo, function(echoValue) {
+    var mensaje = "El codigo para validar tu telefono es: "+codigo;
+    window.enviarsms("502" + $("#phone").val(), mensaje, function(echoValue) {
       //showAlert("El valor devuelto es:'"+echoValue+"'","Mensaje enviado","OK");
-      if (echoValue = "ok"){
-        showAlert("Se ha enviado un código de validación a tu número. Por favor ingresalo abajo para activar tu número.","Mensaje enviado","OK");        
+      if (echoValue == "ok"){
+        bandera_eliminar = "0";
+        showAlert("Debemos confirmar que este numero te pertenezca, se ha enviado un código de confirmación a tu teléfono, luego escribelo en la casilla inferior.","Envío de confirmación exitosa","OK");//mensaje 3
       }else{
-        showAlert("Ocurrio un problema enviando tu codigo de validación, por favor vuelve a solicitarlo.","Envío fallido.","Cerrar")
-        //borrando registro ingresado
-
+        bandera_eliminar = "1";
+        showAlert("Ocurrio un error al solicitar el código de confirmación, por favor intentalo de nuevo más tarde.","Error en la solicitud","OK");//mensaje 2
       }      
-    });    
+    });
+    //alert("Bandera:"+bandera_eliminar);
+    if (bandera_eliminar == "1"){
+        tx.executeSql('DELETE FROM phones WHERE number=? AND code=?',[$("#phone").val(),codigo]);
+        bandera_eliminar = "0";
+    }        
 }
 
 function fcorrecto_insert_exe(tx, results){
@@ -148,7 +181,7 @@ function fcorrecto_insert_exe(tx, results){
 }
 
 function fcorrecto_tran_insert(){
-    //alert("Correcto insertar!");
+    console.log("Proceso de inserción y validación terminado correctamente!");
 }
 
 
@@ -174,6 +207,7 @@ function fcorrecto_consultar_exe(tx, results){
         //Generando codigo html con listado de telefonos
         var elemento = '<li class="number_element" id="'+results.rows.item(i).id+'" >'+'<a href="#">'+'<h3>'+results.rows.item(i).number+'</h3>'+'<p>'+results.rows.item(i).type+'</p></a><span class="ui-li-count">'+results.rows.item(i).state+'</span></li>'
         $('#listado').append(elemento);
+        $("#"+results.rows.item(i).id).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
         $('#listado').listview('refresh');
     }
 
@@ -184,25 +218,87 @@ function fcorrecto_tran_cons() {
 }
 
 
+//---------Funcion para Eliminar un registro
+function eliminarBD(cod){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(eliminar, errorCB, fcorrecto_tran_eli);
+    return db;
+}
 
+//Funcion para eliminar un registro de la base de datos
+function eliminar(tx){
+    tx.executeSql('DELETE FROM phones WHERE id=?',[currentId],fcorrecto_eliminar_exe,errorCB);    
+}
 
-
-
-
-
-
-
-
-
-// Función 'callback' con el resultado de la consulta
-//
-function querySuccess(tx, results) {
-    console.log("Filas retornadas = " + results.rows.length);
-    // this will be true since it was a select statement and so rowsAffected was 0
-    if (!results.rowsAffected) {
-        console.log('Ninguna fila afectada!');
-        return false; //impide que avance pues el siguiente log dara error pues ese atributno no esta definido al no haber filas afectadas
+function fcorrecto_eliminar_exe(tx, results){
+    var len = results.rows.length;
+    if (results.rowsAffected>0) {
+        console.log('Fila eliminada!');
+    }else{
+        console.log('No se elimino ninguna fila!');
     }
-    // for an insert statement, this property will return the ID of the last inserted row
-    console.log("ID de la ultima fila insertada = " + results.insertId);
+}
+
+function fcorrecto_tran_eli() {
+    console.log("Se elimino correctamente");
+    alert("Se elimino correctamente");
+    currentId = "";
+}
+
+
+//---------Funcion para consultar los datos del registro actual (currentId)
+function consultarActualBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarActual, errorCB, fcorrecto_tran_consAct);
+    return db;
+}
+
+//Funcion para consultar el registro actual
+function consultarActual(tx){
+    tx.executeSql('SELECT * FROM phones WHERE id=?',[currentId],fcorrecto_consultarActual_exe,errorCB);    
+}
+
+function fcorrecto_consultarActual_exe(tx, results){
+    console.log("Cantidad de Filas retornadas:" + results.rows.length);
+    var len = results.rows.length;
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).id + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date );
+        //Precargando los datos
+        $("#phone").val(results.rows.item(i).number);
+    }
+
+}
+
+function fcorrecto_tran_consAct() {
+    console.log("Se consulto el registro actual correctamente.");
+}
+
+
+//---------Funcion para consultar y validar si ya fue ingresado un numero
+function validarNumeroBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarValidarNumero, errorCB, fcorrecto_tran_validarNum);
+    return db;
+}
+
+//Funcion para consultar
+function consultarValidarNumero(tx){
+    tx.executeSql('SELECT * FROM phones WHERE number=?',[$("#phone").val()],fcorrecto_validarNumero_exe,errorCB);
+}
+
+function fcorrecto_validarNumero_exe(tx, results){
+    console.log("Cantidad de Filas retornadas en validacion de numero:" + results.rows.length);
+    var len = parseInt(results.rows.length);
+    if (len > 0){
+        //el numero ya esta en la base de datos
+        console.log("El numero ya esta en la BD");
+        showAlert("El número ingresado ya esta registrado. Por favor ingresa otro.","Número Inválido","OK")
+    }else{
+        //Se procede a insertar pues ya fue validado en la base de datos
+        insertarBD();
+    }
+}
+
+function fcorrecto_tran_validarNum() {
+    console.log("Se valido el numero correctamente.");
 }

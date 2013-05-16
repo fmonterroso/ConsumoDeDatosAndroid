@@ -16,11 +16,16 @@
 	    
 	    <script>
 			// Wait for Cordova to load
-		    //
 		    document.addEventListener("deviceready", onDeviceReady, false);
 
+		    //variable de control
+		    var currentId="";
+		    var bandera_eliminar="0";		    
+
+
 			$( document ).on( "pageshow", function(){
-				$( "#Demo" ).hide().delay( 1500 ).show( "fast" );
+				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
+				$("#DEMO").hide().delay( 1500 ).show( "fast" );
 			});
 
 			function onDeviceReady() {
@@ -52,10 +57,10 @@
 			</div>
 			<div data-role="content">
 				<span style="font-size: 16px;"><strong>Consumo de Datos</strong></span>
-				<a href="configurar.html" data-role="button" data-icon="plus" data-theme="a">Agregar Número</a>
+				<a id="btnConfigurar" href="configurar.html" data-role="button" data-icon="plus" data-theme="a">Agregar Número</a>
 				<ul id="listado" data-role="listview" data-inset="true">
 					<li>Números Vinculados</li>
-										
+
 				</ul>
 
 			</div>
