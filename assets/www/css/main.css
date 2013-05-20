@@ -24,3 +24,15 @@
 .center-wrapper * {
   /*margin: 0 auto;*/
 }
+
+.ui-li-desc {
+white-space: normal;
+}
+
+.ui-btn-text {
+white-space: normal;
+}
+
+.ui-li.ui-li-static.ui-btn-up-c{
+  font-size: 12px;
+}

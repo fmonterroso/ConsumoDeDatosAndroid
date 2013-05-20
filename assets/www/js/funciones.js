@@ -20,6 +20,32 @@ function handleBackButton(){
     }
 }
 
+function mostrarFechaCompuesta(ahora){
+    var nombreMes = new Array ("enero", "febrero", "marzo", "abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre");    
+    //var ahora = new Date( );
+    var anoActual = ahora.getYear()+1900;
+    var mesActual = ahora.getMonth( );
+    var diaActual = ahora.getDate( );
+    var diaSemana = ahora.getDay( );
+    var Fecha = diaActual + " de " + nombreMes[mesActual] + " de " + anoActual;
+    return Fecha;
+}
+
+function mostrarHoraCompuesta(ahora){
+    hora = ahora.getHours();
+    minuto = ahora.getMinutes();
+    estado = (hora < 12)? " AM " : " PM ";
+    horaActual = ((hora < 9)?"0" + hora : hora) + ":";
+    horaActual += ((minuto < 9)?"0" + minuto : minuto);
+    horaActual += estado;
+    return horaActual;
+}
+
+function parseDate(input) {
+  var parts = input.match(/(\d+)/g);
+  // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
+}
 
 
 // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
@@ -31,16 +57,17 @@ $(document).ready(function(){
         return false;
     });
 
+    //funcion para hacer click en cada numero de la lista decide si ir a la configuracion o ir a los detalles
     $("body").on("click",".number_element",function(){
-        //showAlert("Seleccionaste un:"+$(this).attr("id")+" Con contenido:"+$(this).text(),"Accion","Cerrar"); return false;
         currentId = $(this).attr("id");
-        //alert("Codigo actual:"+currentId+", Estado actual:"+$(this).attr("state"));  
-
         //validando si el numero ya fue activado o no
         if($(this).attr("state") == "NO VALIDADO"){
             //redireccionando a la pantalla de configuracion
-            //alert("Cambio pagina config");
             $.mobile.changePage("configurar.html", { transition: "slide" });            
+        }else{
+            //abriendo datos
+            numtelefonico = $(this).attr("numero");
+            $.mobile.changePage("datos.html", { transition: "slide" });
         }
 
         return false;
@@ -48,6 +75,7 @@ $(document).ready(function(){
 
     //Funcion para validar si el numero ingresado es o no claro.
 	$("body").on("click","#btnValidar",function(){
+        //validando si el numero es claro
         window.validar($("#phone").val(), function(echoValue) {
 		  if (echoValue != "0"){
             console.log("El número ingresado SI es un número Claro.");
@@ -65,7 +93,11 @@ $(document).ready(function(){
     });
 
     $("body").on("click","#btnConfirmar",function(){
-        alert("Confirmaste");
+        if (currentId != "" && $("#codConfirmacion").val() != ""){
+            validarCodigoBD();            
+        }else
+            alert("Nada que confirmar!");
+        
         return false;
     });
 
@@ -80,6 +112,8 @@ $(document).ready(function(){
             alert("Nada que eliminar!");
         return false;
     });
+
+    
 
 });//fin de document ready
 
@@ -156,7 +190,7 @@ function insertar(tx){
     //realizando inserts
     var codigo = generar_codigo($("#phone").val());
     //showAlert("Codigo enviado:"+codigo,"Mensaje a enviar","OK");
-    tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date ) VALUES (?,?,?,?,date("now"),date("now"))',[$("#phone").val(),"NO DEFINIDO","NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
+    tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date ) VALUES (?,?,?,?,date("now"),"")',[$("#phone").val(),"NO DEFINIDO","NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
     //se procede a enviar el codigo
     var mensaje = "El codigo para validar tu telefono es: "+codigo;
     window.enviarsms("502" + $("#phone").val(), mensaje, function(echoValue) {
@@ -208,6 +242,7 @@ function fcorrecto_consultar_exe(tx, results){
         var elemento = '<li class="number_element" id="'+results.rows.item(i).id+'" >'+'<a href="#">'+'<h3>'+results.rows.item(i).number+'</h3>'+'<p>'+results.rows.item(i).type+'</p></a><span class="ui-li-count">'+results.rows.item(i).state+'</span></li>'
         $('#listado').append(elemento);
         $("#"+results.rows.item(i).id).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
+        $("#"+results.rows.item(i).id).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
         $('#listado').listview('refresh');
     }
 
@@ -302,3 +337,41 @@ function fcorrecto_validarNumero_exe(tx, results){
 function fcorrecto_tran_validarNum() {
     console.log("Se valido el numero correctamente.");
 }
+
+
+//---------Funcion para validar comparacion de codigo de confirmacion con la base de datos
+function validarCodigoBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarValidarCodigo, errorCB, fcorrecto_tran_validarCod);
+    return db;
+}
+
+//Funcion para consultar validando el codigo
+function consultarValidarCodigo(tx){
+    tx.executeSql('SELECT * FROM phones WHERE id=? AND code=?',[currentId,$("#codConfirmacion").val()],fcorrecto_validarCodigo_exe,errorCB);
+}
+
+function fcorrecto_validarCodigo_exe(tx, results){
+    console.log("Cantidad de Filas retornadas en validacion de codigo:" + results.rows.length);
+    var len = parseInt(results.rows.length);
+    if (len > 0){
+        //El codigo ingresado coincide con el registrado en la BD
+        console.log("El codigo es correcto!");
+        showAlert("El número ha sido a tu aplicación de monitoreo de consumo de datos.","Confirmación exitosa!","OK")
+        //Actualizando datos del registro
+        tx.executeSql('UPDATE phones SET state = "ACTIVO", activation_date = date("now") WHERE id=?',[currentId]);
+
+        //Actualizando listado y regresando
+            consultarBD();
+            navigator.app.backHistory();
+    }else{
+        //El codigo no es correcto
+        showAlert("El código de confirmación ingresado no es válido. Por favor verifica el mismo e intenta de nuevo.","Confirmación inválida","OK")
+    }
+}
+
+function fcorrecto_tran_validarCod() {
+    console.log("Se valido el numero correctamente.");
+}
+
+

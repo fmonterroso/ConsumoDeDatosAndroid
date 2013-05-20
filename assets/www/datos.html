@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script>
+			// Wait for Cordova to load
+		    document.addEventListener("deviceready", onDeviceReady, false);
+
+		    $( document ).on( "pageshow", function(){
+				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
+				$("#DEMO").hide().delay( 1500 ).show( "fast" );
+				alert("pageshow");				
+			});
+
+			function onDeviceReady() {
+			    // Now safe to use the Cordova API
+			    //Agregando controlador del boton ATRAS
+			    document.addEventListener("backbutton", handleBackButton, true);
+			    alert("ondeviceready");
+			}
+
+			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
+			$(document).ready(function(){
+				alert("ready");
+			});//fin de document ready
+			
+		</script>
+
+
+	</head>
+	<body>
+
+		<div id="Datos" data-url="Datos" data-role="page">
+			<div data-role="header" data-theme="d">
+				<h1>Consumo de Internet</h1>
+			</div>
+
+			<div data-role="content">
+				<span style="font-size: 12px;">
+					<div id="dateAndTime" style="font-size: 12px; font-weight: bold; !important;"></div>
+				</span>
+				<script type="text/javascript">
+					//conversion de fecha de vigencia
+					var ahora = new Date( );
+					var fech = mostrarFechaCompuesta(ahora);
+					var hora = mostrarHoraCompuesta(ahora);
+					$("#dateAndTime").append(fech+" a las "+hora);
+				</script>
+				<div data-role="fieldcontain">
+					<a href="#popupBasic" data-rel="popup">
+						<div id="progressbar"></div>
+					</a>
+ 					<div data-role="popup" id="popupBasic">
+					  <p>
+					  	<div id="mbConsumedBar" style="font-weight: bold;"></div>
+					  <p>
+					</div>
+				</div>
+				<script type="text/javascript">
+					var porcentaje = (parseInt(mbconsumidos)*100)/parseInt(mbtotales);
+					TolitoProgressBar('progressbar')
+                    .setOuterTheme('d')
+                    .setInnerTheme('b')
+                    .isMini(true)
+                    .setMax(100)
+                    .setStartFrom(porcentaje)
+                    .setInterval(50)
+                    .showCounter(true)
+                    .logOptions()
+                    .build();
+				</script>
+				<div data-role="fieldcontain">
+					<div style="font-size: 12px; float:left;">Paquete vigente al&nbsp;</div><div id="validity" style="font-size: 12px; font-weight: bold; !important;"></div>
+				</div>
+					<script type="text/javascript">
+						//conversion de fecha de vigencia
+						//alert(vigencia);
+
+						
+						//alert("sin parsear:"+vigencia);
+						//fech = Date.parse(vigencia);
+						fech = parseDate(vigencia);
+						//alert("parseada:"+fech);
+						fech2 = new Date(fech);
+						//alert("como fecha:"+fech2);
+						fech3 = mostrarFechaCompuesta(fech2);
+						//alert("aplicada funcion:"+fech3);
+						$("#validity").append(fech3);
+					</script>
+
+				<ul data-role="listview">
+					<li data-role="list-divider"><h3></h3>
+						<p>Cada vez que recibes correos, revisas tus redes sociales o navegas en internet, consumes MB**</p>
+					</li>
+					<li>Detalle de consumo</li>
+					<li>
+						<a href="detalleConsumo.html" style="font-weight: normal">
+							<div id="mbConsumed" style="float:left;font-weight: bold; !important;"></div><div style="float:left;">&nbsp;MB Consumidos</div>
+							<br/>
+							<div id="mbAvailable" style="float:left;font-weight: bold; !important;"></div><div style="float:left;">&nbsp;MB Disponibles</div>
+						</a>
+						<script type="text/javascript">
+							$("#mbConsumed").append(mbconsumidos);
+							$("#mbConsumedBar").append(mbconsumidos+"MB");
+							
+							var dispo = parseInt(mbtotales)-parseInt(mbconsumidos);
+							$("#mbAvailable").append(dispo);
+						</script>
+					</li>
+
+					<li>Detalles de su paquete</li>
+					<li>
+						<a href="detallePaquete.html" style="font-weight: normal">
+							<div style="float:left;">Tu número: &nbsp;</div><div id="phoneNum" style="float:left;font-weight: bold; !important;"></div>
+							<br/>
+							<div style="float:left;">Tu plan: &nbsp;</div><div id="packName" style="float:left;font-weight: bold; !important;"></div>
+						</a>
+						<script type="text/javascript">
+							$("#phoneNum").append(numtelefonico);
+							$("#packName").append(nombrepaq);
+						</script>
+					</li>					
+				</ul>
+
+			</div>
+
+			<div data-role="footer">
+				<h1>Contáctanos</h1>
+			</div>
+		</div>
+
+	</body>
+</html>
