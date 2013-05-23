@@ -113,6 +113,19 @@ $(document).ready(function(){
         return false;
     });
 
+
+    $("body").on("click","#btnValidar2",function(){
+        
+        //validando si el numero es claro
+        window.obtenerdatos(numtelefonico, function(echoValue) {
+          alert(echoValue);          
+        });
+        
+        
+        return false;
+    });
+    
+
     
 
 });//fin de document ready
@@ -357,7 +370,7 @@ function fcorrecto_validarCodigo_exe(tx, results){
     if (len > 0){
         //El codigo ingresado coincide con el registrado en la BD
         console.log("El codigo es correcto!");
-        showAlert("El número ha sido a tu aplicación de monitoreo de consumo de datos.","Confirmación exitosa!","OK")
+        showAlert("El número ha sido agregado a tu aplicación de monitoreo de consumo de datos.","Confirmación exitosa!","OK")
         //Actualizando datos del registro
         tx.executeSql('UPDATE phones SET state = "ACTIVO", activation_date = date("now") WHERE id=?',[currentId]);
 
@@ -372,6 +385,27 @@ function fcorrecto_validarCodigo_exe(tx, results){
 
 function fcorrecto_tran_validarCod() {
     console.log("Se valido el numero correctamente.");
+}
+
+
+//--------------------Funciones para manejo de XML--------------
+
+function leerxml(texto){
+    bandera_paquete = "0";
+    //Comenzamos a recorrer el xml
+    $(texto).find("PAQUETESACTIVOS").each(function () {
+        $(this).find("PAQUETECUENTA").each(function () {
+           bandera_paquete = "1";
+           vigencia = $(this).find('FIN').text();
+           mbconsumidos = $(this).find('CONSUMOMB').text();
+           $(this).find("PAQUETE").each(function () {
+               nombrepaq = $(this).find('NOMBRE').text();
+               mbtotales = $(this).find('LIMITEDATOSMB').text();
+            });
+        });
+        return false;
+    });
+
 }
 
 

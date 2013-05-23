@@ -18,6 +18,14 @@ public class JPluginCom extends CordovaPlugin {
             String message = args.getString(1);
             this.sendSMS(num, message, callbackContext);
             return true;
+        }else if (action.equals("isclaro2")){
+        	String message = args.getString(0); 
+            this.isclaro2(message, callbackContext);
+            return true;
+        }else if (action.equals("userphone")){
+        	String message = args.getString(0); 
+            this.obtenerdatos(message, callbackContext);
+            return true;
         }
         return false;
     }
@@ -47,4 +55,28 @@ public class JPluginCom extends CordovaPlugin {
             callbackContext.error("Se esperaba un numero no vacio.");
         }
 	}
+	
+	private void isclaro2(String message, CallbackContext callbackContext) {
+		if (message != null && message.length() > 0) { 
+            //callbackContext.success(message);
+			ConsumoWSAvanzado consumir = new ConsumoWSAvanzado();
+			String resultado = consumir.ValidarNumero2(message);
+			//String resultado = consumir.Test();
+			callbackContext.success(resultado);
+        } else {
+            callbackContext.error("Se esperaba un argumento no vacio.");
+        }
+    }
+	
+	private void obtenerdatos(String message, CallbackContext callbackContext) {
+		if (message != null && message.length() > 0) { 
+            //callbackContext.success(message);
+			ConsumoWSAvanzado consumir = new ConsumoWSAvanzado();
+			String resultado = consumir.ObtenerDatos(message);
+			callbackContext.success(resultado);
+        } else {
+            callbackContext.error("Se esperaba un argumento no vacio.");
+        }
+    }
+	
 }

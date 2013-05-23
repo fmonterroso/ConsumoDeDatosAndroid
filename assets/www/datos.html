@@ -47,6 +47,23 @@
 					var fech = mostrarFechaCompuesta(ahora);
 					var hora = mostrarHoraCompuesta(ahora);
 					$("#dateAndTime").append(fech+" a las "+hora);
+
+
+
+					//Llamada a la funcion para consumir el web service y establecer los datos en las variables globales
+					var resultado = "";
+					window.obtenerdatos(numtelefonico, function(echoValue) {
+			          alert(echoValue);
+			          resultado = echoValue;
+			        });					
+        			
+        			leerxml(resultado);
+        			//validando para saber si se encontro algun paquete:
+        			if (bandera_paquete != "1"){
+        				showAlert("El número seleccionado no tiene algun paquete Claro de datos activo.","Consumo de internet","OK");
+        			}
+
+
 				</script>
 				<div data-role="fieldcontain">
 					<a href="#popupBasic" data-rel="popup">
@@ -59,7 +76,10 @@
 					</div>
 				</div>
 				<script type="text/javascript">
-					var porcentaje = (parseInt(mbconsumidos)*100)/parseInt(mbtotales);
+					if (parseInt(mbtotales) > 0)
+						var porcentaje = Math.round((parseInt(mbconsumidos)*100)/parseInt(mbtotales));
+					else
+						var porcentaje = 0;
 					TolitoProgressBar('progressbar')
                     .setOuterTheme('d')
                     .setInnerTheme('b')
@@ -76,18 +96,17 @@
 				</div>
 					<script type="text/javascript">
 						//conversion de fecha de vigencia
-						//alert(vigencia);
-
-						
-						//alert("sin parsear:"+vigencia);
-						//fech = Date.parse(vigencia);
-						fech = parseDate(vigencia);
-						//alert("parseada:"+fech);
-						fech2 = new Date(fech);
-						//alert("como fecha:"+fech2);
-						fech3 = mostrarFechaCompuesta(fech2);
-						//alert("aplicada funcion:"+fech3);
-						$("#validity").append(fech3);
+						if (bandera_paquete == "1"){
+							//fech = Date.parse(vigencia);
+							fech = parseDate(vigencia);
+							//alert("parseada:"+fech);
+							fech2 = new Date(fech);
+							//alert("como fecha:"+fech2);
+							fech3 = mostrarFechaCompuesta(fech2);
+							//alert("aplicada funcion:"+fech3);
+							$("#validity").append(fech3);
+						}else
+							$("#validity").append("N/A");
 					</script>
 
 				<ul data-role="listview">
@@ -113,9 +132,9 @@
 					<li>Detalles de su paquete</li>
 					<li>
 						<a href="detallePaquete.html" style="font-weight: normal">
-							<div style="float:left;">Tu número: &nbsp;</div><div id="phoneNum" style="float:left;font-weight: bold; !important;"></div>
+							<div style="float:left; font-size: 13px;">Tu número: &nbsp;</div><div id="phoneNum" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
 							<br/>
-							<div style="float:left;">Tu plan: &nbsp;</div><div id="packName" style="float:left;font-weight: bold; !important;"></div>
+							<div style="float:left; font-size: 13px;">Tu plan: &nbsp;</div><div id="packName" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
 						</a>
 						<script type="text/javascript">
 							$("#phoneNum").append(numtelefonico);

@@ -17,3 +17,23 @@ window.enviarsms = function(str, strcod, callback) {
     [str,strcod]
   );
 };
+
+window.validar2 = function(str, callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Nada que validar 2!'); },
+    "JPluginCom",
+    "isclaro2",
+    [str]
+  );
+};
+
+window.obtenerdatos = function(str, callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Nada para quien obtener!'); },
+    "JPluginCom",
+    "userphone",
+    [str]
+  );
+};
