@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<script>
+			// Wait for Cordova to load
+		    document.addEventListener("deviceready", onDeviceReady, false);
+
+		    $( document ).on( "pageshow", function(){
+				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
+				$("#DEMO").hide().delay( 1500 ).show( "fast" );
+				alert("pageshow");				
+			});
+
+			function onDeviceReady() {
+			    // Now safe to use the Cordova API
+			    //Agregando controlador del boton ATRAS
+			    document.addEventListener("backbutton", handleBackButton, true);
+			    alert("ondeviceready");
+			}
+
+			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
+			$(document).ready(function(){
+				alert("ready");
+			});//fin de document ready
+			
+		</script>
+
+	</head>
+	<body>
+
+		<div id="Consumo de Datos" data-url="Consumo de Datos" data-role="page">
+			<div data-role="header" data-theme="c">
+			<h1>Tu paquete de datos</h1>
+			</div>
+
+			<div data-role="content">
+
+			<ul data-role="listview" data-inset="true">
+				<li><h3>Detalle de paquete de datos</h3>
+					<p>
+						Al día<div id="dateAndTimeDetailPack"></div>
+					</p>
+				</li>
+				<li><p>Número Claro</p>
+					<h3>
+						<div id="phoneNumDetailPack"></div>
+					</h3>
+				</li>
+				<li><p>Paquete contratado</p>
+					<h3>
+						<div id="packNameDetailPack"></div>
+					</h3>
+				</li>
+			</ul>
+
+			<script type="text/javascript">
+				//conversion de fecha acutal
+				var ahora = new Date( );
+				var fech = mostrarFechaCompuestaDias(ahora);
+				var hora = mostrarHoraCompuesta(ahora);
+				$("#dateAndTimeDetailPack").append(fech+" a las "+hora);
+				$("#phoneNumDetailPack").append(numtelefonico);
+				$("#packNameDetailPack").append(nombrepaq);
+
+				//consultando historial con ws
+				var resultado = "";
+				window.obtenerhistorial(numtelefonico,"2012-05-27T15:00:00","2013-05-27T15:00:00", function(echoValue) {
+		          alert(echoValue);
+		          resultado = echoValue;
+		        });					
+    			
+    			//leerxml(resultado);
+
+			</script>
+
+			<br/>
+			<br/>
+			<ul data-role="listview">
+				<li>Ultimos Paquetes contratados</li>
+				<li><h3>30 dias Full Normal</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
+				<li><h3>7 dias Promo</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
+				<li><h3>30 dias 5 GB</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
+				<li><h3>7 dias Promo</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
+			</ul>
+
+			</div>
+
+			<div data-role="footer">
+			<h1>Contáctanos</h1>
+			</div>
+		</div>
+
+	</body>
+</html>

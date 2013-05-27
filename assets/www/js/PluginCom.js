@@ -47,3 +47,13 @@ window.tipoclaro = function(strnum, callback) {
     [strnum]
   );
 };
+
+window.obtenerhistorial = function(strnum, strinicio, strfin, callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Nada que averiguar!'); },
+    "JPluginCom",
+    "activatedpackagelist",
+    [strnum,strinicio,strfin]
+  );
+};

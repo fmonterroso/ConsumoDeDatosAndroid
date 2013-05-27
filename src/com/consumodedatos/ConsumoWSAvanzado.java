@@ -15,6 +15,7 @@ public class ConsumoWSAvanzado {
     private static final String Metodo2 = "test";
     private static final String Metodo3 = "user_phone";
     private static final String Metodo4 = "user_claro_type";
+    private static final String Metodo5 = "user_phone_activated_package_list";
     // Namespace definido en el servicio web
     private static final String namespace = "http://internet.claro.com.gt/soap/ServiceBus/";
     // namespace + metodo
@@ -22,6 +23,7 @@ public class ConsumoWSAvanzado {
     private static final String accionSoap2 = "http://internet.claro.com.gt/sbus/bus.php/test";
     private static final String accionSoap3 = "http://internet.claro.com.gt/sbus/bus.php/user_phone";
     private static final String accionSoap4 = "http://internet.claro.com.gt/sbus/bus.php/user_claro_type";
+    private static final String accionSoap5 = "http://internet.claro.com.gt/sbus/bus.php/user_phone_activated_package_list";
     // Fichero de definicion del servcio web
     private static final String url = "http://internet.claro.com.gt/sbus/bus.php?wsdl";
     //tag para interpretacion de xml 
@@ -162,6 +164,45 @@ public class ConsumoWSAvanzado {
          
             // Resultado
             Log.d("Visor de obtiene datos", "Datos: "+sobre.getResponse());
+            //SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
+         
+            //Log.i("Resultado", resultado.toString());
+            return sobre.getResponse().toString();
+         
+        } catch (Exception e) {
+            Log.e("ERROR", e.getMessage());
+            return e.getMessage();
+        }
+    }
+	
+	public String ObtenerHistorial(String numero, String inicio, String fin){
+    	try {
+       	 
+            // Modelo el request
+            SoapObject request = new SoapObject(namespace, Metodo5);
+            //Agregando parametros necesarios
+            GenerarXML g = new GenerarXML();
+            String d = g.generaDocumentoXML();
+            Log.d("Visor", "config:"+d);
+            request.addProperty("config", d); // Paso parametros al WS
+            request.addProperty("country", "502"); // Paso parametros al WS
+            request.addProperty("phone", numero); // Paso parametros al WS
+            request.addProperty("start", inicio); // Paso parametros al WS
+            request.addProperty("end", fin); // Paso parametros al WS
+            
+            // Modelo el Sobre
+            SoapSerializationEnvelope sobre = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            sobre.dotNet = true;
+            sobre.setOutputSoapObject(request);
+         
+            // Modelo el transporte
+            HttpTransportSE transporte = new HttpTransportSE(url);
+         
+            // Llamada
+            transporte.call(accionSoap5, sobre);
+         
+            // Resultado
+            Log.d("Visor de obtiene historial", "Datos: "+sobre.getResponse());
             //SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
          
             //Log.i("Resultado", resultado.toString());

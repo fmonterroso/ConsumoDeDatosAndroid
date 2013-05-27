@@ -135,7 +135,7 @@
 
 					<li>Detalles de su paquete</li>
 					<li>
-						<a id="goDetallePaquete" href="" style="font-weight: normal">
+						<a id="goDetallePaquete" href="#" style="font-weight: normal">
 							<div style="float:left; font-size: 13px;">Tu número: &nbsp;</div><div id="phoneNum" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
 							<br/>
 							<div style="float:left; font-size: 13px;">Tu plan: &nbsp;</div><div id="packName" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
@@ -144,11 +144,14 @@
 							$("#phoneNum").append(numtelefonico);
 							$("#packName").append(nombrepaq);
 						</script>
-					</li>					
-				</ul>
-				<div class="center-wrapper">
-	  				<input id="btnElimiar" type="button" data-icon="check" data-inline="true" data-theme="e" value="Eliminar"/>
-				</div>
+					</li>
+
+					<li>
+						<div class="center-wrapper">
+			  				<input id="btnElimiar" type="button" data-icon="delete" data-inline="true" data-theme="e" value="Eliminar"/>
+						</div>
+					</li>
+				</ul>				
 			</div>
 
 			<div data-role="footer">
