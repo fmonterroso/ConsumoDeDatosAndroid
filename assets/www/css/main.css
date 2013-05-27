@@ -36,3 +36,21 @@ white-space: normal;
 .ui-li.ui-li-static.ui-btn-up-c{
   font-size: 12px;
 }
+
+.datoimg{
+  width: 126px;
+  height: 44px;
+  background-image:url('images/boton.jpg');
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.txtdato{
+  width: 126px;
+  height: 44px;  
+  display: table-cell;  
+  vertical-align: middle;
+  text-align: center;
+  float: none;
+}

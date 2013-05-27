@@ -31,11 +31,25 @@ function mostrarFechaCompuesta(ahora){
     return Fecha;
 }
 
+function mostrarFechaCompuestaDias(ahora){
+    var nombreMes = new Array ("enero", "febrero", "marzo", "abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre");    
+    var nombreDia = new Array ("Domingo","Lunes","Martés","Miércoles","Jueves","Viernes","Sábado","Domingo");
+    //var ahora = new Date( );
+    var anoActual = ahora.getYear()+1900;
+    var mesActual = ahora.getMonth( );
+    var diaActual = ahora.getDate( );
+    var diaSemana = ahora.getDay( );    
+
+    var Fecha= nombreDia[diaSemana] + " " + diaActual + " de " + nombreMes[mesActual] + " " + anoActual;
+    return Fecha;
+}
+
 function mostrarHoraCompuesta(ahora){
     hora = ahora.getHours();
     minuto = ahora.getMinutes();
-    estado = (hora < 12)? " AM " : " PM ";
-    horaActual = ((hora < 9)?"0" + hora : hora) + ":";
+    estado = (hora < 12)? " AM " : " PM ";    
+    hora = (hora <= 12)? hora : (hora - 12);
+    horaActual = ((hora <= 9)?"0" + hora : hora) + ":";
     horaActual += ((minuto < 9)?"0" + minuto : minuto);
     horaActual += estado;
     return horaActual;
@@ -63,11 +77,11 @@ $(document).ready(function(){
         //validando si el numero ya fue activado o no
         if($(this).attr("state") == "NO VALIDADO"){
             //redireccionando a la pantalla de configuracion
-            $.mobile.changePage("configurar.html", { transition: "slide" });            
+            $.mobile.changePage("configurar.html", { transition: "slide", changeHash: true });            
         }else{
             //abriendo datos
             numtelefonico = $(this).attr("numero");
-            $.mobile.changePage("datos.html", { transition: "slide" });
+            $.mobile.changePage("datos.html", { transition: "slide", changeHash: true });
         }
 
         return false;
@@ -124,6 +138,18 @@ $(document).ready(function(){
         
         return false;
     });
+
+    $("body").on("click","#goDetalleComsumo",function(){
+        $.mobile.changePage("detalleConsumo.html", { transition: "slide", changeHash: true });
+        return false;
+    });
+
+    $("body").on("click","#goDetallePaquete",function(){
+        $.mobile.changePage("detallePaquete.html", { transition: "slide" });
+        return false;
+    });
+
+    
     
 
     
@@ -203,7 +229,24 @@ function insertar(tx){
     //realizando inserts
     var codigo = generar_codigo($("#phone").val());
     //showAlert("Codigo enviado:"+codigo,"Mensaje a enviar","OK");
-    tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date ) VALUES (?,?,?,?,date("now"),"")',[$("#phone").val(),"NO DEFINIDO","NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
+    
+    //Averiguando el tipo de dispositivo (consumiendo el web service)
+    var tipodispositivo = "NO DEFINIDO";
+    window.tipoclaro($("#phone").val(), function(echoValue) {
+      //showAlert("El valor devuelto es:'"+echoValue+"'","Tipo de dispositivo","OK");
+      //parseando el xml de vuelta
+      var t = leerxmltipodispositivo(echoValue);
+        if (t == "O"){
+            tipodispositivo = "SIM";            
+        }else if (t=="NO DEFINIDO"){
+            tipodispositivo = "NO DEFINIDO";            
+        }else {
+            tipodispositivo = "MODEM";            
+        }
+    });
+
+    
+    tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date ) VALUES (?,?,?,?,date("now"),"")',[$("#phone").val(),tipodispositivo,"NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
     //se procede a enviar el codigo
     var mensaje = "El codigo para validar tu telefono es: "+codigo;
     window.enviarsms("502" + $("#phone").val(), mensaje, function(echoValue) {
@@ -220,10 +263,11 @@ function insertar(tx){
     if (bandera_eliminar == "1"){
         tx.executeSql('DELETE FROM phones WHERE number=? AND code=?',[$("#phone").val(),codigo]);
         bandera_eliminar = "0";
-    }        
+    }
 }
 
 function fcorrecto_insert_exe(tx, results){
+    currentId = results.insertId;
     console.log("Se inserto correctamente!");
 }
 
@@ -252,7 +296,7 @@ function fcorrecto_consultar_exe(tx, results){
     for (var i=0; i<len; i++){
         console.log("Fila = " + i + " ID = " + results.rows.item(i).id + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date );
         //Generando codigo html con listado de telefonos
-        var elemento = '<li class="number_element" id="'+results.rows.item(i).id+'" >'+'<a href="#">'+'<h3>'+results.rows.item(i).number+'</h3>'+'<p>'+results.rows.item(i).type+'</p></a><span class="ui-li-count">'+results.rows.item(i).state+'</span></li>'
+        var elemento = '<li class="number_element" id="'+results.rows.item(i).id+'" >'+'<h3>'+results.rows.item(i).number+'</h3>'+'<p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span></li>'
         $('#listado').append(elemento);
         $("#"+results.rows.item(i).id).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
         $("#"+results.rows.item(i).id).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
@@ -390,6 +434,7 @@ function fcorrecto_tran_validarCod() {
 
 //--------------------Funciones para manejo de XML--------------
 
+//Parser de xml de respuesta para consultar datos del paquete de internet
 function leerxml(texto){
     bandera_paquete = "0";
     //Comenzamos a recorrer el xml
@@ -409,3 +454,14 @@ function leerxml(texto){
 }
 
 
+//Parser de xml de respuesta para obtener el tipo de dispositivo (modem o telefono)
+function leerxmltipodispositivo(texto){
+    //Comenzamos a recorrer el xml
+    var tipo = "";
+    $(texto).find("RESPONSE").each(function () {
+        tipo = $(this).text();
+        //alert("Tipo reconocido:"+tipo);        
+        return false;
+    });
+    return tipo;
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="js/funciones.js"></script>
+
+		<script>
+			// Wait for Cordova to load
+		    document.addEventListener("deviceready", onDeviceReady, false);
+
+		    $( document ).on( "pageshow", function(){
+				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
+				$("#DEMO").hide().delay( 1500 ).show( "fast" );				
+			});
+
+			function onDeviceReady() {
+			    // Now safe to use the Cordova API
+			    //Agregando controlador del boton ATRAS
+			    document.addEventListener("backbutton", handleBackButton, true);
+			}
+
+			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
+			$(document).ready(function(){
+				
+			});//fin de document ready
+			
+		</script>
+		
+	</head>
+	<body>
+
+		<div id="detalleConsumo" data-url="DetalleConsumo" data-role="page">
+			<div data-role="header" data-theme="c">
+				<h1>Consumo de Datos</h1>
+			</div>
+
+			<div data-role="content">
+				<span><strong style="font-size: 15px;">Detalle de consumo de datos</strong><br>
+					<span style="font-size: 14px;  line-height: 17px;">Al día</span>
+					<span id="dateDetalle" style="font-size: 14px;"></span>
+					<br/>
+					<span style="font-size: 14px;  line-height: 17px;">a las</span>
+					<span id="timeDetalle" style="font-size: 14px;"></span>
+					<br/>
+				</span>
+
+				<!-- Script para fecha y hora actual-->
+				<script type="text/javascript">
+				//conversion de fecha acutal
+					var ahora = new Date( );
+					var fech = mostrarFechaCompuestaDias(ahora);
+					var hora = mostrarHoraCompuesta(ahora);
+					$("#dateDetalle").append("&nbsp;"+fech);
+					
+					$("#timeDetalle").append("&nbsp;"+hora);
+
+				</script>
+
+
+				<div data-role="fieldcontain">
+					<div class="txtdato">Incluidos</div>
+					<DIV id="txtimginc" class="datoimg" ></DIV>
+				</div>
+				<div data-role="fieldcontain">
+					<div class="txtdato">Consumidos</div>
+					<DIV id="txtimgcons" class="datoimg" ></DIV>
+				</div>
+				<div data-role="fieldcontain">
+					<div class="txtdato">Disponibles</div>
+					<DIV id="txtimgdisp" class="datoimg" ></DIV>
+				</div>
+				<div data-role="fieldcontain">
+					<div class="txtdato">% de uso</div>
+					<DIV id="txtimgporc" class="datoimg" ></DIV>
+				</div>
+
+				<!-- Script para Datos-->
+				<script type="text/javascript">
+					if (parseInt(mbtotales) > 0)
+						var porcentaje = Math.round((parseInt(mbconsumidos)*100)/parseInt(mbtotales));
+					else
+						var porcentaje = 0;
+					
+					
+					$("#txtimginc").append(mbtotales+" MB");
+					$("#txtimgcons").append(mbconsumidos+" MB");
+					
+					var dispo = parseInt(mbtotales)-parseInt(mbconsumidos);
+					$("#txtimgdisp").append(dispo+" MB");
+
+					$("#txtimgporc").append(porcentaje+"%");
+
+				</script>
+
+				<br>
+				<ul data-role="listview">
+					<li>
+						<span style="font-size: 12px;">Paquete vigente al</span>
+						<br>
+						<span id="dateVigenciaDetalle" style="font-size: 15px;"></span>
+					</li>					
+				</ul>
+
+				<!-- Script para vigencia-->
+				<script type="text/javascript">
+					//conversion de fecha de vigencia
+					if (bandera_paquete == "1"){
+						//fech = Date.parse(vigencia);
+						fech = parseDate(vigencia);
+						//alert("parseada:"+fech);
+						fech2 = new Date(fech);
+						//alert("como fecha:"+fech2);
+						fech3 = mostrarFechaCompuesta(fech2);
+						//alert("aplicada funcion:"+fech3);
+						$("#dateVigenciaDetalle").append(fech3);
+					}else
+						$("#dateVigenciaDetalle").append("N/A");
+
+				</script>
+
+			</div>
+
+			<div data-role="footer">
+				<h1>Contáctanos</h1>
+			</div>
+		</div>
+
+	</body>
+</html>

@@ -37,3 +37,13 @@ window.obtenerdatos = function(str, callback) {
     [str]
   );
 };
+
+window.tipoclaro = function(strnum, callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Nada que averiguar!'); },
+    "JPluginCom",
+    "clarotype",
+    [strnum]
+  );
+};

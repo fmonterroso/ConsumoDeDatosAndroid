@@ -14,12 +14,14 @@ public class ConsumoWSAvanzado {
     private static final String Metodo = "user_claro";
     private static final String Metodo2 = "test";
     private static final String Metodo3 = "user_phone";
+    private static final String Metodo4 = "user_claro_type";
     // Namespace definido en el servicio web
     private static final String namespace = "http://internet.claro.com.gt/soap/ServiceBus/";
     // namespace + metodo
     private static final String accionSoap = "http://internet.claro.com.gt/sbus/bus.php/user_claro";
     private static final String accionSoap2 = "http://internet.claro.com.gt/sbus/bus.php/test";
     private static final String accionSoap3 = "http://internet.claro.com.gt/sbus/bus.php/user_phone";
+    private static final String accionSoap4 = "http://internet.claro.com.gt/sbus/bus.php/user_claro_type";
     // Fichero de definicion del servcio web
     private static final String url = "http://internet.claro.com.gt/sbus/bus.php?wsdl";
     //tag para interpretacion de xml 
@@ -120,6 +122,43 @@ public class ConsumoWSAvanzado {
          
             // Llamada
             transporte.call(accionSoap3, sobre);
+         
+            // Resultado
+            Log.d("Visor de obtiene datos", "Datos: "+sobre.getResponse());
+            //SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
+         
+            //Log.i("Resultado", resultado.toString());
+            return sobre.getResponse().toString();
+         
+        } catch (Exception e) {
+            Log.e("ERROR", e.getMessage());
+            return e.getMessage();
+        }
+    }
+	
+	public String ValidarDispositivo(String numero){
+    	try {
+       	 
+            // Modelo el request
+            SoapObject request = new SoapObject(namespace, Metodo4);
+            //Agregando parametros necesarios
+            GenerarXML g = new GenerarXML();
+            String d = g.generaDocumentoXML();
+            Log.d("Visor", "config:"+d);
+            request.addProperty("config", d); // Paso parametros al WS
+            request.addProperty("country", "502"); // Paso parametros al WS
+            request.addProperty("phone", numero); // Paso parametros al WS
+            
+            // Modelo el Sobre
+            SoapSerializationEnvelope sobre = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            sobre.dotNet = true;
+            sobre.setOutputSoapObject(request);
+         
+            // Modelo el transporte
+            HttpTransportSE transporte = new HttpTransportSE(url);
+         
+            // Llamada
+            transporte.call(accionSoap4, sobre);
          
             // Resultado
             Log.d("Visor de obtiene datos", "Datos: "+sobre.getResponse());

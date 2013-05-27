@@ -26,7 +26,13 @@ public class JPluginCom extends CordovaPlugin {
         	String message = args.getString(0); 
             this.obtenerdatos(message, callbackContext);
             return true;
+        }else if (action.equals("clarotype")){
+        	String message = args.getString(0); 
+            this.validarTelefono(message, callbackContext);
+            return true;
         }
+        
+        
         return false;
     }
  
@@ -73,6 +79,17 @@ public class JPluginCom extends CordovaPlugin {
             //callbackContext.success(message);
 			ConsumoWSAvanzado consumir = new ConsumoWSAvanzado();
 			String resultado = consumir.ObtenerDatos(message);
+			callbackContext.success(resultado);
+        } else {
+            callbackContext.error("Se esperaba un argumento no vacio.");
+        }
+    }
+	
+	private void validarTelefono(String message, CallbackContext callbackContext) {
+		if (message != null && message.length() > 0) { 
+            //callbackContext.success(message);
+			ConsumoWSAvanzado consumir = new ConsumoWSAvanzado();
+			String resultado = consumir.ValidarDispositivo(message);
 			callbackContext.success(resultado);
         } else {
             callbackContext.error("Se esperaba un argumento no vacio.");

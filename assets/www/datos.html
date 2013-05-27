@@ -42,7 +42,7 @@
 					<div id="dateAndTime" style="font-size: 12px; font-weight: bold; !important;"></div>
 				</span>
 				<script type="text/javascript">
-					//conversion de fecha de vigencia
+					//conversion de fecha acutal
 					var ahora = new Date( );
 					var fech = mostrarFechaCompuesta(ahora);
 					var hora = mostrarHoraCompuesta(ahora);
@@ -53,7 +53,7 @@
 					//Llamada a la funcion para consumir el web service y establecer los datos en las variables globales
 					var resultado = "";
 					window.obtenerdatos(numtelefonico, function(echoValue) {
-			          alert(echoValue);
+			          //alert(echoValue);
 			          resultado = echoValue;
 			        });					
         			
@@ -61,6 +61,10 @@
         			//validando para saber si se encontro algun paquete:
         			if (bandera_paquete != "1"){
         				showAlert("El número seleccionado no tiene algun paquete Claro de datos activo.","Consumo de internet","OK");
+        				vigencia = "";
+					    mbtotales = "0";
+					    mbconsumidos = "0";
+					    nombrepaq = "N/A";
         			}
 
 
@@ -115,7 +119,7 @@
 					</li>
 					<li>Detalle de consumo</li>
 					<li>
-						<a href="detalleConsumo.html" style="font-weight: normal">
+						<a id="goDetalleComsumo" href="#" style="font-weight: normal">
 							<div id="mbConsumed" style="float:left;font-weight: bold; !important;"></div><div style="float:left;">&nbsp;MB Consumidos</div>
 							<br/>
 							<div id="mbAvailable" style="float:left;font-weight: bold; !important;"></div><div style="float:left;">&nbsp;MB Disponibles</div>
@@ -131,7 +135,7 @@
 
 					<li>Detalles de su paquete</li>
 					<li>
-						<a href="detallePaquete.html" style="font-weight: normal">
+						<a id="goDetallePaquete" href="" style="font-weight: normal">
 							<div style="float:left; font-size: 13px;">Tu número: &nbsp;</div><div id="phoneNum" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
 							<br/>
 							<div style="float:left; font-size: 13px;">Tu plan: &nbsp;</div><div id="packName" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
@@ -142,7 +146,9 @@
 						</script>
 					</li>					
 				</ul>
-
+				<div class="center-wrapper">
+	  				<input id="btnElimiar" type="button" data-icon="check" data-inline="true" data-theme="e" value="Eliminar"/>
+				</div>
 			</div>
 
 			<div data-role="footer">
