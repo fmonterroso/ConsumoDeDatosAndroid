@@ -11,7 +11,8 @@ public class Principal extends DroidGap {
 	public void onCreate(Bundle savedInstanceState) {
 		//setContentView(R.layout.activity_principal);
 		super.onCreate(savedInstanceState);
-		super.loadUrl("file:///android_asset/www/index.html"); //archivo de ventana principal (listado)
+		Configuracion.context = this;
+		super.loadUrl("file:///android_asset/www/index.html"); //archivo de ventana principal (listado)		
 	}
 
 

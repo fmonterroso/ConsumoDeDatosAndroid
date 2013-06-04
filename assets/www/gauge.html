@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+      // Wait for Cordova to load
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        $( document ).on( "pageshow", function(){
+        //$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
+        $("#DEMO").hide().delay( 1500 ).show( "fast" );        
+      });
+
+      function onDeviceReady() {
+          // Now safe to use the Cordova API
+          //Agregando controlador del boton ATRAS
+          document.addEventListener("backbutton", handleBackButton, true);          
+      }
+
+      // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
+      $(document).ready(function(){
+        
+      });//fin de document ready
+      
+      
+
+    </script>
+    
+  </head>
+  <body>
+    
+
+    <div id='chart_div'></div>
+    <a href="#" id="reiniciar">Reiniciar</a>
+    <br>
+    <input type="text" id="valor">
+    <a href="#" id="setear">Setear</a>
+    <br>
+    <a href="#" id="bajar">Bajar</a>
+    <br>
+    <a href="#" id="subir">Subir</a>
+    <br>
+    <p id="deviceProperties">Loading device properties...</p>
+
+    <script type='text/javascript'>
+      //google.load('visualization', '1', {packages:['gauge']});
+      //alert("voy bien");
+      //google.setOnLoadCallback(drawChart);
+      //alert("voy bien");
+      var chart;
+      var data;
+      var options;
+      var valoractual = 100;
+      
+      //Reconociendo el dispositivo:
+      var element = document.getElementById('deviceProperties');
+      var plataforma = device.platform;
+      var versionplataforma = device.version;
+      element.innerHTML = 'Device Platform: ' + plataforma + '<br />' + 
+                          'Device Version: '  + versionplataforma  + '<br />';
+      
+      
+      if (plataforma == "Android") {
+        alert("Plataforma Android");
+        //versiones validas para Gauge chart
+        if (versionplataforma != "1.0" && versionplataforma != "1.1" && versionplataforma != "1.5" && versionplataforma != "1.6" && versionplataforma != "2.0" && versionplataforma != "2.1"  && versionplataforma != "2.2" && versionplataforma != "2.3" && versionplataforma != "2.3.3" ){
+          alert("Android valido");
+          //Desplegando el grafico:
+          
+      
+          data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Internet', 50]              
+          ]);
+
+          options = {
+            width: 200, height: 150,
+            minorTicks: 5, 
+            redFrom: 0, redTo: 10,
+            yellowFrom:10, yellowTo: 50,
+            greenFrom:50, greenTo:100,
+            duration:400, easing:'inAndOut',          
+            min:0, max: 100
+
+          };
+          chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+          //chart = new google.visualization.Gauge($("#chart_div")[0]);
+          chart.draw(data, options);
+      
+        }else{
+          alert("Android NO valido");
+          //version no valida
+          $("#chart_div").append("Grafico no soportado, se desplegara otro");
+        }
+      }
+      
+      
+
+    </script>
+  </body>
+</html>

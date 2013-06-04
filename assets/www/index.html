@@ -14,6 +14,7 @@
 	    <script src="js/PluginCom.js"></script>
 	    <script src="js/md5.js"></script>
 	    <script type="text/javascript" src="js/tolito-1.0.4.js"></script>
+	    <script type='text/javascript' src='js/jsapi.js'></script>
 	    <script src="js/funciones.js"></script>
 
 
@@ -33,6 +34,9 @@
 		    var nombrepaq = "N/A";
 		    var numtelefonico = "";
 
+		    google.load('visualization', '1', {packages:['gauge']});
+		    google.setOnLoadCallback(drawChart);
+		    function drawChart() {}
 
 			$( document ).on( "pageshow", function(){
 				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
@@ -78,6 +82,11 @@
 
 			<div data-role="footer">
 				<h1>Contáctanos</h1>
+			</div>
+			<div data-role="content">			
+			</div>
+			<div data-role="content">
+				<a id="btnGauge" href="gauge.html" data-role="button" data-icon="plus" data-theme="a">Mi número</a>
 			</div>
 		</div>
      

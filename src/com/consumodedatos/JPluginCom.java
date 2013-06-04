@@ -5,10 +5,16 @@ import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.content.Context;
+import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
+
 public class JPluginCom extends CordovaPlugin {
 	private enum Metodo {
-		isclaro, sendSMS, isclaro2, userphone,clarotype,activatedpackagelist;
+		isclaro, sendSMS, isclaro2, userphone,clarotype,activatedpackagelist,devicenumber,devicetype;
 	}
+	Context mContext;
 	
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -45,9 +51,14 @@ public class JPluginCom extends CordovaPlugin {
 	            String message2 = args.getString(2);
 	            this.obtenerHistorial(num, message, message2, callbackContext);
 			    break;
+		    case devicenumber:
+		    	this.numero_dispositivo(callbackContext);
+			    break;
+		    case devicetype:
+		    	this.tipo_dispositivo(callbackContext);
+			    break;
+			    
 		}
-        
-        
         return false;
     }
  
@@ -122,4 +133,49 @@ public class JPluginCom extends CordovaPlugin {
         }
     }
 	
+	private void obtenerNumero(String num, CallbackContext callbackContext) {
+		if (num != null && num.length() > 0) { 
+            //callbackContext.success(message);
+			String resultado = "Tu numero va aca";
+			callbackContext.success(resultado);
+        } else {
+            callbackContext.error("Se esperaba un argumento no vacio.");
+        }
+    }
+	
+	private void numero_dispositivo(CallbackContext callbackContext) {
+		TelephonyManager mTelephonyManager;
+		mTelephonyManager = (TelephonyManager) Configuracion.context.getSystemService(Context.TELEPHONY_SERVICE);
+		callbackContext.success(mTelephonyManager.getLine1Number());
+    }
+	
+	private void tipo_dispositivo(CallbackContext callbackContext){
+		boolean tabletSize = Configuracion.context.getResources().getBoolean(R.bool.isTablet);
+		if (tabletSize) {
+		    // do something
+			callbackContext.success("TABLET");
+		} else {
+		    // do something else
+			callbackContext.success("SMARTPHONE");
+		}
+		
+		/*
+		DisplayMetrics metrics = new DisplayMetrics();
+		Configuracion.context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int width = metrics.widthPixels;
+		int height = metrics.heightPixels;
+		
+		float yInches= metrics.heightPixels/metrics.ydpi;
+		float xInches= metrics.widthPixels/metrics.xdpi;
+		
+		if (width > 1023 || height > 599){
+		   //code for big screen (like tablet)
+			callbackContext.success("TABLET");
+		}else{
+		   //code for small screen (like smartphone)
+			callbackContext.success("SMARTPHONE");
+		}
+		*/
+	}
+
 }

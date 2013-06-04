@@ -57,3 +57,23 @@ window.obtenerhistorial = function(strnum, strinicio, strfin, callback) {
     [strnum,strinicio,strfin]
   );
 };
+
+window.obtenernumero = function(callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Error al obtener el número de telefono!'); },
+    "JPluginCom",
+    "devicenumber",
+    []
+  );
+};
+
+window.obtenertipo = function(callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Error al obtener el tipo de telefono!'); },
+    "JPluginCom",
+    "devicetype",
+    []
+  );
+};

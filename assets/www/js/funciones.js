@@ -90,19 +90,25 @@ $(document).ready(function(){
     //Funcion para validar si el numero ingresado es o no claro.
 	$("body").on("click","#btnValidar",function(){
         //validando si el numero es claro
-        window.validar($("#phone").val(), function(echoValue) {
-		  if (echoValue != "0"){
-            console.log("El número ingresado SI es un número Claro.");
-            
-            //Validando para luego insetar, si la funcion validar llega al final se llama a la funcion insertar
-            validarNumeroBD();
+        if ($("#phone").val() != ""){
+            //alert("prueba");
+            window.validar($("#phone").val(), function(echoValue) {
+    		  if (echoValue != "0"){
+                console.log("El número ingresado SI es un número Claro.");
+                
+                //Validando para luego insetar, si la funcion validar llega al final se llama a la funcion insertar
+                validarNumeroBD();
 
-          }else{
-            console.log("El número ingresado no es un número Claro.");
-            showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
-          }
-		  //alert(echoValue);		  
-		});		
+              }else{
+                console.log("El número ingresado no es un número Claro.");
+                showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
+              }
+    		  //alert(echoValue);		  
+    		});
+            
+        }else{
+            showAlert("No has ingresado un número.","Número Inválido","OK");
+        }
         return false;
     });
 
@@ -149,7 +155,70 @@ $(document).ready(function(){
         return false;
     });
 
-    
+    //Funciones del Gauge
+
+    $("body").on("click","#reiniciar",function(){
+        chart.clearChart()
+
+        return false;
+    });
+    $("body").on("click","#setear",function(){
+        var valor = parseInt($("#valor").val());
+        valoractual = valor;
+        data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Internet', valor]              
+        ]);
+
+        chart.draw(data, options);
+        
+        return false;
+    });
+    $("body").on("click","#bajar",function(){
+        if (valoractual > 0){
+          var valor = valoractual - 10;
+          valoractual = valoractual - 10;
+          data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Internet', valor]              
+          ]);
+
+          chart.draw(data, options);
+        }
+        return false;
+    });
+    $("body").on("click","#subir",function(){
+        if (valoractual < 100){
+          var valor = valoractual + 10;
+          valoractual = valoractual + 10;
+          data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Internet', valor]              
+          ]);
+
+          chart.draw(data, options);
+          
+        }
+        return false;
+    });
+    $("body").on("click","#btnGauge",function(){
+        alert("Iniciando");
+        
+        window.obtenertipo(function(echoValue) {
+            console.log("El tipo reconocido es:"+echoValue);
+            showAlert("El tipo del dispositivo reconocido es:"+echoValue,"Tipo","OK");
+        });
+        /*
+        window.obtenernumero(function(echoValue) {
+            console.log("El número reconocido es:"+echoValue);
+            showAlert("El número del dispositivo reconocido es:"+echoValue,"Número","OK");
+        });
+        */
+        return false;
+    });
+
+
+    //Fin de funciones de Gauge
     
 
     
@@ -465,3 +534,8 @@ function leerxmltipodispositivo(texto){
     });
     return tipo;
 }
+
+
+
+//Funciones para detectar deviceType
+
