@@ -259,7 +259,10 @@ function fcorrecto_exe(tx, results){
     if(results.rows.length<1){
         //creamos la base de datos
         console.log("SE crea la base de datos");
-        tx.executeSql('CREATE TABLE IF NOT EXISTS phones (id INTEGER PRIMARY KEY AUTOINCREMENT, number Varchar(20), type Varchar(15), state Varchar(15), code Varchar(50), register_date DATETIME, activation_date DATETIME)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS phones (idphone INTEGER PRIMARY KEY AUTOINCREMENT, number Varchar(20) NOT NULL, type Varchar(15) NOT NULL, state Varchar(15) NOT NULL, code Varchar(50), register_date DATETIME NOT NULL, activation_date DATETIME, principal Varchar(10))');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS user (iduser INTEGER PRIMARY KEY AUTOINCREMENT, name Varchar(100) NOT NULL, email Varchar(80) NOT NULL)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS terms_conditions (idterms_conditions INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS alarms (idalarms INTEGER PRIMARY KEY AUTOINCREMENT, percentage INTEGER NOT NULL, state Varchar(15), idphone INTEGER REFERENCES phones(idphone))');
         console.log("Se creo la base de datos correctamente");
         return true;
     }else{
@@ -267,6 +270,8 @@ function fcorrecto_exe(tx, results){
         //Pruebas:
         //tx.executeSql('INSERT INTO phones (number, state, code, register_date, activation_date ) VALUES ("55383563","0","12345","13/05/13","13/05/13")');
         //tx.executeSql('SELECT * FROM phones',[],fcorrecto_prue,errorCB);
+        //tx.executeSql('UPDATE phones SET principal=? WHERE idphone=?',["","2"]);
+        //console.log("Se actualizo correctamente");
         return false;
     }
 }
@@ -275,7 +280,7 @@ function fcorrecto_prue(tx, results){
     console.log("Filas retornadas en phones = " + results.rows.length);
     var len = results.rows.length;
     for (var i=0; i<len; i++){
-        console.log("Fila = " + i + " ID = " + results.rows.item(i).id + ", Numero =  " + results.rows.item(i).number + ", Tipo =  " + results.rows.item(i).type + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date );
+        console.log("Fila = " + i + " IDphone = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Tipo =  " + results.rows.item(i).type + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal);
     }
 }
 
@@ -315,11 +320,10 @@ function insertar(tx){
     });
 
     
-    tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date ) VALUES (?,?,?,?,date("now"),"")',[$("#phone").val(),tipodispositivo,"NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
+    tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date) VALUES (?,?,?,?,date("now"),"")',[$("#phone").val(),tipodispositivo,"NO VALIDADO",codigo],fcorrecto_insert_exe,errorCB);
     //se procede a enviar el codigo
     var mensaje = "El codigo para validar tu telefono es: "+codigo;
     window.enviarsms("502" + $("#phone").val(), mensaje, function(echoValue) {
-      //showAlert("El valor devuelto es:'"+echoValue+"'","Mensaje enviado","OK");
       if (echoValue == "ok"){
         bandera_eliminar = "0";
         showAlert("Debemos confirmar que este numero te pertenezca, se ha enviado un código de confirmación a tu teléfono, luego escribelo en la casilla inferior.","Envío de confirmación exitosa","OK");//mensaje 3
@@ -363,12 +367,18 @@ function fcorrecto_consultar_exe(tx, results){
     var len = results.rows.length;
     $('.number_element').remove();
     for (var i=0; i<len; i++){
-        console.log("Fila = " + i + " ID = " + results.rows.item(i).id + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date );
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );
         //Generando codigo html con listado de telefonos
-        var elemento = '<li class="number_element" id="'+results.rows.item(i).id+'" >'+'<h3>'+results.rows.item(i).number+'</h3>'+'<p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span></li>'
+        var subelmento = "";        
+        if (results.rows.item(i).principal){
+            subelmento = '<span class="ui-li-aside">'+results.rows.item(i).principal+'</span>';
+        }
+            
+
+        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" >'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>'
         $('#listado').append(elemento);
-        $("#"+results.rows.item(i).id).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
-        $("#"+results.rows.item(i).id).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
+        $("#"+results.rows.item(i).idphone).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
+        $("#"+results.rows.item(i).idphone).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
         $('#listado').listview('refresh');
     }
 
@@ -388,7 +398,7 @@ function eliminarBD(cod){
 
 //Funcion para eliminar un registro de la base de datos
 function eliminar(tx){
-    tx.executeSql('DELETE FROM phones WHERE id=?',[currentId],fcorrecto_eliminar_exe,errorCB);    
+    tx.executeSql('DELETE FROM phones WHERE idphone=?',[currentId],fcorrecto_eliminar_exe,errorCB);    
 }
 
 function fcorrecto_eliminar_exe(tx, results){
@@ -416,14 +426,14 @@ function consultarActualBD(){
 
 //Funcion para consultar el registro actual
 function consultarActual(tx){
-    tx.executeSql('SELECT * FROM phones WHERE id=?',[currentId],fcorrecto_consultarActual_exe,errorCB);    
+    tx.executeSql('SELECT * FROM phones WHERE idphone=?',[currentId],fcorrecto_consultarActual_exe,errorCB);    
 }
 
 function fcorrecto_consultarActual_exe(tx, results){
     console.log("Cantidad de Filas retornadas:" + results.rows.length);
     var len = results.rows.length;
     for (var i=0; i<len; i++){
-        console.log("Fila = " + i + " ID = " + results.rows.item(i).id + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date );
+        console.log("Fila = " + i + " IDphone = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );
         //Precargando los datos
         $("#phone").val(results.rows.item(i).number);
     }
@@ -474,7 +484,7 @@ function validarCodigoBD(){
 
 //Funcion para consultar validando el codigo
 function consultarValidarCodigo(tx){
-    tx.executeSql('SELECT * FROM phones WHERE id=? AND code=?',[currentId,$("#codConfirmacion").val()],fcorrecto_validarCodigo_exe,errorCB);
+    tx.executeSql('SELECT * FROM phones WHERE idphone=? AND code=?',[currentId,$("#codConfirmacion").val()],fcorrecto_validarCodigo_exe,errorCB);
 }
 
 function fcorrecto_validarCodigo_exe(tx, results){
@@ -485,7 +495,7 @@ function fcorrecto_validarCodigo_exe(tx, results){
         console.log("El codigo es correcto!");
         showAlert("El número ha sido agregado a tu aplicación de monitoreo de consumo de datos.","Confirmación exitosa!","OK")
         //Actualizando datos del registro
-        tx.executeSql('UPDATE phones SET state = "ACTIVO", activation_date = date("now") WHERE id=?',[currentId]);
+        tx.executeSql('UPDATE phones SET state = "ACTIVO", activation_date = date("now") WHERE idphone=?',[currentId]);
 
         //Actualizando listado y regresando
             consultarBD();
