@@ -146,7 +146,7 @@ public class ConsumoWSAvanzado {
             //Agregando parametros necesarios
             GenerarXML g = new GenerarXML();
             String d = g.generaDocumentoXML();
-            Log.d("Visor", "config:"+d);
+            //Log.d("Visor", "config:"+d);
             request.addProperty("config", d); // Paso parametros al WS
             request.addProperty("country", "502"); // Paso parametros al WS
             request.addProperty("phone", numero); // Paso parametros al WS
@@ -163,7 +163,7 @@ public class ConsumoWSAvanzado {
             transporte.call(accionSoap4, sobre);
          
             // Resultado
-            Log.d("Visor de obtiene datos", "Datos: "+sobre.getResponse());
+            //Log.d("Visor de obtiene datos", "Datos: "+sobre.getResponse());
             //SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
          
             //Log.i("Resultado", resultado.toString());

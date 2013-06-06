@@ -65,7 +65,9 @@
 					    mbtotales = "0";
 					    mbconsumidos = "0";
 					    nombrepaq = "N/A";
+					    cont_paquetes = 0;
         			}
+        			alert("Tienes en total "+cont_paquetes+" paquetes de datos.");
 
 
 				</script>
@@ -157,8 +159,9 @@
 							fech2 = new Date(fech);
 							//alert("como fecha:"+fech2);
 							fech3 = mostrarFechaCompuesta(fech2);
+							hora3 = mostrarHoraCompuesta(fech2);							
 							//alert("aplicada funcion:"+fech3);
-							$("#validity").append(fech3);
+							$("#validity").append(fech3 + " a las " + hora3);
 						}else
 							$("#validity").append("N/A");
 					</script>

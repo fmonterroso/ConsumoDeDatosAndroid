@@ -26,6 +26,7 @@
 		    var currentId="";
 		    var bandera_eliminar="0";
 		    var bandera_paquete="0";
+		    var bandera_existen_numeros="0";
 			
 			//Valores por defecto de variables
 		    var vigencia = "";
@@ -33,6 +34,7 @@
 		    var mbconsumidos = "0";
 		    var nombrepaq = "N/A";
 		    var numtelefonico = "";
+		    var cont_paquetes = 0;
 
 		    //Cargando librerias para el grafico de Gauge
 		    google.load('visualization', '1', {packages:['gauge']});
@@ -52,10 +54,18 @@
 
 			    //Abriendo Base de datos
 			    var db = abrirBD();
+			    
 			    //Recorrer datos y mostrar
-    			consultarBD();
-
+    			consultaInicial();
     			
+    			//Consulta buscando el numero principal si no fue establecido al inicio
+    			if (currentId == ""){
+    				//no se inserto un numero al inicio
+    				//realizando busqueda del principal
+    				consultaPrincipal();    				
+    			}
+
+    			consultarBD();
 
 			}
 
@@ -72,6 +82,8 @@
    </head>
    <body>
     	
+
+
 
 
 

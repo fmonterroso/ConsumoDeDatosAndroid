@@ -133,16 +133,6 @@ public class JPluginCom extends CordovaPlugin {
         }
     }
 	
-	private void obtenerNumero(String num, CallbackContext callbackContext) {
-		if (num != null && num.length() > 0) { 
-            //callbackContext.success(message);
-			String resultado = "Tu numero va aca";
-			callbackContext.success(resultado);
-        } else {
-            callbackContext.error("Se esperaba un argumento no vacio.");
-        }
-    }
-	
 	private void numero_dispositivo(CallbackContext callbackContext) {
 		TelephonyManager mTelephonyManager;
 		mTelephonyManager = (TelephonyManager) Configuracion.context.getSystemService(Context.TELEPHONY_SERVICE);

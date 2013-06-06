@@ -58,7 +58,7 @@ function mostrarHoraCompuesta(ahora){
 function parseDate(input) {
   var parts = input.match(/(\d+)/g);
   // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
-  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
+  return new Date(parts[0], parts[1]-1, parts[2], parts[3], parts[4]); // months are 0-based
 }
 
 
@@ -203,17 +203,17 @@ $(document).ready(function(){
     });
     $("body").on("click","#btnGauge",function(){
         alert("Iniciando");
-        
+        /*
         window.obtenertipo(function(echoValue) {
             console.log("El tipo reconocido es:"+echoValue);
             showAlert("El tipo del dispositivo reconocido es:"+echoValue,"Tipo","OK");
         });
-        /*
+        */
         window.obtenernumero(function(echoValue) {
             console.log("El número reconocido es:"+echoValue);
             showAlert("El número del dispositivo reconocido es:"+echoValue,"Número","OK");
         });
-        */
+        
         return false;
     });
 
@@ -260,7 +260,7 @@ function fcorrecto_exe(tx, results){
         //creamos la base de datos
         console.log("SE crea la base de datos");
         tx.executeSql('CREATE TABLE IF NOT EXISTS phones (idphone INTEGER PRIMARY KEY AUTOINCREMENT, number Varchar(20) NOT NULL, type Varchar(15) NOT NULL, state Varchar(15) NOT NULL, code Varchar(50), register_date DATETIME NOT NULL, activation_date DATETIME, principal Varchar(10))');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS user (iduser INTEGER PRIMARY KEY AUTOINCREMENT, name Varchar(100) NOT NULL, email Varchar(80) NOT NULL)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS user (iduser INTEGER PRIMARY KEY AUTOINCREMENT, name Varchar(100) NOT NULL, email Varchar(80))');
         tx.executeSql('CREATE TABLE IF NOT EXISTS terms_conditions (idterms_conditions INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL)');
         tx.executeSql('CREATE TABLE IF NOT EXISTS alarms (idalarms INTEGER PRIMARY KEY AUTOINCREMENT, percentage INTEGER NOT NULL, state Varchar(15), idphone INTEGER REFERENCES phones(idphone))');
         console.log("Se creo la base de datos correctamente");
@@ -373,8 +373,6 @@ function fcorrecto_consultar_exe(tx, results){
         if (results.rows.item(i).principal){
             subelmento = '<span class="ui-li-aside">'+results.rows.item(i).principal+'</span>';
         }
-            
-
         var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" >'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>'
         $('#listado').append(elemento);
         $("#"+results.rows.item(i).idphone).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
@@ -511,6 +509,163 @@ function fcorrecto_tran_validarCod() {
 }
 
 
+
+//---------Funcion para consultar los numeros cuando la aplicacion inicia y realizar el protocolo
+function consultaInicial(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarNumerosInicial, errorCB, fcorrecto_tran_consultarIni);
+    return db;
+}
+//Funcion para consultar numeros inicialmente
+function consultarNumerosInicial(tx){
+    console.log("Antes de consulta inicial");
+    tx.executeSql("SELECT * FROM phones",[],fcorrecto_consultaInicial_exe,errorCB);
+}
+
+function fcorrecto_consultaInicial_exe(tx, results){
+    console.log("Cantidad de Filas retornadas en consulta de inicio:" + results.rows.length);
+    var len = parseInt(results.rows.length);
+    if (len > 0){
+        //Existe alguna fila de numero en la base de datos        
+        alert("Ya hay algun numero en la base de datos");
+        bandera_existen_numeros = "1";        
+    }else{
+        //No hay ningun numero en la bae de datos, se procede a obtener el numero del telefono
+        console.log("Iniciando obtencion de número propio");
+        
+        var numReconocido = "";
+        //comunicandose con app nativa
+        window.obtenernumero(function(n) {
+            console.log("El número reconocido es:"+n);
+            numReconocido = n;            
+        });
+
+        //SIMULANDO NUMERO RECONOCIDO--------------------
+        numReconocido = "55383563";
+
+        //verificacion de que se haya reconocido un numero en el telefono
+        if (numReconocido != ""){
+            var numRecoClaro = "0";
+            //Validando numero claro y tipo de dispositivo
+            window.validar(numReconocido, function(nRC) {
+              numRecoClaro = nRC;
+              if (numRecoClaro != "0"){
+                console.log("El número reconocido SI es un número Claro.");
+              }else{
+                console.log("El número reconocido no es un número Claro. este era:"+numReconocido);
+                //showAlert("El número reconocido en tu teléfono no es un número Claro.","Número Inválido","OK");//mensaje 1
+              }
+            });
+
+            //verificacion de que el numero reconocido en el telefono sea un numero claro
+            if (numRecoClaro !="0"){
+                //obteniendo el tipo de dispositivo
+                var tipodispositivo = "NO DEFINIDO";
+                window.tipoclaro(numReconocido, function(echoValue) {
+                    //parseando el xml de vuelta
+                    var t = leerxmltipodispositivo(echoValue);
+                    if (t == "O"){
+                        tipodispositivo = "SIM";            
+                    }else if (t=="NO DEFINIDO"){
+                        tipodispositivo = "NO DEFINIDO";            
+                    }else {
+                        tipodispositivo = "MODEM";            
+                    }
+                    console.log("El número reconocido es del tipo:"+tipodispositivo);
+                });
+
+                //insertando el número propio en la BD
+                tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date, principal) VALUES (?,?,?,?,date("now"),date("now"),?)',[numReconocido,tipodispositivo,"ACTIVO","","Principal"],fcorrecto_insertInicial_exe,errorCB);
+                console.log("Se ha insertado inicialmente el numero:"+numReconocido+"con tipo:"+tipodispositivo);
+            }else{
+                //mostrar alerta de que el número reconocido no es un numero claro
+                showAlert("El número reconocido en tu teléfono no es un número Claro.","Número Inválido","OK");//mensaje 1
+                bandera_existen_numeros = "0";
+            }
+        }else{
+            //mostrar instrucciones de como configurar su numero en su tablet
+            showAlert("No se ha podido reconocer tu número de teléfono. Debes configurarlo manualmente en Entra en AJUSTES/AJUSTES DE LLAMADA/CONFIGURACION ADICIONAL/MI NUMERO DE TELEFONO, se debe escribir con el formato de 10 digitos 55XXXXXXXX.","Número no reconocido","OK");//mensaje 1
+            bandera_existen_numeros = "0";
+        }
+    }
+}
+
+function fcorrecto_insertInicial_exe(tx, results){
+    currentId = results.insertId;
+    bandera_existen_numeros = "1";
+}
+
+function fcorrecto_tran_consultarIni() {
+    console.log("Se consulto al inicio correctamente.");
+}
+
+
+
+//---------Funcion para consultar los numeros y encontrar al principal o el primero en la lista para luego cargar datos de paquete
+function consultaPrincipal(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarNumeroPrincipal, errorCB, fcorrecto_tran_consultarPrin);
+    return db;
+}
+//Funcion para consultar numeros en busca del principal
+function consultarNumeroPrincipal(tx){
+    console.log("Antes de consulta principal");
+    tx.executeSql("SELECT * FROM phones WHERE principal=?",["Principal"],fcorrecto_consultaPrincipal_exe,errorCB);
+}
+
+function fcorrecto_consultaPrincipal_exe(tx, results){
+    console.log("Cantidad de Filas retornadas en consulta principal:" + results.rows.length);
+    var len = parseInt(results.rows.length);
+    if (len > 0){
+        //Existe un numero establecido como principal
+        alert("Su numero principal es:"+results.rows.item(0).number);
+        currentId = results.rows.item(0).idphone;
+        for (var i=0; i<len; i++){
+            console.log("Fila Principal = " + i + " IDphone = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );            
+        }
+        
+    }else{
+        //No hay ningun numero establecido como principal. cargando primer numero en la lista si hay numeros
+        if (bandera_existen_numeros == "1"){
+            //hay numeros
+            //consultando nums a la bd
+            tx.executeSql('SELECT * FROM phones WHERE state=?',["ACTIVO"],fcorrecto_consultarPrincipal_exe,errorCB);    
+        }else{
+            currentId = "";
+        }
+    }
+}
+
+function fcorrecto_consultarPrincipal_exe(tx, results){
+    console.log("Filas retornadas en tabla phones = " + results.rows.length);
+    console.log("1ra Fila, fila tomada: ID = " + results.rows.item(0).idphone + ", Numero =  " + results.rows.item(0).number + ", Estado =  " + results.rows.item(0).state + ", Codigo =  " + results.rows.item(0).code + ", Fecha de Ingreso =  " + results.rows.item(0).register_date + ", Fecha de Activacion =  " + results.rows.item(0).activation_date + ", Principal =  " + results.rows.item(0).principal );
+    currentId = results.rows.item(0).idphone;
+    alert("El número inicial es:"+results.rows.item(0).number);
+}
+
+function fcorrecto_tran_consultarPrin() {
+    console.log("Se consulto en busca del principal correctamente.");
+    alert("Al final de todo el codigo a buscar es:"+currentId);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------Funciones para manejo de XML--------------
 
 //Parser de xml de respuesta para consultar datos del paquete de internet
@@ -519,17 +674,35 @@ function leerxml(texto){
     //Comenzamos a recorrer el xml
     $(texto).find("PAQUETESACTIVOS").each(function () {
         $(this).find("PAQUETECUENTA").each(function () {
-           bandera_paquete = "1";
-           vigencia = $(this).find('FIN').text();
-           mbconsumidos = $(this).find('CONSUMOMB').text();
-           $(this).find("PAQUETE").each(function () {
-               nombrepaq = $(this).find('NOMBRE').text();
-               mbtotales = $(this).find('LIMITEDATOSMB').text();
+           var codigopaquete = "";
+           cont_paquetes = 0;
+           $(this).find("NODE").each(function () {
+               $(this).find("PAQUETE").each(function () {
+                   codigopaquete = $(this).find('CODIGO').text();
+                   if (codigopaquete != "1"){
+                        if (cont_paquetes<1){
+                            nombrepaq = $(this).find('NOMBRE').text();
+                            mbtotales = $(this).find('LIMITEDATOSMB').text();
+                        }
+                   }                   
+               });
+               if (codigopaquete != "1" ){
+                    if (cont_paquetes<1){
+                        bandera_paquete = "1";
+                        vigencia = $(this).find('FIN').text();
+                        mbconsumidos = $(this).find('CONSUMOMB').text();    
+                    }
+                    cont_paquetes++;
+                    //return false;
+               }
+               
+               console.log("Paquete (NODE: "+cont_paquetes+") reconocido: vigencia="+$(this).find('FIN').text()+", MB consumidos="+$(this).find('CONSUMOMB').text()+", nombre="+$(this).find('NOMBRE').text()+", MB totales="+$(this).find('LIMITEDATOSMB').text()+", Banda="+$(this).find('BANDA').text()+", Codigo="+codigopaquete);               
             });
+            
         });
-        return false;
-    });
 
+    });
+    return false;
 }
 
 
@@ -547,5 +720,5 @@ function leerxmltipodispositivo(texto){
 
 
 
-//Funciones para detectar deviceType
+
 
