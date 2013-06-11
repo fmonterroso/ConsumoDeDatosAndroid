@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script>
+			// Wait for Cordova to load
+		    document.addEventListener("deviceready", onDeviceReady, false);
+
+		    $( document ).on( "pageshow", function(){
+				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
+				$("#DEMO").hide().delay( 1500 ).show( "fast" );
+				alert("pageshow");				
+			});
+
+			function onDeviceReady() {
+			    // Now safe to use the Cordova API
+			    //Agregando controlador del boton ATRAS
+			    document.addEventListener("backbutton", handleBackButton, true);
+			    alert("ondeviceready");
+			}
+
+			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
+			$(document).ready(function(){
+				alert("ready");
+			});//fin de document ready
+			
+		</script>
+
+
+	</head>
+	<body>
+
+		<div id="Listado" data-url="Consumo de Datos" data-role="page" data-title="Consumo de Datos">
+			<div data-role="header">
+				<div data-role="navbar">
+				    <ul>
+					    <li><a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+				    </ul>
+				</div><!-- /navbar -->
+
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<span style="font-size: 16px;"><strong>Consumo de Datos</strong></span>
+				<a id="btnConfigurar" href="configurar.html" data-role="button" data-icon="plus" data-theme="a">Agregar Número</a>
+				<ul id="listado" data-role="listview" data-inset="true">
+					<li>Números Vinculados</li>
+
+				</ul>
+
+			</div>
+			<script type="text/javascript">
+				consultarBD();
+			</script>
+			<div data-role="footer">
+				<h1>Contáctanos</h1>
+			</div>
+		</div>
+		
+	</body>
+</html>

@@ -61,8 +61,10 @@ public class ConsumoWSAvanzado {
             return sobre.getResponse().toString();
          
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+        	String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+        	Log.e("ERROR",err);
+            //return e.getMessage();
+            return "ERROR";
         }    	
     }
 	
@@ -96,8 +98,10 @@ public class ConsumoWSAvanzado {
             return sobre.getResponse().toString();
          
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+        	String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+        	Log.e("ERROR", err );
+            //return e.getMessage();
+            return "ERROR";
         }
     }
 	
@@ -133,8 +137,10 @@ public class ConsumoWSAvanzado {
             return sobre.getResponse().toString();
          
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+        	String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+        	Log.e("ERROR", err );
+            //return e.getMessage();
+            return "ERROR";
         }
     }
 	
@@ -170,8 +176,10 @@ public class ConsumoWSAvanzado {
             return sobre.getResponse().toString();
          
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+            String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+        	Log.e("ERROR", err );
+            //return e.getMessage();
+            return "ERROR";
         }
     }
 	
@@ -209,8 +217,10 @@ public class ConsumoWSAvanzado {
             return sobre.getResponse().toString();
          
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+        	String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+        	Log.e("ERROR", err );
+            //return e.getMessage();
+            return "ERROR";
         }
     }
 	

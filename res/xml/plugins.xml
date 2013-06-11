@@ -19,3 +19,4 @@
 	    <plugin name="SplashScreen" value="org.apache.cordova.SplashScreen"/>
 	    <plugin name="JPluginCom" value="com.consumodedatos.JPluginCom"/>
 	</plugins>
+	

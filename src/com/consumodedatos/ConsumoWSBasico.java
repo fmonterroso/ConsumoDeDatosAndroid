@@ -46,6 +46,7 @@ public class ConsumoWSBasico {
          
             // Llamada
             Log.i("proceso", "Antes de llamada. actionSoap:"+accionSoap+" sobre:"+sobre);
+            
             transporte.call(accionSoap, sobre);
          
             // Resultado
@@ -54,13 +55,13 @@ public class ConsumoWSBasico {
             Log.i("proceso", "Resultado parseado" + resultado);
             Log.i("proceso", "Resultado parseado string:"+resultado.toString());
          
-            //Log.i("Resultado", resultado.toString());
-            return resultado.toString();
-         
+            //Log.i("Resultado", resultado.toString());            
+            return resultado.toString();         
         } catch (Exception e) {
         	String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
-        	Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+        	Log.e("ERROR", err);
+            //return e.getMessage();
+            return "ERROR";
         }    	
     }
 	
@@ -99,12 +100,10 @@ public class ConsumoWSBasico {
             return resultado.toString();
          
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
-            return e.getMessage();
+        	String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+        	Log.e("ERROR", err );
+            //return e.getMessage();
+            return "ERROR";
         }
-    }
-	
-	public String EnviaCodigo(String numero){
-    	return "";	
-    }
+    }	
 }

@@ -12,7 +12,7 @@ function showAlert(texto,titulo,boton) {
 }
 
 function handleBackButton(){
-    if($.mobile.activePage.attr('id') == 'ConsumodeDatos'){
+    if($.mobile.activePage.attr('id') == 'Datos'){
         navigator.app.exitApp();
     }else{
         consultarBD();
@@ -61,11 +61,167 @@ function parseDate(input) {
   return new Date(parts[0], parts[1]-1, parts[2], parts[3], parts[4]); // months are 0-based
 }
 
+function consultaDatosPaquete(){
+    //alert("id actual:"+currentId);
+    if (currentId != ""){
+        //Llamada a la funcion para consumir el web service y establecer los datos en las variables globales
+        var resultado = "";
+        window.obtenerdatos(numtelefonico, function(echoValue) {
+          //alert(echoValue);
+          resultado = echoValue;
+        });                 
+        if (resultado == "ERROR"){
+            showAlert("Ocurrio un problema consultando tus datos. Por favor intenta mas tarde.","OK");
+        }else{
+            leerxml(resultado);
+            //validando para saber si se encontro algun paquete:
+            if (bandera_paquete != "1"){
+                showAlert("El número seleccionado no tiene algun paquete Claro de datos activo.","Consumo de internet","OK");
+                vigencia = "";
+                mbtotales = "0";
+                mbconsumidos = "0";
+                nombrepaq = "N/A";
+                cont_paquetes = 0;
+            }
+            //Mostrando datos en la interfaz
+            mostrarDatosPaquete();            
+        }
+    }else{
+
+    }
+
+}
+
+function mostrarDatosPaquete(){
+    //conversion de fecha acutal
+    var ahora = new Date( );
+    var fech = mostrarFechaCompuesta(ahora);
+    var hora = mostrarHoraCompuesta(ahora);
+    $("#dateAndTime").empty();
+    $("#dateAndTime").append(fech+" a las "+hora);
+
+    //Datos obtenidos con WS
+    if (parseInt(mbtotales) > 0)
+        var porcentaje = 100 - Math.round((parseInt(mbconsumidos)*100)/parseInt(mbtotales));
+    else
+        var porcentaje = 0;
+    
+    //haciendo validacion de dispositivo
+    var plataforma = device.platform;
+    var versionplataforma = device.version;
+    if (plataforma == "Android") {
+        //Es un Android
+        if (versionplataforma != "1.0" && versionplataforma != "1.1" && versionplataforma != "1.5" && versionplataforma != "1.6" && versionplataforma != "2.0" && versionplataforma != "2.1"  && versionplataforma != "2.2" && versionplataforma != "2.3" && versionplataforma != "2.3.3" ){
+            //Version valida de Android
+            
+            //Codigo para Gaugue Chart
+            var chart;
+            var data;
+            var options;
+            var valoractual = porcentaje;
+            data = google.visualization.arrayToDataTable([
+                ['Label', 'Value'],
+                ['Internet', valoractual]              
+              ]);
+
+              options = {
+                width: 200, height: 150,
+                minorTicks: 5, 
+                redFrom: 0, redTo: 10,
+                yellowFrom:10, yellowTo: 50,
+                greenFrom:50, greenTo:100,
+                duration:400, easing:'inAndOut',          
+                min:0, max: 100
+
+              };
+              chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+              //chart = new google.visualization.Gauge($("#chart_div")[0]);
+              chart.draw(data, options);
+
+
+        }else{
+            //No es una version valida de Android
+            //Codigo para grafico comun (proressbar)                                
+            TolitoProgressBar('progressbar')
+            .setOuterTheme('d')
+            .setInnerTheme('b')
+            .isMini(true)
+            .setMax(100)
+            .setStartFrom(porcentaje)
+            .setInterval(50)
+            .showCounter(true)
+            .logOptions()
+            .build();                               
+        }
+    }else{
+        //No es Android
+
+    }
+
+    //conversion de fecha de vigencia
+    $("#validity").empty();
+    if (bandera_paquete == "1"){
+        //fech = Date.parse(vigencia);
+        fech = parseDate(vigencia);
+        //alert("parseada:"+fech);
+        fech2 = new Date(fech);
+        //alert("como fecha:"+fech2);
+        fech3 = mostrarFechaCompuesta(fech2);
+        hora3 = mostrarHoraCompuesta(fech2);                            
+        //alert("aplicada funcion:"+fech3);
+        $("#validity").append(fech3 + " a las " + hora3);
+    }else
+        $("#validity").append("N/A");
+
+    $("#mbConsumed").empty();
+    $("#mbConsumed").append(mbconsumidos);
+    $("#mbConsumedBar").empty();
+    $("#mbConsumedBar").append(mbconsumidos+"MB");
+    
+    var dispo = parseInt(mbtotales)-parseInt(mbconsumidos);
+    $("#mbAvailable").empty();
+    $("#mbAvailable").append(dispo);
+
+    $("#phoneNum").empty();
+    $("#phoneNum").append(numtelefonico);
+    $("#packName").empty();
+    $("#packName").append(nombrepaq);
+
+    $("#numPaqRemaining").empty();
+    if (cont_paquetes =="1")
+        $("#numPaqRemaining").append((parseInt(cont_paquetes))+" paquete activo restante.");
+    else
+        $("#numPaqRemaining").append((parseInt(cont_paquetes))+" paquetes activos restantes.");
+}
+
+function validarAvance(){
+    $.confirm({
+        'title'     : 'Confirmación de avance',
+        'message'   : 'No se ha reconocido ningun número valido en tu dispositivo. Quieres configurarlo en tu teléfono y volver a intentarlo o proceder y configurarlo dentro de la aplicación?',
+        'buttons'   : {
+            'Regresar'   : {
+                'class' : 'blue',
+                'action': function(){
+                    //alert("Regresaras");
+                    navigator.app.exitApp();
+                }
+            },
+            'Proceder'    : {
+                'class' : 'gray',
+                'action': function(){
+                    //alert("procediste");
+                    $.mobile.changePage("listado.html", { transition: "slide" });
+                }
+            }
+        }
+    });
+}
+
 
 // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
 $(document).ready(function(){
 
-	$("body").on("click","#btnConfigurar",function(){
+    $("body").on("click","#btnConfigurar",function(){
         currentId = "";
         $.mobile.changePage("configurar.html", { transition: "slide" });
         return false;
@@ -79,9 +235,20 @@ $(document).ready(function(){
             //redireccionando a la pantalla de configuracion
             $.mobile.changePage("configurar.html", { transition: "slide", changeHash: true });            
         }else{
-            //abriendo datos
+            //abriendo listado
             numtelefonico = $(this).attr("numero");
-            $.mobile.changePage("datos.html", { transition: "slide", changeHash: true });
+            $.mobile.changePage("index.html", { transition: "slide", changeHash: true });
+            //Consulta buscando el numero principal si no fue establecido al inicio             
+            if (currentId == ""){
+                //no se inserto un numero al inicio
+                //realizando busqueda del principal
+                consultaPrincipal();                    
+            }else{
+                consultaDatosPaquete();
+            }
+            
+            //Consultando datos del usuario
+            consultarUsuarioBD();
         }
 
         return false;
@@ -93,15 +260,20 @@ $(document).ready(function(){
         if ($("#phone").val() != ""){
             //alert("prueba");
             window.validar($("#phone").val(), function(echoValue) {
-    		  if (echoValue != "0"){
+    		  if (echoValue != "0"  && echoValue !="ERROR"){
                 console.log("El número ingresado SI es un número Claro.");
                 
                 //Validando para luego insetar, si la funcion validar llega al final se llama a la funcion insertar
                 validarNumeroBD();
 
               }else{
-                console.log("El número ingresado no es un número Claro.");
-                showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
+                if (echoValue == "ERROR"){
+                    showAlert("Hubo un error al validar tu número de telefono. Verifica tu conexión a internet.","Validació fallida","OK");
+                    console.log("Error al validar número.");
+                }else{
+                    showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
+                    console.log("El número ingresado no es un número Claro.");
+                }
               }
     		  //alert(echoValue);		  
     		});
@@ -133,18 +305,6 @@ $(document).ready(function(){
         return false;
     });
 
-
-    $("body").on("click","#btnValidar2",function(){
-        
-        //validando si el numero es claro
-        window.obtenerdatos(numtelefonico, function(echoValue) {
-          alert(echoValue);          
-        });
-        
-        
-        return false;
-    });
-
     $("body").on("click","#goDetalleComsumo",function(){
         $.mobile.changePage("detalleConsumo.html", { transition: "slide", changeHash: true });
         return false;
@@ -155,70 +315,63 @@ $(document).ready(function(){
         return false;
     });
 
-    //Funciones del Gauge
+    //-------------------Funciones del Gauge
+    /*
+    chart.clearChart()
 
-    $("body").on("click","#reiniciar",function(){
-        chart.clearChart()
+    data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Internet', valor]
+    ]);
+    chart.draw(data, options);
 
-        return false;
-    });
-    $("body").on("click","#setear",function(){
-        var valor = parseInt($("#valor").val());
-        valoractual = valor;
-        data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['Internet', valor]              
-        ]);
+    */
+    //Fin de funciones de Gauge
 
-        chart.draw(data, options);
+
+    //-----------------------Funciones del menu-------------
+    $("body").on("click",".menuitemMenu",function(){
         
         return false;
     });
-    $("body").on("click","#bajar",function(){
-        if (valoractual > 0){
-          var valor = valoractual - 10;
-          valoractual = valoractual - 10;
-          data = google.visualization.arrayToDataTable([
-            ['Label', 'Value'],
-            ['Internet', valor]              
-          ]);
 
-          chart.draw(data, options);
-        }
+    $("body").on("click",".menuitemHome",function(){
+        $.mobile.changePage("index.html", { transition: "slide" });
         return false;
     });
-    $("body").on("click","#subir",function(){
-        if (valoractual < 100){
-          var valor = valoractual + 10;
-          valoractual = valoractual + 10;
-          data = google.visualization.arrayToDataTable([
-            ['Label', 'Value'],
-            ['Internet', valor]              
-          ]);
 
-          chart.draw(data, options);
-          
-        }
-        return false;
-    });
-    $("body").on("click","#btnGauge",function(){
-        alert("Iniciando");
+    $("body").on("click",".menuitemStore",function(){
+        //alert("Iniciando");
         /*
         window.obtenertipo(function(echoValue) {
             console.log("El tipo reconocido es:"+echoValue);
             showAlert("El tipo del dispositivo reconocido es:"+echoValue,"Tipo","OK");
         });
-        */
+        
         window.obtenernumero(function(echoValue) {
             console.log("El número reconocido es:"+echoValue);
             showAlert("El número del dispositivo reconocido es:"+echoValue,"Número","OK");
         });
+        */
+        //alert("El valor de network:"+navigator.connection.type);
+        if(navigator.connection.type == Connection.NONE){
+            // No tenemos conexión
+            alert("No tenemos conexión");
+        }else{
+            // Si tenemos conexión
+            alert("Si tenemos conexión");
+        }
         
         return false;
     });
 
-
-    //Fin de funciones de Gauge
+    $("body").on("click",".menuitemConfig",function(){
+        //alert("pag actual:"+$.mobile.activePage.attr('id'));
+        if($.mobile.activePage.attr('id') != 'Listado')
+            $.mobile.changePage("listado.html", { transition: "slide" });
+        return false;
+    });   
+    
     
 
     
@@ -263,6 +416,8 @@ function fcorrecto_exe(tx, results){
         tx.executeSql('CREATE TABLE IF NOT EXISTS user (iduser INTEGER PRIMARY KEY AUTOINCREMENT, name Varchar(100) NOT NULL, email Varchar(80))');
         tx.executeSql('CREATE TABLE IF NOT EXISTS terms_conditions (idterms_conditions INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL)');
         tx.executeSql('CREATE TABLE IF NOT EXISTS alarms (idalarms INTEGER PRIMARY KEY AUTOINCREMENT, percentage INTEGER NOT NULL, state Varchar(15), idphone INTEGER REFERENCES phones(idphone))');
+        //insertando usuario por defecto
+        tx.executeSql('INSERT INTO user (name, email) VALUES (?,?)',["Usuario","No definido"],fcorrecto_insertUser_exe,errorCB);
         console.log("Se creo la base de datos correctamente");
         return true;
     }else{
@@ -276,6 +431,10 @@ function fcorrecto_exe(tx, results){
     }
 }
 
+function fcorrecto_insertUser_exe(tx, results){
+    console.log("Se inserto el usuario correctamente! Codigo:"+results.insertId);
+}
+
 function fcorrecto_prue(tx, results){
     console.log("Filas retornadas en phones = " + results.rows.length);
     var len = results.rows.length;
@@ -287,6 +446,8 @@ function fcorrecto_prue(tx, results){
 function fcorrecto_transac() {
     //alert("Correcto verificar!");
     console.log("Se verifico la base de datos correctamente!");
+    //realizando al siguiente paso del flujo: Consulta inicial
+    //consultaInicial();
 }
 
 
@@ -496,8 +657,8 @@ function fcorrecto_validarCodigo_exe(tx, results){
         tx.executeSql('UPDATE phones SET state = "ACTIVO", activation_date = date("now") WHERE idphone=?',[currentId]);
 
         //Actualizando listado y regresando
-            consultarBD();
-            navigator.app.backHistory();
+        $.mobile.changePage("listado.html", { transition: "slide" });
+
     }else{
         //El codigo no es correcto
         showAlert("El código de confirmación ingresado no es válido. Por favor verifica el mismo e intenta de nuevo.","Confirmación inválida","OK")
@@ -527,7 +688,7 @@ function fcorrecto_consultaInicial_exe(tx, results){
     var len = parseInt(results.rows.length);
     if (len > 0){
         //Existe alguna fila de numero en la base de datos        
-        alert("Ya hay algun numero en la base de datos");
+        //alert("Ya hay algun numero en la base de datos");
         bandera_existen_numeros = "1";        
     }else{
         //No hay ningun numero en la bae de datos, se procede a obtener el numero del telefono
@@ -541,7 +702,7 @@ function fcorrecto_consultaInicial_exe(tx, results){
         });
 
         //SIMULANDO NUMERO RECONOCIDO--------------------
-        numReconocido = "55383563";
+        //numReconocido = "50159519";
 
         //verificacion de que se haya reconocido un numero en el telefono
         if (numReconocido != ""){
@@ -549,7 +710,7 @@ function fcorrecto_consultaInicial_exe(tx, results){
             //Validando numero claro y tipo de dispositivo
             window.validar(numReconocido, function(nRC) {
               numRecoClaro = nRC;
-              if (numRecoClaro != "0"){
+              if (numRecoClaro != "0" && numRecoClaro !="ERROR"){
                 console.log("El número reconocido SI es un número Claro.");
               }else{
                 console.log("El número reconocido no es un número Claro. este era:"+numReconocido);
@@ -558,7 +719,7 @@ function fcorrecto_consultaInicial_exe(tx, results){
             });
 
             //verificacion de que el numero reconocido en el telefono sea un numero claro
-            if (numRecoClaro !="0"){
+            if (numRecoClaro !="0" && numRecoClaro !="ERROR"){
                 //obteniendo el tipo de dispositivo
                 var tipodispositivo = "NO DEFINIDO";
                 window.tipoclaro(numReconocido, function(echoValue) {
@@ -578,13 +739,21 @@ function fcorrecto_consultaInicial_exe(tx, results){
                 tx.executeSql('INSERT INTO phones (number, type, state, code, register_date, activation_date, principal) VALUES (?,?,?,?,date("now"),date("now"),?)',[numReconocido,tipodispositivo,"ACTIVO","","Principal"],fcorrecto_insertInicial_exe,errorCB);
                 console.log("Se ha insertado inicialmente el numero:"+numReconocido+"con tipo:"+tipodispositivo);
             }else{
-                //mostrar alerta de que el número reconocido no es un numero claro
-                showAlert("El número reconocido en tu teléfono no es un número Claro.","Número Inválido","OK");//mensaje 1
+                if (numRecoClaro == "ERROR"){
+                    showAlert("Hubo un error al validar tu número de telefono. Verifica tu conexión a internet.","Validació fallida","OK");
+                }else{
+                    //mostrar alerta de que el número reconocido no es un numero claro
+                    //showAlert("El número reconocido en tu teléfono no es un número Claro.","Número Inválido","OK");//mensaje 1    
+                    //Validando para saber si al final se encontro algun dato que mostrar o ir a la pantalla de configurar
+                    validarAvance();
+                }                
                 bandera_existen_numeros = "0";
             }
         }else{
             //mostrar instrucciones de como configurar su numero en su tablet
-            showAlert("No se ha podido reconocer tu número de teléfono. Debes configurarlo manualmente en Entra en AJUSTES/AJUSTES DE LLAMADA/CONFIGURACION ADICIONAL/MI NUMERO DE TELEFONO, se debe escribir con el formato de 10 digitos 55XXXXXXXX.","Número no reconocido","OK");//mensaje 1
+            //showAlert("No se ha podido reconocer tu número de teléfono. Debes configurarlo manualmente en Entra en AJUSTES/AJUSTES DE LLAMADA/CONFIGURACION ADICIONAL/MI NUMERO DE TELEFONO, se debe escribir con el formato de 10 digitos 55XXXXXXXX.","Número no reconocido","OK");//mensaje 1
+            //Validando para saber si al final se encontro algun dato que mostrar o ir a la pantalla de configurar
+            validarAvance();
             bandera_existen_numeros = "0";
         }
     }
@@ -597,6 +766,14 @@ function fcorrecto_insertInicial_exe(tx, results){
 
 function fcorrecto_tran_consultarIni() {
     console.log("Se consulto al inicio correctamente.");
+    //realizando siguiente paso del flujo: Consulta principal
+    /*
+    if (currentId == ""){
+        //no se inserto un numero al inicio
+        //realizando busqueda del principal
+        consultaPrincipal();                    
+    }
+    */
 }
 
 
@@ -618,38 +795,76 @@ function fcorrecto_consultaPrincipal_exe(tx, results){
     var len = parseInt(results.rows.length);
     if (len > 0){
         //Existe un numero establecido como principal
-        alert("Su numero principal es:"+results.rows.item(0).number);
+        //alert("Su numero principal es:"+results.rows.item(0).number);
+        console.log("Su numero principal es:" + results.rows.item(0).number);
         currentId = results.rows.item(0).idphone;
+        numtelefonico = results.rows.item(0).number;
         for (var i=0; i<len; i++){
             console.log("Fila Principal = " + i + " IDphone = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );            
         }
+        //Aca llamar a funcion de carga datos de paquete
+        consultaDatosPaquete();
         
     }else{
         //No hay ningun numero establecido como principal. cargando primer numero en la lista si hay numeros
-        if (bandera_existen_numeros == "1"){
-            //hay numeros
-            //consultando nums a la bd
-            tx.executeSql('SELECT * FROM phones WHERE state=?',["ACTIVO"],fcorrecto_consultarPrincipal_exe,errorCB);    
-        }else{
-            currentId = "";
-        }
+        //consultando nums a la bd
+        tx.executeSql('SELECT * FROM phones WHERE state=?',["ACTIVO"],fcorrecto_consPrinTodos_exe,errorCB);    
+        
     }
 }
 
-function fcorrecto_consultarPrincipal_exe(tx, results){
+function fcorrecto_consPrinTodos_exe(tx, results){
     console.log("Filas retornadas en tabla phones = " + results.rows.length);
-    console.log("1ra Fila, fila tomada: ID = " + results.rows.item(0).idphone + ", Numero =  " + results.rows.item(0).number + ", Estado =  " + results.rows.item(0).state + ", Codigo =  " + results.rows.item(0).code + ", Fecha de Ingreso =  " + results.rows.item(0).register_date + ", Fecha de Activacion =  " + results.rows.item(0).activation_date + ", Principal =  " + results.rows.item(0).principal );
-    currentId = results.rows.item(0).idphone;
-    alert("El número inicial es:"+results.rows.item(0).number);
+    var len = parseInt(results.rows.length);
+    if (len > 0){
+        console.log("1ra Fila, fila tomada: ID = " + results.rows.item(0).idphone + ", Numero =  " + results.rows.item(0).number + ", Estado =  " + results.rows.item(0).state + ", Codigo =  " + results.rows.item(0).code + ", Fecha de Ingreso =  " + results.rows.item(0).register_date + ", Fecha de Activacion =  " + results.rows.item(0).activation_date + ", Principal =  " + results.rows.item(0).principal );
+        currentId = results.rows.item(0).idphone;
+        numtelefonico = results.rows.item(0).number;
+        //alert("El número inicialmentel es:"+results.rows.item(0).number);
+
+        //Aca llamar a funcion de carga datos de paquete
+        consultaDatosPaquete();
+    }else{
+        currentId = "";
+        numtelefonico = "";
+    }
 }
 
 function fcorrecto_tran_consultarPrin() {
     console.log("Se consulto en busca del principal correctamente.");
-    alert("Al final de todo el codigo a buscar es:"+currentId);
+    //alert("Al final de todo el codigo a buscar es:"+currentId);
+    //realizando siguiente paso del flujo: Consultando usuario
+    //consultarUsuarioBD();
 }
 
 
 
+//---------Funcion para consultar los datos del usuario
+function consultarUsuarioBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarUsuario, errorCB, fcorrecto_tran_consUsua);
+    return db;
+}
+
+//Funcion para consultar el usuario
+function consultarUsuario(tx){
+    tx.executeSql('SELECT * FROM user LIMIT 1',[],fcorrecto_consultarUsuario_exe,errorCB);    
+}
+
+function fcorrecto_consultarUsuario_exe(tx, results){
+    console.log("Cantidad de Filas retornadas:" + results.rows.length);
+    var len = results.rows.length;
+    $('#user_name').empty();
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " IDUser = " + results.rows.item(i).iduser + ", Nombre =  " + results.rows.item(i).name + ", Email =  " + results.rows.item(i).email);
+        nombre_usuario = results.rows.item(i).name;        
+        $("#user_name").append(nombre_usuario);
+    }
+}
+
+function fcorrecto_tran_consUsua() {
+    console.log("Se consulto el usuario correctamente.");
+}
 
 
 
@@ -704,7 +919,6 @@ function leerxml(texto){
     });
     return false;
 }
-
 
 //Parser de xml de respuesta para obtener el tipo de dispositivo (modem o telefono)
 function leerxmltipodispositivo(texto){
