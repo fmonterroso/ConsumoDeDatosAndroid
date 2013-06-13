@@ -55,4 +55,4 @@ white-space: normal;
   float: none;
 }
 
-#chart_div,#user_name{margin: 0 auto; text-align: center;}
+#chart_div, #user_name, .titulo{margin: 0 auto; text-align: center;}

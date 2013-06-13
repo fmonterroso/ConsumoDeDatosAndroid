@@ -93,9 +93,6 @@
     				consultaDatosPaquete();
     			}
     			
-    			//Consultando datos del usuario
-    			consultarUsuarioBD();
-
 			}
 
 			
@@ -112,7 +109,7 @@
    <body>
     	
     	<div id="Datos" data-url="Datos" data-role="page">
-			<div data-role="header">
+			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
 				    <ul>
 					    <li><a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a></li>
@@ -124,14 +121,14 @@
 
 			</div><!-- /header -->			
 
-			<script type="text/javascript">
-				
-			</script>
-
 			<div data-role="content">
 				<span style="font-size: 12px;">
 					<div id="user_name" style="font-size: 16px; font-weight: bold; !important;"></div>
 				</span>
+				<script type="text/javascript">
+					//Consultando datos del usuario
+    				consultarUsuarioBD();
+				</script>
 				<br/>
 				<span style="font-size: 12px;">
 					<div id="dateAndTime" style="font-size: 12px; font-weight: bold; !important;"></div>

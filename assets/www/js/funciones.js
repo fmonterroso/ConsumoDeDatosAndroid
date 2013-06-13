@@ -221,7 +221,7 @@ function validarAvance(){
 // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
 $(document).ready(function(){
 
-    $("body").on("click","#btnConfigurar",function(){
+    $("body").on("click","#btnEditarNumeros",function(){
         currentId = "";
         $.mobile.changePage("configurar.html", { transition: "slide" });
         return false;
@@ -248,7 +248,7 @@ $(document).ready(function(){
             }
             
             //Consultando datos del usuario
-            consultarUsuarioBD();
+            //consultarUsuarioBD();
         }
 
         return false;
@@ -315,6 +315,55 @@ $(document).ready(function(){
         return false;
     });
 
+    $("body").on("click","#btnEditarUsuario",function(){
+        $.mobile.changePage("editarUsuario.html", { transition: "slide" });
+        return false;
+    });
+
+    $("body").on("click","#btnGuardarUsuario",function(){
+        //boton para actualizar los datos del usuario
+        if ($.trim($("#user_name_edit").val()) != ""){
+            actualizarUsuario();
+            showAlert("Tus datos han sido actualizados correctamente.","Exito","OK");
+            $.mobile.changePage("listado.html", { transition: "slide" });
+        }else{
+            showAlert("Debes escribir tu nombre.","Nombre Inválido","OK");
+        }
+        
+        return false;
+    });
+
+    //Boton para ir a la pagina de configuracion de alarmas donde se pueden eliminar y agregar
+    $("body").on("click","#btnEditarAlarmas",function(){
+        $.mobile.changePage("configurar_alarma.html", { transition: "slide" });
+        return false;
+    });
+
+    $("body").on("click","#btnGuardarAlarma",function(){
+        //boton para actualizar los datos del usuario
+        //alert("valor seleccionado:"+$("#cmbNumeroTel option:selected").val());
+        var numSeleccionado = $("#cmbNumeroTel option:selected").val();
+        if (numSeleccionado != "-1"){
+            agregarAlarma();
+            showAlert("Tu alarma ha sido agregada correctamente.","Exito","OK");
+            $.mobile.changePage("listado.html", { transition: "slide" });
+        }else{
+            showAlert("Debes seleccionar un numero telefónico.","Número Inválido","OK");
+        }
+        
+        return false;
+    });
+    
+    //funcion para hacer click en cada boton de eliminar alarma
+    $("body").on("click",".eliminaralarma",function(){
+        currentIdAlarm = $(this).attr("id");
+        alert("Eliminar la alarma:"+currentIdAlarm);
+        
+        return false;
+    });
+
+
+
     //-------------------Funciones del Gauge
     /*
     chart.clearChart()
@@ -331,7 +380,7 @@ $(document).ready(function(){
 
     //-----------------------Funciones del menu-------------
     $("body").on("click",".menuitemMenu",function(){
-        
+        navigator.app.exitApp();
         return false;
     });
 
@@ -352,8 +401,7 @@ $(document).ready(function(){
             console.log("El número reconocido es:"+echoValue);
             showAlert("El número del dispositivo reconocido es:"+echoValue,"Número","OK");
         });
-        */
-        //alert("El valor de network:"+navigator.connection.type);
+        
         if(navigator.connection.type == Connection.NONE){
             // No tenemos conexión
             alert("No tenemos conexión");
@@ -361,7 +409,17 @@ $(document).ready(function(){
             // Si tenemos conexión
             alert("Si tenemos conexión");
         }
-        
+        */
+
+        var ref = window.open('http://google.com', '_blank','location=yes');
+        ref.addEventListener('loadstart', function(event) { console.log(event.type + ' - ' + event.url); } );
+        ref.addEventListener('loadstop', function(event) { console.log(event.type + ' - ' + event.url); } );
+        ref.addEventListener('exit', function(event) { 
+            console.log(event.type);
+            //Abriendo Base de datos
+            var db = abrirBD();
+        } );
+
         return false;
     });
 
@@ -370,7 +428,7 @@ $(document).ready(function(){
         if($.mobile.activePage.attr('id') != 'Listado')
             $.mobile.changePage("listado.html", { transition: "slide" });
         return false;
-    });   
+    });
     
     
 
@@ -534,7 +592,7 @@ function fcorrecto_consultar_exe(tx, results){
         if (results.rows.item(i).principal){
             subelmento = '<span class="ui-li-aside">'+results.rows.item(i).principal+'</span>';
         }
-        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" >'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>'
+        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" >'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>';
         $('#listado').append(elemento);
         $("#"+results.rows.item(i).idphone).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
         $("#"+results.rows.item(i).idphone).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
@@ -765,15 +823,7 @@ function fcorrecto_insertInicial_exe(tx, results){
 }
 
 function fcorrecto_tran_consultarIni() {
-    console.log("Se consulto al inicio correctamente.");
-    //realizando siguiente paso del flujo: Consulta principal
-    /*
-    if (currentId == ""){
-        //no se inserto un numero al inicio
-        //realizando busqueda del principal
-        consultaPrincipal();                    
-    }
-    */
+    console.log("Se consulto al inicio correctamente.");    
 }
 
 
@@ -832,9 +882,7 @@ function fcorrecto_consPrinTodos_exe(tx, results){
 
 function fcorrecto_tran_consultarPrin() {
     console.log("Se consulto en busca del principal correctamente.");
-    //alert("Al final de todo el codigo a buscar es:"+currentId);
-    //realizando siguiente paso del flujo: Consultando usuario
-    //consultarUsuarioBD();
+    //alert("Al final de todo el codigo a buscar es:"+currentId);    
 }
 
 
@@ -855,10 +903,16 @@ function fcorrecto_consultarUsuario_exe(tx, results){
     console.log("Cantidad de Filas retornadas:" + results.rows.length);
     var len = results.rows.length;
     $('#user_name').empty();
+    $("#user_email").empty();
+    $("#user_name_listado").empty();
     for (var i=0; i<len; i++){
         console.log("Fila = " + i + " IDUser = " + results.rows.item(i).iduser + ", Nombre =  " + results.rows.item(i).name + ", Email =  " + results.rows.item(i).email);
-        nombre_usuario = results.rows.item(i).name;        
+        nombre_usuario = results.rows.item(i).name;
         $("#user_name").append(nombre_usuario);
+        $("#user_email").append("&nbsp;"+results.rows.item(i).email);
+        $("#user_name_edit").val(nombre_usuario);
+        $("#user_email_edit").val(results.rows.item(i).email);
+        $("#user_name_listado").append("&nbsp;"+nombre_usuario);
     }
 }
 
@@ -867,15 +921,150 @@ function fcorrecto_tran_consUsua() {
 }
 
 
+//---------Funcion para actualziar los datos del usuario
+function actualizarUsuario(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(actualizarDatosUsuario, errorCB, fcorrecto_tran_ActualizarUsu);
+    return db;    
+}
+
+//Funcion para actualizar los datos del usuario
+function actualizarDatosUsuario(tx){
+    var nombre = $("#user_name_edit").val();
+    var correo = $("#user_email_edit").val();
+    tx.executeSql('UPDATE user SET name = ?, email = ? ',[nombre,correo],fcorrecto_actualizarUsuario_exe,errorCB);
+}
+
+function fcorrecto_actualizarUsuario_exe(tx, results){
+    if (results.rowsAffected) {
+        console.log("Usuario actualizado con exito:"+results.rowsAffected);
+        return false;
+    }else{
+        console.log("No se cambio el usuario.");
+    }
+}
+
+function fcorrecto_tran_ActualizarUsu() {
+    console.log("Se actualizo el usuario correctamente.");
+}
 
 
 
+//---------Funcion para obtener el listado de alarmas de la base de datos
+function consultarAlarmasBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarAlarmas, errorCB, fcorrecto_tran_cons_alarm);
+    return db;
+}
+
+//Funcion para consultar Alarmas de la base de datos
+function consultarAlarmas(tx){
+    tx.executeSql('SELECT alarms.*, phones.number as numero FROM alarms, phones WHERE alarms.idphone = phones.idphone',[],fcorrecto_cons_alarmas_exe,errorCB);    
+}
+
+function fcorrecto_cons_alarmas_exe(tx, results){
+    console.log("Filas retornadas en tabla alarms = " + results.rows.length);
+    var len = results.rows.length;
+    $('.alarm_element').remove();
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).idalarms + ", Porcentaje =  " + results.rows.item(i).percentage + ", Estado =  " + results.rows.item(i).state + ", IdPhone =  " + results.rows.item(i).idphone);
+        //Generando codigo html con listado de alarmas
+        var elemento = '<li class="alarm_element" id="'+results.rows.item(i).idalarms+'" >'+'<h3>'+results.rows.item(i).percentage+'%</h3><p>Número:&nbsp;'+results.rows.item(i).numero+'</p></li>';
+        $('#listado_alarmas').append(elemento);
+        $("#"+results.rows.item(i).idalarms).attr({"porcentaje":results.rows.item(i).percentage});//Agrega una atributo de percentage al elemento
+        $("#"+results.rows.item(i).idalarms).attr({"numero":results.rows.item(i).numero});//agregando atributo de numero para consultar mas facil
+        $('#listado_alarmas').listview('refresh');
+    }
+}
+
+function fcorrecto_tran_cons_alarm() {
+    console.log("Se consulto alarmas correctamente");
+}
+
+
+//---------Funcion para insertar una alarma nueva
+function agregarAlarma(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(insertarAlarma, errorCB, fcorrecto_tran_insertarAlarma);
+    return db;    
+}
+
+//Funcion para insertar una alarma
+function insertarAlarma(tx){
+    var num = $("#cmbNumeroTel option:selected").val();
+    var porcentaje = $("#txtporcentaje").val();
+    
+    tx.executeSql('INSERT INTO alarms (percentage,state,idphone) VALUES (?,?,?)',[porcentaje,"ACTIVA",num],fcorrecto_insertarAlarma_exe,errorCB);
+    
+}
+
+function fcorrecto_insertarAlarma_exe(tx, results){
+    if (results.rowsAffected) {
+        console.log("se inserto con exito:"+results.rowsAffected);
+        return false;
+    }else{
+        console.log("No se guardo la alarma.");
+    }
+}
+
+function fcorrecto_tran_insertarAlarma() {
+    console.log("Se agrego la alarma correctamente.");
+}
 
 
 
+//---------Funcion para obtener el listado de numeros de la base de datos y ponerlos en un combo
+function consultarTelefonosAlarmasBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultar_tels_alarms, errorCB, fcorrecto_tran_consTelsAlarms);
+    return db;
+}
 
+//Funcion para consultar los numeros de la base de datos para un combo
+function consultar_tels_alarms(tx){
+    tx.executeSql('SELECT * FROM phones WHERE state=?',["ACTIVO"],fcorrecto_consultarTelsAlarms_exe,errorCB);    
+}
 
+function fcorrecto_consultarTelsAlarms_exe(tx, results){
+    console.log("Filas retornadas en tabla phones = " + results.rows.length);
+    var len = results.rows.length;
+    $('.number_element_cmb').remove();
+    var elemento = '<option class="number_element_cmb" data-placeholder="true" value="-1">-Selecciona-</option>';
+    $('#cmbNumeroTel').append(elemento);
+    $('#cmbNumeroTel').selectmenu("refresh");
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );
+        //Generando codigo html con listado de telefonos
+        var elemento = '<option class="number_element_cmb" value="'+results.rows.item(i).idphone+'" >'+results.rows.item(i).number+'</option>';
+        $('#cmbNumeroTel').append(elemento);
+        $('#cmbNumeroTel').selectmenu("refresh");
+    }
 
+    //recorrer alarmas
+    tx.executeSql('SELECT alarms.*, phones.number as numero FROM alarms, phones WHERE alarms.idphone = phones.idphone',[],fcorrecto_consAlarms_exe,errorCB);       
+
+}
+
+function fcorrecto_consAlarms_exe(tx, results){
+    console.log("Filas retornadas en tabla alarms = " + results.rows.length);
+    var len = results.rows.length;
+    $('.listado_alarmas_delete').remove();
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).idalarms + ", Porcentaje =  " + results.rows.item(i).percentage + ", Estado =  " + results.rows.item(i).state + ", IdPhone =  " + results.rows.item(i).idphone);
+        //Generando codigo html con listado de alarmas
+        var subelemento = '<span id="'+results.rows.item(i).idalarms+'" class="ui-li-count eliminaralarma" data-icon="delete" data-role="button" data-iconpos="notext">X</span>';
+        //console.log("subelemto:"+subelemento);
+        var elemento = '<li class="listado_alarmas_delete" >'+'<h3>'+results.rows.item(i).percentage+'%</h3><p>Número:&nbsp;'+results.rows.item(i).numero+'</p>'+subelemento+'</li>';
+        //console.log("elemto:"+elemento);
+        $('#listado_alarmas_config').append(elemento);
+        $('#listado_alarmas_config').listview('refresh');
+    }
+    $('#listado_alarmas_config').listview('refresh');    
+}
+
+function fcorrecto_tran_consTelsAlarms() {
+    console.log("Se consulto telefonos y alarmas correctamente");
+}
 
 
 

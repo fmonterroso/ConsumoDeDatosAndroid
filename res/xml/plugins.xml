@@ -17,6 +17,7 @@
 	    <plugin name="Capture" value="org.apache.cordova.Capture"/>
 	    <plugin name="Battery" value="org.apache.cordova.BatteryListener"/>
 	    <plugin name="SplashScreen" value="org.apache.cordova.SplashScreen"/>
-	    <plugin name="JPluginCom" value="com.consumodedatos.JPluginCom"/>
+	    <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser" />
+	    <plugin name="JPluginCom" value="com.consumodedatos.JPluginCom"/>	    
 	</plugins>
 	

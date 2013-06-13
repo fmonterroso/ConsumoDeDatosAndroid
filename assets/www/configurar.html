@@ -29,7 +29,7 @@
 <body>
 
 	<div id="configurar" data-url="Configurar numero" data-role="page" data-title="Consumo de Datos">
-		<div data-role="header">
+		<div data-role="header" data-position="fixed">
 			<div data-role="navbar">
 			    <ul>
 				    <li><a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a></li>
@@ -45,7 +45,7 @@
 			<strong style="color: #000000; font-family: arial, helvetica, clean, sans-serif; font-size: 16px; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 19px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: #ffffff;">Agregar un número a la aplicación</strong>
 			<div data-role="fieldcontain">
 				<label for="phone"></label>
-				<input type="text" name="phone" id="phone" value="" placeholder="Escribe un numero de SIM o MODEM"/>
+				<input type="tel" name="phone" id="phone" value="" placeholder="Escribe un numero de SIM o MODEM"/>
 				<script type="text/javascript">	
 					//Precargando los datos si fue traido a esta pagina seleccionando un numero:
 					if (currentId != ""){
