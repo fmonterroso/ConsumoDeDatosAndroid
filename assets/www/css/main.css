@@ -56,3 +56,6 @@ white-space: normal;
 }
 
 #chart_div, #user_name, .titulo{margin: 0 auto; text-align: center;}
+#progressbar{margin-bottom: 5px;}
+
+

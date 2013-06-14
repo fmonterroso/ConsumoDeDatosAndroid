@@ -151,7 +151,9 @@ function mostrarDatosPaquete(){
             .setInterval(50)
             .showCounter(true)
             .logOptions()
-            .build();                               
+            .build();
+            $("#totalpercentage").empty();
+            $("#totalpercentage").append("100%");            
         }
     }else{
         //No es Android
@@ -346,7 +348,7 @@ $(document).ready(function(){
         if (numSeleccionado != "-1"){
             agregarAlarma();
             showAlert("Tu alarma ha sido agregada correctamente.","Exito","OK");
-            $.mobile.changePage("listado.html", { transition: "slide" });
+            consultarTelefonosAlarmasBD();
         }else{
             showAlert("Debes seleccionar un numero telefónico.","Número Inválido","OK");
         }
@@ -356,9 +358,14 @@ $(document).ready(function(){
     
     //funcion para hacer click en cada boton de eliminar alarma
     $("body").on("click",".eliminaralarma",function(){
-        currentIdAlarm = $(this).attr("id");
-        alert("Eliminar la alarma:"+currentIdAlarm);
-        
+        currentIdAlarm = $(this).attr("id");        
+        if (currentIdAlarm != ""){
+            eliminarAlarma();
+            showAlert("Tu alarma ha sido eliminada correctamente.","Exito","OK");
+            consultarTelefonosAlarmasBD();
+        }else{
+            showAlert("Ocurrio un problema al elminar la alarma, inténtalo de nuevo.","Número Inválido","OK");
+        }
         return false;
     });
 
@@ -1064,6 +1071,34 @@ function fcorrecto_consAlarms_exe(tx, results){
 
 function fcorrecto_tran_consTelsAlarms() {
     console.log("Se consulto telefonos y alarmas correctamente");
+}
+
+
+
+//---------Funcion para eliminar una alarma nueva
+function eliminarAlarma(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(deleteAlarma, errorCB, fcorrecto_tran_deleteAlarma);
+    return db;    
+}
+
+//Funcion para insertar una alarma
+function deleteAlarma(tx){
+    tx.executeSql('DELETE FROM alarms WHERE idalarms=?',[currentIdAlarm],fcorrecto_deleteAlarma_exe,errorCB);
+}
+
+function fcorrecto_deleteAlarma_exe(tx, results){
+    if (results.rowsAffected) {
+        console.log("Se Elimino con exito:"+results.rowsAffected);
+        return false;
+    }else{
+        console.log("No se elimino la alarma.");
+    }
+}
+
+function fcorrecto_tran_deleteAlarma() {
+    console.log("Se borro la alarma correctamente.");
+
 }
 
 

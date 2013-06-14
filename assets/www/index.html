@@ -27,6 +27,7 @@
 
 		    //variables de control (banderas)
 		    var currentId="";
+		    var currentIdAlarm="";
 		    var bandera_eliminar="0";
 		    var bandera_paquete="0";
 		    var bandera_existen_numeros="0";
@@ -123,67 +124,116 @@
 
 			<div data-role="content">
 				<span style="font-size: 12px;">
-					<div id="user_name" style="font-size: 16px; font-weight: bold; !important;"></div>
+					<div id="user_name" style="font-size: 20px; font-weight: bold; !important;"></div>
 				</span>
 				<script type="text/javascript">
 					//Consultando datos del usuario
     				consultarUsuarioBD();
 				</script>
 				<br/>
-				<span style="font-size: 12px;">
+				<span>
 					<div id="dateAndTime" style="font-size: 12px; font-weight: bold; !important;"></div>
 				</span>
 
-				<div data-role="fieldcontain">
-					<div id='chart_div'></div>
-					<a href="#popupBasic" data-rel="popup">
-						<div id="progressbar"></div>
-					</a>
- 					<div data-role="popup" id="popupBasic">
-					  <p>
-					  	<div id="mbConsumedBar" style="font-weight: bold;"></div>
-					  <p>
+				<div id='chart_div'></div>
+				<a href="#popupBasic" data-rel="popup">
+					<div id="progressbar"></div>
+				</a>
+				<div data-role="popup" id="popupBasic">
+				  <p>
+				  	<div id="mbConsumedBar" style="font-weight: bold;"></div>
+				  <p>
+				</div>				
+				<div id="totalpercentage" style="float:right; font-size:12px;"></div>
+				<br/>
+				
+				
+
+				<!-- Codigo de detalle de consumo-->
+				
+				<span>
+					<div data-role="fieldcontain">
+						<strong style="font-size: 20px;">Consumo de datos</strong>
 					</div>
+					
+					<span style="font-size: 14px;  line-height: 17px;">Al día</span>
+					<span id="dateDetalle" style="font-size: 14px;"></span>
+					<br/>
+					<span style="font-size: 14px;  line-height: 17px;">a las</span>
+					<span id="timeDetalle" style="font-size: 14px;"></span>
+					<br/>
+				</span>
+				<!-- Script para fecha y hora actual-->
+				<script type="text/javascript">
+				//conversion de fecha acutal
+					var ahora = new Date( );
+					var fech = mostrarFechaCompuestaDias(ahora);
+					var hora = mostrarHoraCompuesta(ahora);
+					$("#dateDetalle").append("&nbsp;"+fech);					
+					$("#timeDetalle").append("&nbsp;"+hora);
+				</script>
+				<div data-role="fieldcontain">
+					<div class="txtdato">Incluidos</div>
+					<DIV id="txtimginc" class="datoimg" ></DIV>
 				</div>
 				<div data-role="fieldcontain">
-					<div style="font-size: 12px; float:left;">Paquete vigente al&nbsp;</div><div id="validity" style="font-size: 12px; font-weight: bold; !important;"></div>
-				</div>				
+					<div class="txtdato">Consumidos</div>
+					<DIV id="txtimgcons" class="datoimg" ></DIV>
+				</div>
+				<div data-role="fieldcontain">
+					<div class="txtdato">Disponibles</div>
+					<DIV id="txtimgdisp" class="datoimg" ></DIV>
+				</div>
+				<div data-role="fieldcontain">
+					<div class="txtdato">% de uso</div>
+					<DIV id="txtimgporc" class="datoimg" ></DIV>
+				</div>
 
-				<ul data-role="listview">
-					<li data-role="list-divider"><h3></h3>
-						<p>Cada vez que recibes correos, revisas tus redes sociales o navegas en internet, consumes MB**</p>
-					</li>
-					<li>Detalle de consumo</li>
-					<li>
-						<a id="goDetalleComsumo" href="#" style="font-weight: normal">
-							<div id="mbConsumed" style="float:left;font-weight: bold; !important;"></div><div style="float:left;">&nbsp;MB Consumidos</div>
-							<br/>
-							<div id="mbAvailable" style="float:left;font-weight: bold; !important;"></div><div style="float:left;">&nbsp;MB Disponibles</div>
-						</a>
-					</li>
+				<!-- Script para Datos-->
+				<script type="text/javascript">
+					if (parseInt(mbtotales) > 0)
+						var porcentaje = Math.round((parseInt(mbconsumidos)*100)/parseInt(mbtotales));
+					else
+						var porcentaje = 0;				
+					
+					$("#txtimginc").append(mbtotales+" MB");
+					$("#txtimgcons").append(mbconsumidos+" MB");
+					
+					var dispo = parseInt(mbtotales)-parseInt(mbconsumidos);
+					$("#txtimgdisp").append(dispo+" MB");
+					$("#txtimgporc").append(porcentaje+"%");
+				</script>
+				<div data-role="fieldcontain">
+					<span>Paquete vigente al</span>
+					<br>
+					<span id="dateVigenciaDetalle" style="font-weight: bold; !important;"></span>
+				</div>
+				<div data-role="fieldcontain">
+					<div style="float:left;">Tu número: &nbsp;</div>
+					<div id="phoneNum" style="font-weight: bold; !important;"></div>
+				</div>
+				<br/>
+				<div style="float:left;">Tienes &nbsp;</div>
+				<div id="numPaqRemaining">&nbsp;</div>
+				
 
-					<li>Detalles de su paquete</li>
-					<li>
-						<a id="goDetallePaquete" href="#" style="font-weight: normal">
-							<div style="float:left; font-size: 13px;">Tu número: &nbsp;</div><div id="phoneNum" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
-							<br/>
-							<div style="float:left; font-size: 13px;">Tu plan: &nbsp;</div><div id="packName" style="float:left; font-size: 13px; font-weight: bold; !important;"></div>
-						</a>						
-					</li>
-					<li>
-						<div style="float:left;">Tienes &nbsp;</div>
-						<div id="numPaqRemaining">&nbsp;</div>
-					</li>
-					<li>
-						<div class="center-wrapper">
-			  				<input id="btnElimiar" type="button" data-icon="delete" data-inline="true" data-theme="e" value="Eliminar"/>
-						</div>
-					</li>
-				</ul>				
-			</div>
+				<!-- Script para vigencia-->
+				<script type="text/javascript">
+					//conversion de fecha de vigencia
+					if (bandera_paquete == "1"){
+						//fech = Date.parse(vigencia);
+						fech = parseDate(vigencia);
+						//alert("parseada:"+fech);
+						fech2 = new Date(fech);
+						//alert("como fecha:"+fech2);
+						fech3 = mostrarFechaCompuesta(fech2);
+						//alert("aplicada funcion:"+fech3);
+						$("#dateVigenciaDetalle").append(fech3);
+					}else
+						$("#dateVigenciaDetalle").append("N/A");
+				</script>				
+				<!-- Fin de contenido de detalle de consumo-->
 
-			<div data-role="footer">
-				<h1>Contáctanos</h1>
 			</div>
 		</div>
    </body>
