@@ -34,12 +34,36 @@
 		<div id="Listado" data-url="Consumo de Datos" data-role="page" data-title="Consumo de Datos">
 			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
-				    <ul>
-					    <li><a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a></li>
+				    <ul class="accordion accordion-1">
+					    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
+					    	<ul>
+						        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
+						        <br>
+						        <br>
+						        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
+						        <br>
+						        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
+						        <br>
+						        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
+						    </ul>
+					    </li>
 					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
 				    </ul>
+				    <script type="text/javascript">
+				    	$('.accordion-1').dcAccordion({
+					        eventType: 'click',
+					        autoClose: true,
+					        saveState: true,
+					        disableLink: true,
+					        speed: 'fast',
+					        showCount: false,
+					        autoExpand: false,
+					        cookie  : '',
+					        classExpand  : ''
+					    });
+				    </script>
 				</div><!-- /navbar -->
 
 			</div><!-- /header -->
@@ -50,20 +74,20 @@
 					<input id="btnEditarUsuario" data-inline="true" type="button" value="Datos"/>
 					<input id="btnEditarNumeros" data-inline="true" type="button" value="Núms"/>
 				</div>
+				<br/>
 				
-				<div data-role="fieldcontain">
-					<div style="float:left;">Nombre:</div><div id="user_name_listado" style="font-size: 16px; font-weight: bold; !important;"></div>
-				</div>
-				<div data-role="fieldcontain">
-					<div style="float:left;">e-mail:</div><div id="user_email" style="font-size: 16px; font-weight: bold; !important;"></div>
-				</div>
+				<div style="float:left;">Nombre:</div><div id="user_name_listado" style="font-size: 16px; font-weight: bold; !important;"></div>			
+				<div style="float:left;">e-mail:</div><div id="user_email" style="font-size: 16px; font-weight: bold; !important;"></div>
+				
+				<br/>
+
 				<script type="text/javascript">	
 					//Precargando los datos si fue traido a esta pagina seleccionando un numero:
 					consultarUsuarioBD();					
 				</script>
 
 				<ul id="listado" data-role="listview" data-inset="true">
-					<li data-role="list-divider">Números Vinculados</li>
+					<li data-role="list-divider">Números vinculados</li>
 
 				</ul>
 				<ul id="listado_alarmas" data-role="listview" data-inset="true">
@@ -75,10 +99,7 @@
 			<script type="text/javascript">
 				consultarBD();
 				consultarAlarmasBD();
-			</script>
-			<div data-role="footer">
-				<h1>Contáctanos</h1>
-			</div>
+			</script>			
 		</div>
 		
 	</body>

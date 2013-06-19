@@ -161,7 +161,7 @@ function mostrarDatosPaquete(){
     }
 
     //conversion de fecha de vigencia
-    $("#validity").empty();
+    $("#dateVigenciaDetalle").empty();
     if (bandera_paquete == "1"){
         //fech = Date.parse(vigencia);
         fech = parseDate(vigencia);
@@ -171,9 +171,9 @@ function mostrarDatosPaquete(){
         fech3 = mostrarFechaCompuesta(fech2);
         hora3 = mostrarHoraCompuesta(fech2);                            
         //alert("aplicada funcion:"+fech3);
-        $("#validity").append(fech3 + " a las " + hora3);
+        $("#dateVigenciaDetalle").append(fech3 + " a las " + hora3);
     }else
-        $("#validity").append("N/A");
+        $("#dateVigenciaDetalle").append("N/A");
 
     $("#mbConsumed").empty();
     $("#mbConsumed").append(mbconsumidos);
@@ -232,14 +232,14 @@ $(document).ready(function(){
     //funcion para hacer click en cada numero de la lista decide si ir a la configuracion o ir a los detalles
     $("body").on("click",".number_element",function(){
         currentId = $(this).attr("id");
-        //validando si el numero ya fue activado o no
+        //validando si el numero ya fue activado o no        
         if($(this).attr("state") == "NO VALIDADO"){
             //redireccionando a la pantalla de configuracion
-            $.mobile.changePage("configurar.html", { transition: "slide", changeHash: true });            
+            $.mobile.changePage("configurar.html", { transition: "slide"});            
         }else{
             //abriendo listado
             numtelefonico = $(this).attr("numero");
-            $.mobile.changePage("index.html", { transition: "slide", changeHash: true });
+            $.mobile.changePage("index.html", { transition: "slide"});
             //Consulta buscando el numero principal si no fue establecido al inicio             
             if (currentId == ""){
                 //no se inserto un numero al inicio
@@ -248,9 +248,6 @@ $(document).ready(function(){
             }else{
                 consultaDatosPaquete();
             }
-            
-            //Consultando datos del usuario
-            //consultarUsuarioBD();
         }
 
         return false;
@@ -276,8 +273,7 @@ $(document).ready(function(){
                     showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
                     console.log("El número ingresado no es un número Claro.");
                 }
-              }
-    		  //alert(echoValue);		  
+              }    		  
     		});
             
         }else{
@@ -290,8 +286,7 @@ $(document).ready(function(){
         if (currentId != "" && $("#codConfirmacion").val() != ""){
             validarCodigoBD();            
         }else
-            alert("Nada que confirmar!");
-        
+            alert("Nada que confirmar!");        
         return false;
     });
 
@@ -308,7 +303,7 @@ $(document).ready(function(){
     });
 
     $("body").on("click","#goDetalleComsumo",function(){
-        $.mobile.changePage("detalleConsumo.html", { transition: "slide", changeHash: true });
+        $.mobile.changePage("detalleConsumo.html", { transition: "slide" });
         return false;
     });
 
@@ -369,6 +364,36 @@ $(document).ready(function(){
         return false;
     });
 
+    //funcion para hacer click en cada boton de eliminar alarma
+    $("body").on("click",".eliminarnumero",function(){
+        currentId = $(this).attr("id");
+        if (currentId != ""){
+            //alert("Eliminaras el registro:"+currentId);
+            eliminarBD(currentId);
+            showAlert("Tu número ha sido eliminado correctamente.","Exito","OK");
+            //Actualizando listado
+            consultarTelefonosBorarBD();
+        }else
+            showAlert("Ocurrio un problema al elminar el número, inténtalo de nuevo.","Número Inválido","OK");
+        return false;
+    });
+
+    //funcion para hacer click en cada boton de eliminar alarma
+    $("body").on("click",".establecerprincipal",function(){
+        currentId = $(this).attr("id");
+        if (currentId != ""){
+            //alert("Estableciendo numero principal:"+currentId);
+            actualizarPrincipal();
+            showAlert("Tu número ha sido establecido como principal.","Exito","OK");
+            //Actualizando listado
+            consultarTelefonosBorarBD();
+        }else
+            showAlert("Ocurrio un problema al establecer tu el número, inténtalo de nuevo.","Número Inválido","OK");
+        return false;
+    });
+
+
+
 
 
     //-------------------Funciones del Gauge
@@ -387,6 +412,12 @@ $(document).ready(function(){
 
     //-----------------------Funciones del menu-------------
     $("body").on("click",".menuitemMenu",function(){
+        //navigator.app.exitApp();
+        return false;
+    });
+
+    //elementos del menu
+    $("body").on("click",".menuitemSalir",function(){
         navigator.app.exitApp();
         return false;
     });
@@ -418,7 +449,7 @@ $(document).ready(function(){
         }
         */
 
-        var ref = window.open('http://google.com', '_blank','location=yes');
+        var ref = window.open('http://internet.claro.com.gt/', '_blank','location=yes');
         ref.addEventListener('loadstart', function(event) { console.log(event.type + ' - ' + event.url); } );
         ref.addEventListener('loadstop', function(event) { console.log(event.type + ' - ' + event.url); } );
         ref.addEventListener('exit', function(event) { 
@@ -431,14 +462,11 @@ $(document).ready(function(){
     });
 
     $("body").on("click",".menuitemConfig",function(){
-        //alert("pag actual:"+$.mobile.activePage.attr('id'));
-        if($.mobile.activePage.attr('id') != 'Listado')
-            $.mobile.changePage("listado.html", { transition: "slide" });
+        if($.mobile.activePage.attr('id') != 'Listado'){
+            $.mobile.changePage("listado.html", { transition: "slide" });            
+        }            
         return false;
     });
-    
-    
-
     
 
 });//fin de document ready
@@ -480,7 +508,7 @@ function fcorrecto_exe(tx, results){
         tx.executeSql('CREATE TABLE IF NOT EXISTS phones (idphone INTEGER PRIMARY KEY AUTOINCREMENT, number Varchar(20) NOT NULL, type Varchar(15) NOT NULL, state Varchar(15) NOT NULL, code Varchar(50), register_date DATETIME NOT NULL, activation_date DATETIME, principal Varchar(10))');
         tx.executeSql('CREATE TABLE IF NOT EXISTS user (iduser INTEGER PRIMARY KEY AUTOINCREMENT, name Varchar(100) NOT NULL, email Varchar(80))');
         tx.executeSql('CREATE TABLE IF NOT EXISTS terms_conditions (idterms_conditions INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS alarms (idalarms INTEGER PRIMARY KEY AUTOINCREMENT, percentage INTEGER NOT NULL, state Varchar(15), idphone INTEGER REFERENCES phones(idphone))');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS alarms (idalarms INTEGER PRIMARY KEY AUTOINCREMENT, percentage INTEGER NOT NULL, state Varchar(15), idphone INTEGER REFERENCES phones(idphone) ON DELETE CASCADE)');
         //insertando usuario por defecto
         tx.executeSql('INSERT INTO user (name, email) VALUES (?,?)',["Usuario","No definido"],fcorrecto_insertUser_exe,errorCB);
         console.log("Se creo la base de datos correctamente");
@@ -533,7 +561,7 @@ function insertar(tx){
     //Averiguando el tipo de dispositivo (consumiendo el web service)
     var tipodispositivo = "NO DEFINIDO";
     window.tipoclaro($("#phone").val(), function(echoValue) {
-      //showAlert("El valor devuelto es:'"+echoValue+"'","Tipo de dispositivo","OK");
+      showAlert("El valor devuelto es:'"+echoValue+"'","Tipo de dispositivo","OK");
       //parseando el xml de vuelta
       var t = leerxmltipodispositivo(echoValue);
         if (t == "O"){
@@ -553,6 +581,7 @@ function insertar(tx){
       if (echoValue == "ok"){
         bandera_eliminar = "0";
         showAlert("Debemos confirmar que este numero te pertenezca, se ha enviado un código de confirmación a tu teléfono, luego escribelo en la casilla inferior.","Envío de confirmación exitosa","OK");//mensaje 3
+        consultarTelefonosBorarBD();
       }else{
         bandera_eliminar = "1";
         showAlert("Ocurrio un error al solicitar el código de confirmación, por favor intentalo de nuevo más tarde.","Error en la solicitud","OK");//mensaje 2
@@ -599,10 +628,10 @@ function fcorrecto_consultar_exe(tx, results){
         if (results.rows.item(i).principal){
             subelmento = '<span class="ui-li-aside">'+results.rows.item(i).principal+'</span>';
         }
-        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" >'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>';
+        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" state="'+results.rows.item(i).state+'" numero="'+results.rows.item(i).number+'">'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>';
         $('#listado').append(elemento);
-        $("#"+results.rows.item(i).idphone).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
-        $("#"+results.rows.item(i).idphone).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
+        //$(".number_element#"+results.rows.item(i).idphone).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
+        //$(".number_element#"+results.rows.item(i).idphone).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
         $('#listado').listview('refresh');
     }
 
@@ -616,13 +645,18 @@ function fcorrecto_tran_cons() {
 //---------Funcion para Eliminar un registro
 function eliminarBD(cod){
     var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    /*db.executePragmaStatement("PRAGMA foreign_keys = ON;", function(res) {
+        alert("PRAGMA res: " + JSON.stringify(res));
+    });
+    */
     db.transaction(eliminar, errorCB, fcorrecto_tran_eli);
     return db;
 }
 
 //Funcion para eliminar un registro de la base de datos
 function eliminar(tx){
-    tx.executeSql('DELETE FROM phones WHERE idphone=?',[currentId],fcorrecto_eliminar_exe,errorCB);    
+    tx.executeSql('DELETE FROM alarms WHERE idphone=?',[currentId]);
+    tx.executeSql('DELETE FROM phones WHERE idphone=?',[currentId],fcorrecto_eliminar_exe,errorCB);
 }
 
 function fcorrecto_eliminar_exe(tx, results){
@@ -635,8 +669,7 @@ function fcorrecto_eliminar_exe(tx, results){
 }
 
 function fcorrecto_tran_eli() {
-    console.log("Se elimino correctamente");
-    alert("Se elimino correctamente");
+    console.log("Se elimino correctamente");    
     currentId = "";
 }
 
@@ -808,7 +841,7 @@ function fcorrecto_consultaInicial_exe(tx, results){
                     showAlert("Hubo un error al validar tu número de telefono. Verifica tu conexión a internet.","Validació fallida","OK");
                 }else{
                     //mostrar alerta de que el número reconocido no es un numero claro
-                    //showAlert("El número reconocido en tu teléfono no es un número Claro.","Número Inválido","OK");//mensaje 1    
+                    //showAlert("El número reconocido en tu teléfono no es un número Claro.","Número Inválido","OK");//mensaje 1
                     //Validando para saber si al final se encontro algun dato que mostrar o ir a la pantalla de configurar
                     validarAvance();
                 }                
@@ -882,8 +915,11 @@ function fcorrecto_consPrinTodos_exe(tx, results){
         //Aca llamar a funcion de carga datos de paquete
         consultaDatosPaquete();
     }else{
+        //no hay numero principal, ni activos
         currentId = "";
         numtelefonico = "";
+        if (bandera_existen_numeros == "1")
+            $.mobile.changePage("listado.html", { transition: "slide" });
     }
 }
 
@@ -976,10 +1012,10 @@ function fcorrecto_cons_alarmas_exe(tx, results){
     for (var i=0; i<len; i++){
         console.log("Fila = " + i + " ID = " + results.rows.item(i).idalarms + ", Porcentaje =  " + results.rows.item(i).percentage + ", Estado =  " + results.rows.item(i).state + ", IdPhone =  " + results.rows.item(i).idphone);
         //Generando codigo html con listado de alarmas
-        var elemento = '<li class="alarm_element" id="'+results.rows.item(i).idalarms+'" >'+'<h3>'+results.rows.item(i).percentage+'%</h3><p>Número:&nbsp;'+results.rows.item(i).numero+'</p></li>';
+        var elemento = '<li class="alarm_element" id="'+results.rows.item(i).idalarms+'" porcentaje="'+results.rows.item(i).percentage+'" numero="'+results.rows.item(i).numero+'" >'+'<h3>'+results.rows.item(i).percentage+'%</h3><p>Número:&nbsp;'+results.rows.item(i).numero+'</p></li>';
         $('#listado_alarmas').append(elemento);
-        $("#"+results.rows.item(i).idalarms).attr({"porcentaje":results.rows.item(i).percentage});//Agrega una atributo de percentage al elemento
-        $("#"+results.rows.item(i).idalarms).attr({"numero":results.rows.item(i).numero});//agregando atributo de numero para consultar mas facil
+        //$(".alarm_element#"+results.rows.item(i).idalarms).attr({"porcentaje":results.rows.item(i).percentage});//Agrega una atributo de percentage al elemento
+        //$(".alarm_element#"+results.rows.item(i).idalarms).attr({"numero":results.rows.item(i).numero});//agregando atributo de numero para consultar mas facil
         $('#listado_alarmas').listview('refresh');
     }
 }
@@ -1099,6 +1135,70 @@ function fcorrecto_deleteAlarma_exe(tx, results){
 function fcorrecto_tran_deleteAlarma() {
     console.log("Se borro la alarma correctamente.");
 
+}
+
+
+
+//---------Funcion para obtener el listado de numeros de la base de datos
+function consultarTelefonosBorarBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarTelsDelete, errorCB, fcorrecto_tran_consTelsDelete);
+    return db;
+}
+
+//Funcion para consultar los registros de la base de datos
+function consultarTelsDelete(tx){
+    tx.executeSql('SELECT * FROM phones',[],fcorrecto_consTelsDelete_exe,errorCB);    
+}
+
+function fcorrecto_consTelsDelete_exe(tx, results){
+    console.log("Filas retornadas en tabla phones = " + results.rows.length);
+    var len = results.rows.length;
+    $('.number_element_delete').remove();
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );
+        //Generando codigo html con listado de telefonos
+        var subelmento = "";
+        var clasePrincipal = "";
+        if (results.rows.item(i).principal){
+            subelmento = '<strong>('+results.rows.item(i).principal+')</strong>';
+            clasePrincipal = "ui-disabled";
+        }
+        var elemento = '<li class="number_element_delete"><a href="#">'+'<h3>'+results.rows.item(i).number+' '+subelmento+'</h3><p>'+results.rows.item(i).type+' ('+results.rows.item(i).state+')'+'</p></a><span id="'+results.rows.item(i).idphone+'"  class="ui-li-count eliminarnumero" data-icon="delete" data-role="button" data-iconpos="notext">X</span><a href="#" id="'+results.rows.item(i).idphone+'" data-rel="popup" data-position-to="window" class="establecerprincipal '+clasePrincipal+'">Establecer como principal</a></li>';
+        $('#listado_nums_config').append(elemento);
+        $('#listado_nums_config').listview('refresh');
+    }
+}
+
+function fcorrecto_tran_consTelsDelete() {
+    console.log("Se consulto numeros para eliminar correctamente");
+}
+
+
+//---------Funcion para actualizar el numero principal del usuario
+function actualizarPrincipal(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(updatePrincipal, errorCB, fcorrecto_tran_actualizarPrincipal);
+    return db;    
+}
+
+//Funcion para actualizar el numero
+function updatePrincipal(tx){
+    tx.executeSql('UPDATE phones SET principal=?',[""]);
+    tx.executeSql('UPDATE phones SET principal=? WHERE idphone=?',["Principal",currentId],fcorrecto_updatePrincipal_exe,errorCB);
+}
+
+function fcorrecto_updatePrincipal_exe(tx, results){
+    if (results.rowsAffected) {
+        console.log("Se Actualizó con exito:"+results.rowsAffected);
+        return false;
+    }else{
+        console.log("No se actualizó el principal.");
+    }
+}
+
+function fcorrecto_tran_actualizarPrincipal() {
+    console.log("Se actualizo el numero principal correctamente.");
 }
 
 
