@@ -30,68 +30,98 @@
 
 	</head>
 	<body>
+		<div id="detallePaquete" data-url="Detalle Paquete" data-role="page">
+			<div data-role="header" data-position="fixed">
+				<div data-role="navbar">
+				    <ul class="accordion accordion-1">
+						    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
+						    	<ul>
+							        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
+							        <br>
+							        <br>
+							        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
+							        <br>
+							        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
+							        <br>
+							        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
+							    </ul>
+						    </li>
+						    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+						    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+						    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+					    </ul>
+					    <script type="text/javascript">
+						    $('.accordion-1').dcAccordion({
+						        eventType: 'click',
+						        autoClose: true,
+						        saveState: true,
+						        disableLink: true,
+						        speed: 'fast',
+						        showCount: false,
+						        autoExpand: false,
+						        cookie  : '',
+						        classExpand  : ''
+						    });
+					    </script>
+				</div><!-- /navbar -->
 
-		<div id="Consumo de Datos" data-url="Consumo de Datos" data-role="page">
-			<div data-role="header" data-theme="c">
-			<h1>Tu paquete de datos</h1>
-			</div>
+			</div><!-- /header -->
 
 			<div data-role="content">
-
-			<ul data-role="listview" data-inset="true">
-				<li><h3>Detalle de paquete de datos</h3>
+				<div data-role="fieldcontain">
+					<div class="titulo" style="font-size: 20px; font-weight: bold; !important;">Paquete de datos actual</div>
+				</div>
+				<div data-role="fieldcontain">
+					<h3>Detalle de paquete de datos</h3>
 					<p>
-						Al día<div id="dateAndTimeDetailPack"></div>
+						<div style="float:left;">Al día &nbsp;</div><div id="dateAndTimeDetailPack"></div>
 					</p>
-				</li>
-				<li><p>Número Claro</p>
+				</div>
+				<div data-role="fieldcontain">
+					<p>Número Claro</p>
 					<h3>
 						<div id="phoneNumDetailPack"></div>
 					</h3>
-				</li>
-				<li><p>Paquete contratado</p>
-					<h3>
-						<div id="packNameDetailPack"></div>
-					</h3>
-				</li>
-			</ul>
+				</div>
+				<br/>
+				<p>Paquete contratado</p>
+				<h3>
+					<div id="packNameDetailPack"></div>
+				</h3>
+				
+				<script type="text/javascript">
+					//conversion de fecha acutal
+					var ahora = new Date( );
+					var fech = mostrarFechaCompuestaDias(ahora);
+					var hora = mostrarHoraCompuesta(ahora);
+					$("#dateAndTimeDetailPack").empty();
+					$("#dateAndTimeDetailPack").append(fech+" a las "+hora);
+					$("#phoneNumDetailPack").empty();
+					$("#phoneNumDetailPack").append(numtelefonico);
+					$("#packNameDetailPack").empty();
+					$("#packNameDetailPack").append(nombrepaq);
 
-			<script type="text/javascript">
-				//conversion de fecha acutal
-				var ahora = new Date( );
-				var fech = mostrarFechaCompuestaDias(ahora);
-				var hora = mostrarHoraCompuesta(ahora);
-				$("#dateAndTimeDetailPack").append(fech+" a las "+hora);
-				$("#phoneNumDetailPack").append(numtelefonico);
-				$("#packNameDetailPack").append(nombrepaq);
+					//consultando historial con ws
+					var resultado = "";
+					window.obtenerhistorial(numtelefonico,"2012-05-27T15:00:00","2013-06-15T15:00:00", function(echoValue) {
+			          alert(echoValue);
+			          resultado = echoValue;
+			        });					
+	    			
+	    			//leerxml(resultado);
 
-				//consultando historial con ws
-				var resultado = "";
-				window.obtenerhistorial(numtelefonico,"2012-05-27T15:00:00","2013-05-27T15:00:00", function(echoValue) {
-		          alert(echoValue);
-		          resultado = echoValue;
-		        });					
-    			
-    			//leerxml(resultado);
+				</script>
 
-			</script>
-
-			<br/>
-			<br/>
-			<ul data-role="listview">
-				<li>Ultimos Paquetes contratados</li>
-				<li><h3>30 dias Full Normal</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
-				<li><h3>7 dias Promo</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
-				<li><h3>30 dias 5 GB</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
-				<li><h3>7 dias Promo</h3><p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p></li>
-			</ul>
-
-			</div>
-
-			<div data-role="footer">
-			<h1>Contáctanos</h1>
+				<br/>
+				<br/>
+				<ul data-role="listview">
+					<li data-role="list-divider">Ultimos Paquetes contratados</li>
+					<li>
+						<h3>30 dias Full Normal</h3>
+						<p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15/02/2013 - 01/03/2013</p>
+					</li>					
+				</ul>
 			</div>
 		</div>
-
 	</body>
 </html>

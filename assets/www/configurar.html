@@ -25,7 +25,7 @@
 	<div id="configurar" data-url="Configurar numero" data-role="page" data-title="Consumo de Datos">
 		<div data-role="header" data-position="fixed">
 			<div data-role="navbar">
-			    <ul class="accordion"  id="accordion-1">
+			    <ul class="accordion accordion-1">
 					    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
 					    	<ul>
 						        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
@@ -43,17 +43,17 @@
 					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
 				    </ul>
 				    <script type="text/javascript">
-				    $('#accordion-1').dcAccordion({
-				        eventType: 'click',
-				        autoClose: true,
-				        saveState: true,
-				        disableLink: true,
-				        speed: 'fast',
-				        showCount: false,
-				        autoExpand: false,
-				        cookie  : '',
-				        classExpand  : 'dcjq-current-parent'
-				    });
+					    $('.accordion-1').dcAccordion({
+					        eventType: 'click',
+					        autoClose: true,
+					        saveState: true,
+					        disableLink: true,
+					        speed: 'fast',
+					        showCount: false,
+					        autoExpand: false,
+					        cookie  : '',
+					        classExpand  : ''
+					    });
 				    </script>
 			</div><!-- /navbar -->
 

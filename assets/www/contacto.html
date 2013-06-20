@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
 
 		<script>
 			// Wait for Cordova to load
@@ -10,7 +10,6 @@
 
 		    $( document ).on( "pageshow", function(){
 				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
-				$("#DEMO").hide().delay( 1500 ).show( "fast" );
 				alert("pageshow");				
 			});
 
@@ -31,7 +30,7 @@
 	</head>
 	<body>
 
-		<div id="Listado" data-url="Consumo de Datos" data-role="page" data-title="Consumo de Datos">
+		<div id="Consumo de Datos" data-url="Consumo de Datos" data-role="page">
 			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
 				    <ul class="accordion accordion-1">
@@ -49,10 +48,10 @@
 					    </li>
 					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemConfig ui-btn-active" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
 				    </ul>
 				    <script type="text/javascript">
-				    	$('.accordion-1').dcAccordion({
+					    $('.accordion-1').dcAccordion({
 					        eventType: 'click',
 					        autoClose: true,
 					        saveState: true,
@@ -65,42 +64,36 @@
 					    });
 				    </script>
 				</div><!-- /navbar -->
-
 			</div><!-- /header -->
 
+			<!-- importando plugin para envio de correos -->
+			<script src="js/EmailComposer.js"></script>
+
 			<div data-role="content">
+				<div class="titulo" style="font-size: 20px; font-weight: bold; !important;">Contactanos</div>
+				<br>
+				Escríbenos en Facebook &nbsp;&nbsp;
+				<a href="https://www.facebook.com/claroguatemala"><img  src="css/images/iconofb.jpg" style="width: 25px; height: 25px;" alt=""></a>
+				<br>
+				<br>
+				Escríbenos en Twitter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="https://twitter.com/claroguatemala"><img  src="css/images/iconotw.jpg" style="width: 25px; height: 25px;" alt=""></a>				
+				<br>
+				<br>
+				<div class="titulo" style="font-size: 20px; font-weight: bold; !important;">Escríbenos un mensaje</div>
+				
 				<div data-role="fieldcontain">
-					<input id="btnEditarAlarmas" data-inline="true" type="button" value="Alar"/>
-					<input id="btnEditarUsuario" data-inline="true" type="button" value="Datos"/>
-					<input id="btnEditarNumeros" data-inline="true" type="button" value="Núms"/>
+					<input type="text" name="Nombre" id="txtNombreMensaje" placeholder="Nombre"/>
 				</div>
-				<br/>
-				
-				<div style="float:left;">Nombre:</div><div id="user_name_listado" style="font-size: 16px; font-weight: bold; !important;"></div>			
-				<div style="float:left;">e-mail:</div><div id="user_email" style="font-size: 16px; font-weight: bold; !important;"></div>
-				
-				<br/>
-
-				<script type="text/javascript">	
-					//Precargando los datos si fue traido a esta pagina seleccionando un numero:
-					consultarUsuarioBD();					
-				</script>
-
-				<ul id="listado" data-role="listview" data-inset="true">
-					<li data-role="list-divider">Números vinculados</li>
-
-				</ul>
-				<ul id="listado_alarmas" data-role="listview" data-inset="true">
-					<li data-role="list-divider">Alarmas programadas</li>
-					
-				</ul>
-
+				<div data-role="fieldcontain">
+					<input type="text" name="Asunto" id="txtAsunto" placeholder="Asunto"/>
+				</div>
+				<div data-role="fieldcontain">
+					<textarea name="Mensaje" id="txtAreaMensaje" rows="" cols="" placeholder="Mensaje" style="height: 150px;"></textarea>
+				</div>
+				<a href='#' id="enviarCorreo" data-role="button" data-icon="check" data-theme="a">Enviar</a>				
 			</div>
-			<script type="text/javascript">
-				consultarBD();
-				consultarAlarmasBD();
-			</script>			
 		</div>
-		
+
 	</body>
 </html>

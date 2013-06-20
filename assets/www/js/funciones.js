@@ -175,15 +175,20 @@ function mostrarDatosPaquete(){
     }else
         $("#dateVigenciaDetalle").append("N/A");
 
-    $("#mbConsumed").empty();
-    $("#mbConsumed").append(mbconsumidos);
+
+    $("#txtimginc").empty();
+    $("#txtimginc").append(mbtotales+" MB");
+    $("#txtimgcons").empty();
+    $("#txtimgcons").append(mbconsumidos+" MB");
     $("#mbConsumedBar").empty();
     $("#mbConsumedBar").append(mbconsumidos+"MB");
     
     var dispo = parseInt(mbtotales)-parseInt(mbconsumidos);
-    $("#mbAvailable").empty();
-    $("#mbAvailable").append(dispo);
-
+    $("#txtimgdisp").empty();
+    $("#txtimgdisp").append(dispo+" MB");
+    $("#txtimgporc").empty();
+    $("#txtimgporc").append(porcentaje+"%");
+    
     $("#phoneNum").empty();
     $("#phoneNum").append(numtelefonico);
     $("#packName").empty();
@@ -307,11 +312,6 @@ $(document).ready(function(){
         return false;
     });
 
-    $("body").on("click","#goDetallePaquete",function(){
-        $.mobile.changePage("detallePaquete.html", { transition: "slide" });
-        return false;
-    });
-
     $("body").on("click","#btnEditarUsuario",function(){
         $.mobile.changePage("editarUsuario.html", { transition: "slide" });
         return false;
@@ -392,9 +392,21 @@ $(document).ready(function(){
         return false;
     });
 
+    //funcion para enviar un correo electronico
+    $("body").on("click","#enviarCorreo",function(){
+        var nombrecorreo = $("#txtNombreMensaje").val();
+        var asunto = $("#txtAsunto").val();
+        var cuerpocorreo = $("#txtAreaMensaje").val();
 
+        if (nombrecorreo != "" && asunto != "" && cuerpocorreo != ""){
+            alert("enviando correo:"+currentId);
+            window.plugins.emailComposer.showEmailComposerWithCallback(null,"Asunto:"+asunto,"Cuerpo: <b>"+nombrecorreo+"<b/>:"+cuerpocorreo,["fmonterroso.tpp@gmail.com"],[],[],true,[]);
 
-
+        }else
+            showAlert("Ocurrio un problema al enviar tu mensaje. Intentalo mas tarde.","Envío fallido","OK");
+        return false;
+    });
+    
 
     //-------------------Funciones del Gauge
     /*
@@ -417,18 +429,40 @@ $(document).ready(function(){
     });
 
     //elementos del menu
+    $("body").on("click",".menuitemHistorial",function(){
+        $.mobile.changePage("detallePaquete.html", { transition: "slide" });
+        return false;
+    });
+    $("body").on("click",".menuitemContacto",function(){
+        $.mobile.changePage("contacto.html", { transition: "slide" });
+        return false;
+    });
+    $("body").on("click",".menuitemTerminos",function(){
+        $.mobile.changePage("terminos.html", { transition: "slide" });
+        return false;
+    });
     $("body").on("click",".menuitemSalir",function(){
         navigator.app.exitApp();
         return false;
     });
 
+    
     $("body").on("click",".menuitemHome",function(){
         $.mobile.changePage("index.html", { transition: "slide" });
+        //Consulta buscando el numero principal si no fue establecido al inicio             
+        if (currentId == ""){
+            //no se inserto un numero al inicio
+            //realizando busqueda del principal
+            consultaPrincipal();                    
+        }else{
+            consultaDatosPaquete();
+        }
         return false;
     });
 
     $("body").on("click",".menuitemStore",function(){
         //alert("Iniciando");
+        location.href="http://internet.claro.com.gt/";
         /*
         window.obtenertipo(function(echoValue) {
             console.log("El tipo reconocido es:"+echoValue);
@@ -447,7 +481,7 @@ $(document).ready(function(){
             // Si tenemos conexión
             alert("Si tenemos conexión");
         }
-        */
+        
 
         var ref = window.open('http://internet.claro.com.gt/', '_blank','location=yes');
         ref.addEventListener('loadstart', function(event) { console.log(event.type + ' - ' + event.url); } );
@@ -457,7 +491,7 @@ $(document).ready(function(){
             //Abriendo Base de datos
             var db = abrirBD();
         } );
-
+*/
         return false;
     });
 
@@ -511,6 +545,7 @@ function fcorrecto_exe(tx, results){
         tx.executeSql('CREATE TABLE IF NOT EXISTS alarms (idalarms INTEGER PRIMARY KEY AUTOINCREMENT, percentage INTEGER NOT NULL, state Varchar(15), idphone INTEGER REFERENCES phones(idphone) ON DELETE CASCADE)');
         //insertando usuario por defecto
         tx.executeSql('INSERT INTO user (name, email) VALUES (?,?)',["Usuario","No definido"],fcorrecto_insertUser_exe,errorCB);
+        tx.executeSql('INSERT INTO terms_conditions (content) VALUES (?)',["REGLAMENTO DE APLICACIÓN 250,000 fans<br><br>PRIMERO: PROPIEDAD DE LA PROMOCIÓN<br><br>La presente Promoción pertenece en forma exclusiva a Personal CTE, S.A. de C.V., en adelante, el Patrocinador o CLARO EL SALVADOR. El presente documento (el Reglamento) establece los términos y condiciones aplicables a la promoción.<br><br>SEGUNDO: BENEFICIOS, LIMITACIONES<br>La presente es una Promoción EXCLUSIVApara:<br>(i) fans de la fanpage de CLARO El Salvador en Facebook que ingresen al Facebook de CLARO EL SALVADOR, (ii) que residan en El Salvador,  y (iii) que se hayan registrado correctamente en el link de la promoción, con su nombre, apellidos, DUI, fecha de nacimiento, sexo, lugar de residencia, correo electrónico y  número de teléfono fijo o móvil."]);
         console.log("Se creo la base de datos correctamente");
         return true;
     }else{
@@ -1203,6 +1238,34 @@ function fcorrecto_tran_actualizarPrincipal() {
 
 
 
+//---------Funcion para consultar los datos del usuario
+function consultaTerminosBD(){
+    var db = window.openDatabase("user_phones", "1.0", "Prueba DB", 3000000);
+    db.transaction(consultarTerminos, errorCB, fcorrecto_tran_consTerms);
+    return db;
+}
+
+//Funcion para consultar el usuario
+function consultarTerminos(tx){
+    tx.executeSql('SELECT * FROM terms_conditions LIMIT 1',[],fcorrecto_consultarTerminos_exe,errorCB);    
+}
+
+function fcorrecto_consultarTerminos_exe(tx, results){
+    console.log("Cantidad de terminos retornadas:" + results.rows.length);
+    var len = results.rows.length;
+    for (var i=0; i<len; i++){
+        $("#terminos_condiciones").empty();
+        $("#terminos_condiciones").append(results.rows.item(i).content);
+    }
+}
+
+function fcorrecto_tran_consTerms() {
+    console.log("Se consulto los terminos correctamente.");
+}
+
+
+
+
 
 
 //--------------------Funciones para manejo de XML--------------
@@ -1210,6 +1273,7 @@ function fcorrecto_tran_actualizarPrincipal() {
 //Parser de xml de respuesta para consultar datos del paquete de internet
 function leerxml(texto){
     bandera_paquete = "0";
+    //alert(texto);
     //Comenzamos a recorrer el xml
     $(texto).find("PAQUETESACTIVOS").each(function () {
         $(this).find("PAQUETECUENTA").each(function () {

@@ -109,8 +109,7 @@
 		</script>
 
    </head>
-   <body>
-    	
+   <body>    	
     	<div id="Datos" data-url="Datos" data-role="page">
 			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
@@ -127,7 +126,7 @@
 						        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
 						    </ul>
 					    </li>
-					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemHome ui-btn-active" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
 				    </ul>
@@ -145,7 +144,6 @@
 					    });
 				    </script>
 				</div><!-- /navbar -->
-
 			</div><!-- /header -->			
 
 			<div data-role="content">
@@ -153,6 +151,7 @@
 					<div id="user_name" style="font-size: 20px; font-weight: bold; !important;"></div>
 				</span>
 				<script type="text/javascript">
+					
 					//Consultando datos del usuario
     				consultarUsuarioBD();
 				</script>
@@ -173,12 +172,10 @@
 				<div id="totalpercentage" style="float:right; font-size:12px;"></div>
 				<br/>				
 
-				<!-- Codigo de detalle de consumo-->				
 				<span>
 					<div data-role="fieldcontain">
 						<strong style="font-size: 20px;">Consumo de datos</strong>
-					</div>
-					
+					</div>					
 					<span style="font-size: 14px;  line-height: 17px;">Al día</span>
 					<span id="dateDetalle" style="font-size: 14px;"></span>
 					<br/>
@@ -208,7 +205,7 @@
 					<DIV id="txtimgdisp" class="datoimg" ></DIV>
 				</div>
 				<div data-role="fieldcontain">
-					<div class="txtdato">% de uso</div>
+					<div class="txtdato">% disponible</div>
 					<DIV id="txtimgporc" class="datoimg" ></DIV>
 				</div>
 
@@ -254,6 +251,8 @@
 						$("#dateVigenciaDetalle").append(fech3);
 					}else
 						$("#dateVigenciaDetalle").append("N/A");
+
+					
 				</script>				
 				<!-- Fin de contenido de detalle de consumo-->
 
