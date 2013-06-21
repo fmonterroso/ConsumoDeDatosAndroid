@@ -1,27 +1,38 @@
 package com.consumodedatos;
 
+import java.util.List;
+
 import org.apache.cordova.api.CallbackContext;
 import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.consumodedatos.ServicioAlarmas;
+
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
 
 public class JPluginCom extends CordovaPlugin {
 	private enum Metodo {
-		isclaro, sendSMS, isclaro2, userphone,clarotype,activatedpackagelist,devicenumber,devicetype;
+		isclaro, sendSMS, isclaro2, userphone,clarotype,activatedpackagelist,devicenumber,devicetype,registeralarms,removealarms;
 	}
 	Context mContext;
+	private ServicioAlarmas servicio;
 	
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         
 		Metodo met = Metodo.valueOf(action);
-		String message = "";
-		String num = "";
+		String num, message, alarmas = "";
 		
 		switch(met) {
 		    case isclaro:
@@ -57,8 +68,18 @@ public class JPluginCom extends CordovaPlugin {
 		    case devicetype:
 		    	this.tipo_dispositivo(callbackContext);
 			    break;
+		    case registeralarms:
+		    	alarmas = args.getString(0);
+		    	this.registrar_alarmas(alarmas, callbackContext);
+			    break;
+		    case removealarms:
+		    	alarmas = args.getString(0);
+		    	this.remover_alarmas(alarmas, callbackContext);
+			    break;
+			    
 			    
 		}
+		
         return false;
     }
  
@@ -167,5 +188,24 @@ public class JPluginCom extends CordovaPlugin {
 		}
 		*/
 	}
+	
+	private void registrar_alarmas(String numeros, CallbackContext callbackContext) {
+		Log.d("ServicioLocal", "Agregando:"+numeros);		
+		String[] alarms = numeros.split(",");
+		for (int i=0;i<alarms.length;i=i+3){
+			String[] alarm = {alarms[i],alarms[i+1],alarms[i+2]};
+			Configuracion.list.add(alarm);
+		}
+		callbackContext.success("EXITO");
+    }
+	
+	private void remover_alarmas(String numeros, CallbackContext callbackContext) {
+		Log.d("ServicioLocal", "Eliminando:"+numeros);		
+		String[] alarms = numeros.split(",");
+		for (int i=0;i<alarms.length;i++){
+			Configuracion.blacklist.add(alarms[i]);			
+		}		
+		callbackContext.success("EXITO");
+    }	
 
 }

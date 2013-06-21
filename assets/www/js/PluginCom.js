@@ -77,3 +77,23 @@ window.obtenertipo = function(callback) {
     []
   );
 };
+
+window.poneralarmas = function(str, callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Error al registrar las alarmas!'); },
+    "JPluginCom",
+    "registeralarms",
+    [str]
+  );
+};
+
+window.quitaralarmas = function(str, callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Error al registrar las alarmas!'); },
+    "JPluginCom",
+    "removealarms",
+    [str]
+  );
+};

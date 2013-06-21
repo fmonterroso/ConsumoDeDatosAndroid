@@ -295,18 +295,6 @@ $(document).ready(function(){
         return false;
     });
 
-    $("body").on("click","#btnElimiar",function(){
-        if (currentId != ""){
-            alert("Eliminaras el registro:"+currentId);
-            eliminarBD(currentId);
-            //Actualizando listado y regresando
-            consultarBD();
-            navigator.app.backHistory();
-        }else
-            alert("Nada que eliminar!");
-        return false;
-    });
-
     $("body").on("click","#goDetalleComsumo",function(){
         $.mobile.changePage("detalleConsumo.html", { transition: "slide" });
         return false;
@@ -399,11 +387,9 @@ $(document).ready(function(){
         var cuerpocorreo = $("#txtAreaMensaje").val();
 
         if (nombrecorreo != "" && asunto != "" && cuerpocorreo != ""){
-            alert("enviando correo:"+currentId);
-            window.plugins.emailComposer.showEmailComposerWithCallback(null,"Asunto:"+asunto,"Cuerpo: <b>"+nombrecorreo+"<b/>:"+cuerpocorreo,["fmonterroso.tpp@gmail.com"],[],[],true,[]);
-
+            window.plugins.emailComposer.showEmailComposerWithCallback(null,asunto,"Nombre:"+nombrecorreo+":<br/>"+cuerpocorreo,["fmonterroso.tpp@gmail.com"],[],[],true,[]);
         }else
-            showAlert("Ocurrio un problema al enviar tu mensaje. Intentalo mas tarde.","Envío fallido","OK");
+            showAlert("Debes completar los datos de tu mensaje.","Validación","OK");
         return false;
     });
     
@@ -689,7 +675,23 @@ function eliminarBD(cod){
 }
 
 //Funcion para eliminar un registro de la base de datos
-function eliminar(tx){
+function eliminar(tx){    
+    tx.executeSql('SELECT idalarms FROM alarms WHERE idphone=?',[currentId],fcorrecto_removeralarmas,errorCB);    
+}
+
+function fcorrecto_removeralarmas(tx, results){
+    var len = results.rows.length;
+    var listaalarmas;
+    for (var i=0; i<len; i++){
+        console.log("Fila = " + i + " ID = " + results.rows.item(i).idalarms + ", porcentaje =  " + results.rows.item(i).percentage + ", idphone =  " + results.rows.item(i).idphone);
+        listaalarmas = listaalarmas + results.rows.item(i).idalarms + ",";
+        if (i!=(len-1))
+            listaalarmas = listaalarmas + ",";
+    }
+    window.quitaralarmas(listaalarmas, function(echoValue) {
+        //alert("valor devuelto:"+echoValue);
+        console.log("se removieron con exito:");
+    });    
     tx.executeSql('DELETE FROM alarms WHERE idphone=?',[currentId]);
     tx.executeSql('DELETE FROM phones WHERE idphone=?',[currentId],fcorrecto_eliminar_exe,errorCB);
 }
@@ -860,10 +862,10 @@ function fcorrecto_consultaInicial_exe(tx, results){
                     var t = leerxmltipodispositivo(echoValue);
                     if (t == "O"){
                         tipodispositivo = "SIM";            
-                    }else if (t=="NO DEFINIDO"){
-                        tipodispositivo = "NO DEFINIDO";            
+                    }else if (t=="M"){
+                        tipodispositivo = "MODEM";                                    
                     }else {
-                        tipodispositivo = "MODEM";            
+                        tipodispositivo = "NO DEFINIDO";
                     }
                     console.log("El número reconocido es del tipo:"+tipodispositivo);
                 });
@@ -1071,14 +1073,16 @@ function agregarAlarma(){
 function insertarAlarma(tx){
     var num = $("#cmbNumeroTel option:selected").val();
     var porcentaje = $("#txtporcentaje").val();
-    
-    tx.executeSql('INSERT INTO alarms (percentage,state,idphone) VALUES (?,?,?)',[porcentaje,"ACTIVA",num],fcorrecto_insertarAlarma_exe,errorCB);
-    
+    tx.executeSql('INSERT INTO alarms (percentage,state,idphone) VALUES (?,?,?)',[porcentaje,"ACTIVA",num],fcorrecto_insertarAlarma_exe,errorCB);    
 }
 
 function fcorrecto_insertarAlarma_exe(tx, results){
     if (results.rowsAffected) {
-        console.log("se inserto con exito:"+results.rowsAffected);
+        var newAlarm = results.insertId+","+$("#txtporcentaje").val()+","+$("#cmbNumeroTel option:selected").html();
+        window.poneralarmas(newAlarm, function(echoValue) {
+            //alert("valor devuelto:"+echoValue);
+            console.log("se inserto con exito:"+results.rowsAffected);
+        });
         return false;
     }else{
         console.log("No se guardo la alarma.");
@@ -1156,6 +1160,10 @@ function eliminarAlarma(){
 //Funcion para insertar una alarma
 function deleteAlarma(tx){
     tx.executeSql('DELETE FROM alarms WHERE idalarms=?',[currentIdAlarm],fcorrecto_deleteAlarma_exe,errorCB);
+    window.quitaralarmas(currentIdAlarm, function(echoValue) {
+        //alert("valor devuelto:"+echoValue);
+        console.log("se removio la alarma con exito:");
+    });    
 }
 
 function fcorrecto_deleteAlarma_exe(tx, results){
@@ -1272,7 +1280,7 @@ function fcorrecto_tran_consTerms() {
 
 //Parser de xml de respuesta para consultar datos del paquete de internet
 function leerxml(texto){
-    bandera_paquete = "0";
+    bandera_paquete = "0";    
     //alert(texto);
     //Comenzamos a recorrer el xml
     $(texto).find("PAQUETESACTIVOS").each(function () {
@@ -1293,13 +1301,14 @@ function leerxml(texto){
                     if (cont_paquetes<1){
                         bandera_paquete = "1";
                         vigencia = $(this).find('FIN').text();
-                        mbconsumidos = $(this).find('CONSUMOMB').text();    
+                        var original = parseFloat($(this).find('CONSUMOMB').text());
+                        mbconsumidos = Math.round(original);
                     }
                     cont_paquetes++;
                     //return false;
                }
                
-               console.log("Paquete (NODE: "+cont_paquetes+") reconocido: vigencia="+$(this).find('FIN').text()+", MB consumidos="+$(this).find('CONSUMOMB').text()+", nombre="+$(this).find('NOMBRE').text()+", MB totales="+$(this).find('LIMITEDATOSMB').text()+", Banda="+$(this).find('BANDA').text()+", Codigo="+codigopaquete);               
+               //console.log("Paquete (NODE: "+cont_paquetes+") reconocido: vigencia="+$(this).find('FIN').text()+", MB consumidos="+$(this).find('CONSUMOMB').text()+", nombre="+$(this).find('NOMBRE').text()+", MB totales="+$(this).find('LIMITEDATOSMB').text()+", Banda="+$(this).find('BANDA').text()+", Codigo="+codigopaquete);               
             });
             
         });
@@ -1311,10 +1320,10 @@ function leerxml(texto){
 //Parser de xml de respuesta para obtener el tipo de dispositivo (modem o telefono)
 function leerxmltipodispositivo(texto){
     //Comenzamos a recorrer el xml
-    var tipo = "";
+    var tipo = "NO DEFINIDO";
     $(texto).find("RESPONSE").each(function () {
         tipo = $(this).text();
-        //alert("Tipo reconocido:"+tipo);        
+        //alert("Tipo reconocido:"+tipo);
         return false;
     });
     return tipo;

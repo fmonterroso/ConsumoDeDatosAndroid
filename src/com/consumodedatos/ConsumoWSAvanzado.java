@@ -114,19 +114,15 @@ public class ConsumoWSAvanzado {
             //Agregando parametros necesarios
             GenerarXML g = new GenerarXML();
             String d = g.generaDocumentoXML();
-            //String d = "<DATA><APPID>kHAjOqyMwNKioBFRpv15</APPID><APPSECRET>c4qGiuEU71m35SNrVjzgxpnZ6TPMQfbt2eC8saHk</APPSECRET><LANG>es</LANG></DATA>";
-            Log.d("Visor", "config:"+d);
             request.addProperty("config", d); // Paso parametros al WS
             request.addProperty("country", "502"); // Paso parametros al WS
             request.addProperty("phone", numero); // Paso parametros al WS
-            Log.d("Visor", "Request:"+request.toString());
             
             // Modelo el Sobre
             SoapSerializationEnvelope sobre = new SoapSerializationEnvelope(SoapEnvelope.VER11);
             sobre.dotNet = true;
             sobre.setOutputSoapObject(request);
-            Log.d("Visor", "Sobre:"+sobre.toString());
-         
+            
             // Modelo el transporte
             HttpTransportSE transporte = new HttpTransportSE(url);
          
@@ -134,9 +130,7 @@ public class ConsumoWSAvanzado {
             transporte.call(accionSoap3, sobre);
          
             // Resultado
-            Log.d("Visor de obtiene datos", "Datos: "+sobre.getResponse());
-            //SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
-         
+            
             //Log.i("Resultado", resultado.toString());
             return sobre.getResponse().toString();
          
@@ -195,7 +189,6 @@ public class ConsumoWSAvanzado {
             //Agregando parametros necesarios
             GenerarXML g = new GenerarXML();
             String d = g.generaDocumentoXML();
-            Log.d("Visor", "config:"+d);
             request.addProperty("config", d); // Paso parametros al WS
             request.addProperty("country", "502"); // Paso parametros al WS
             request.addProperty("phone", numero); // Paso parametros al WS
@@ -214,9 +207,7 @@ public class ConsumoWSAvanzado {
             transporte.call(accionSoap5, sobre);
          
             // Resultado
-            Log.d("Visor de obtiene historial", "Datos: "+sobre.getResponse());
-            //SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
-         
+            
             //Log.i("Resultado", resultado.toString());
             return sobre.getResponse().toString();
          

@@ -33,7 +33,7 @@ public class ConsumoWSBasico {
             request.addProperty("pass", "5m52c1@R0"); // Paso parametros al WS
             request.addProperty("area", "502"); // Paso parametros al WS
             request.addProperty("phone", numero); // Paso parametros al WS
-            Log.i("proceso", "Parametros agregados, numero:"+numero);
+            //Log.i("proceso", "Parametros agregados, numero:"+numero);
             
             // Modelo el Sobre
             SoapSerializationEnvelope sobre = new SoapSerializationEnvelope(SoapEnvelope.VER11);
@@ -45,15 +45,14 @@ public class ConsumoWSBasico {
             HttpTransportSE transporte = new HttpTransportSE(url);
          
             // Llamada
-            Log.i("proceso", "Antes de llamada. actionSoap:"+accionSoap+" sobre:"+sobre);
+            //Log.i("proceso", "Antes de llamada. actionSoap:"+accionSoap+" sobre:"+sobre);
             
             transporte.call(accionSoap, sobre);
          
             // Resultado
-            Log.i("proceso", "Resultado RAW:"+sobre.getResponse());
+            //Log.i("proceso", "Resultado RAW:"+sobre.getResponse());
             SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
-            Log.i("proceso", "Resultado parseado" + resultado);
-            Log.i("proceso", "Resultado parseado string:"+resultado.toString());
+            //Log.i("proceso", "Resultado parseado string:"+resultado.toString());
          
             //Log.i("Resultado", resultado.toString());            
             return resultado.toString();         
@@ -75,26 +74,24 @@ public class ConsumoWSBasico {
             request.addProperty("pass", "5m52c1@R0"); // Paso parametros al WS
             request.addProperty("to_phone", numero); // Paso parametros al WS
             request.addProperty("text", datos); // Paso parametros al WS
-            Log.i("proceso", "Parametros agregados");
+            //Log.i("proceso", "Parametros agregados");
             
             // Modelo el Sobre
             SoapSerializationEnvelope sobre = new SoapSerializationEnvelope(SoapEnvelope.VER11);
             sobre.dotNet = true;
             sobre.setOutputSoapObject(request);
-            Log.i("proceso", "sobre preparado");
+            //Log.i("proceso", "sobre preparado");
          
             // Modelo el transporte
             HttpTransportSE transporte = new HttpTransportSE(url);
          
             // Llamada
-            Log.i("proceso", "Antes de llamada");
             transporte.call(accionSoap2, sobre);
          
             // Resultado
-            Log.i("proceso", "Resultado RAW:"+sobre.getResponse());
+            //Log.i("proceso", "Resultado RAW:"+sobre.getResponse());
             SoapPrimitive resultado = (SoapPrimitive) sobre.getResponse();
-            Log.i("proceso", "Resultado parseado" + resultado);
-            Log.i("proceso", "Resultado parseado string:"+resultado.toString());
+            //Log.i("proceso", "Resultado parseado string:"+resultado.toString());
          
             //Log.i("Resultado", resultado.toString());
             return resultado.toString();
