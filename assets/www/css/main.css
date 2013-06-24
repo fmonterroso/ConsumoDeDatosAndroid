@@ -37,28 +37,10 @@ white-space: normal;
   font-size: 12px;
 }
 
-.datoimg{
-  width: 126px;
-  height: 44px;
-  background-image:url('images/boton.jpg');
-  display: table-cell;
-  vertical-align: middle;
-  text-align: center;
-}
 
-.txtdato{
-  width: 126px;
-  height: 44px;  
-  display: table-cell;  
-  vertical-align: middle;
-  text-align: center;
-  float: none;
-}
 
 #chart_div, #user_name, .titulo{margin: 0 auto; text-align: center;}
 #progressbar{margin-bottom: 5px;}
-
-#formPhone div.ui-input-text {/*width: 100%;*/}
 
 a.submenuitem.ui-btn.ui-btn-inline.ui-btn-icon-top.ui-btn-up-a span, a.submenuitem.ui-btn.ui-btn-inline.ui-btn-icon-top.ui-btn-hover-a span{
   padding-top: 15px; !important;  

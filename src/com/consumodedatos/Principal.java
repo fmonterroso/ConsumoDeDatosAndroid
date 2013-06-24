@@ -17,8 +17,8 @@ public class Principal extends DroidGap {
 		super.loadUrl("file:///android_asset/www/index.html"); //archivo de ventana principal (listado)	
 		
 		//Iniciando servicio de alarmas	
-		Intent service = new Intent(Configuracion.context, ServicioAlarmas.class);		
-		startService(service);
+		//Intent service = new Intent(Configuracion.context, ServicioAlarmas.class);		
+		//startService(service);
 	}
 
 

@@ -2,7 +2,8 @@
 <html>
     <head>
      	<meta charset="utf-8">
-     	<meta name="viewport" content="width=device-width, initial-scale=1">	    
+     	<meta name="viewport" content="width=device-width, initial-scale=1">
+     	
 
 	    <script>
 			$( document ).on( "pageshow", function(){
@@ -21,11 +22,11 @@
 	    
    </head>
 <body>
-
+	<link href="css/layout.css" rel="stylesheet" type="text/css" />
 	<div id="configurar" data-url="Configurar numero" data-role="page" data-title="Consumo de Datos">
 		<div data-role="header" data-position="fixed">
 			<div data-role="navbar">
-			    <ul class="accordion accordion-1">
+			    <ul class="accordion accordion-1" id="mainmenu">
 					    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
 					    	<ul>
 						        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
@@ -60,9 +61,9 @@
 		</div><!-- /header -->
 
 		<div data-role="content">
-			<div class="titulo" style="font-size: 20px; font-weight: bold;">Agregar un número a la aplicación</div>			
-			<br/>
-
+			<div id="tituloConfig">
+				AGREGAR NÚMERO A LA APLICACIÓN
+			</div>
 			<div data-role="fieldcontain" id="formPhone" class="center-wrapper">
 				<input type="tel" id="phone" data-inline="true" value="" placeholder="Numero de SIM o MODEM"/>
 				<script type="text/javascript">	
@@ -72,26 +73,29 @@
 						consultarActualBD();
 					}
 				</script>			
-  				<input id="btnValidar" type="button" data-inline="true" data-theme="a" value="Solicitar código"/>
-
-  				<br/>
-  				<br/>
+	  			
+	  			<span id="btnValidar" class="appBtn" ></span>
+	            <br/>
+	            <br/>
+	            <br/>
 			
 				<input type="text" id="codConfirmacion" data-inline="true" placeholder="Código de confirmación" />
-  				<input id="btnConfirmar" type="button" data-inline="true" data-theme="a" data-icon="check" value="Confirmar"/>
-
+  				<span id="btnConfirmar" class="appBtn" ></span>
+  				<br/>
+  				<br/>
+  				<br/>
+				<ul id="listado_nums_config" data-role="listview" data-inset="true" data-split-icon="star">
+					<li class="listdividerNums" data-role="list-divider">
+						<span id="programarAlarmaTitle" class="headingTitle">
+                    		<img src="css/images/app/numerosVinculados.png" width="350" />
+                		</span>
+                	</li>                	
+				</ul>
+				<script type="text/javascript">	
+					//cargando lista de numeros con posibilidad de eliminar
+					consultarTelefonosBorarBD();				
+				</script>
 			</div>
-			<br/>
-
-			<ul id="listado_nums_config" data-role="listview" data-inset="true" data-split-icon="star">
-				<li data-role="list-divider">Números vinculados</li>
-
-			</ul>
-			<script type="text/javascript">	
-				//cargando lista de numeros con posibilidad de eliminar
-				consultarTelefonosBorarBD();				
-			</script>
-
 		</div>		
 	</div>
 

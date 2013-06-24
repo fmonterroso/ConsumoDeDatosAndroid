@@ -1,73 +1,82 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css">
-		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
-		<link rel="stylesheet" href="jquery.mobile-1.1.0.custom.css?" />
-	</head>
-	<body>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script>
+      $( document ).on( "pageshow", function(){
+        //$( "#configurar" ).hide().delay( 1500 ).show( "fast" );       
+      });
 
-		<div id="Consumo de Datos" data-url="Consumo de Datos" data-role="page">
-			<div data-role="header" data-position="fixed">
-				<div data-role="navbar">
-				    <ul class="accordion accordion-1">
-					    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
-					    	<ul>
-						        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
-						        <br>
-						        <br>
-						        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
-						        <br>
-						        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
-						        <br>
-						        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
-						    </ul>
-					    </li>
-					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
-				    </ul>
-				    <script type="text/javascript">
-				    $('.accordion-1').dcAccordion({
-				        eventType: 'click',
-				        autoClose: true,
-				        saveState: true,
-				        disableLink: true,
-				        speed: 'fast',
-				        showCount: false,
-				        autoExpand: false,
-				        cookie  : '',
-				        classExpand  : 'dcjq-current-parent'
-				    });
-				    </script>
-				</div><!-- /navbar -->				
-			</div><!-- /header -->
-
-			<div data-role="content">
-				<div class="titulo" style="font-size: 16px; font-weight: bold; !important;">Datos de usuario</div>
-				
-				<div data-role="fieldcontain">
-					<label for="user_name_edit">Nombre</label>
-					<input type="text" name="Nombre" id="user_name_edit" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="user_email_edit">e-mail</label>
-					<input type="text" name="Email" id="user_email_edit" />
-				</div>
-				<script type="text/javascript">	
-					//Precargando los datos si fue traido a esta pagina seleccionando un numero:
-					consultarUsuarioBD();					
-				</script>
-				<div data-role="fieldcontain">
-					<input id="btnGuardarUsuario" type="button" data-icon="check" value="Guardar"/>
-					<input id="btnCancelarUsuario" type="button" value="Cancelar" OnClick='$.mobile.changePage("listado.html", { transition: "slide" });'/>
-				</div>				
-			</div>
-
-		</div>
-
-	</body>
+      function onLoad() {
+            document.addEventListener("deviceready", onDeviceReady, false);
+        }
+      
+      function onDeviceReady() {
+          // Now safe to use the Cordova API          
+      }     
+    </script>
+   </head>
+   <body>
+      <div id="Consumo de Datos" data-url="Consumo de Datos" data-role="page">
+         <div data-role="header" data-position="fixed">
+            <div data-role="navbar">
+               <ul class="accordion accordion-1" id="mainmenu">
+                  <li>
+                     <a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
+                     <ul>
+                        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
+                        <br>
+                        <br>
+                        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
+                        <br>
+                        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
+                        <br>
+                        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
+                     </ul>
+                  </li>
+                  <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+                  <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+                  <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+               </ul>
+               <script type="text/javascript">
+                  $('.accordion-1').dcAccordion({
+                      eventType: 'click',
+                      autoClose: true,
+                      saveState: true,
+                      disableLink: true,
+                      speed: 'fast',
+                      showCount: false,
+                      autoExpand: false,
+                      cookie  : '',
+                      classExpand  : 'dcjq-current-parent'
+                  });
+               </script>
+            </div>
+            <!-- /navbar -->				
+         </div>
+         <!-- /header -->
+         <div data-role="content">
+            <div id="tituloConfig" >
+              DATOS DE USUARIO
+            </div>
+            <div id="central-content">
+	            <div id="userFormData">
+	            	<input type="text" name="Nombre" id="user_name_edit" placeholder="Nombre" />
+	            	<input type="text" name="Email" id="user_email_edit" placeholder="Email" />
+	            </div>
+            
+            
+	            <script type="text/javascript">	
+	               //Precargando los datos si fue traido a esta pagina seleccionando un numero:
+	               consultarUsuarioBD();					
+	            </script>
+	            
+	            <span id="btnGuardarUsuario" class="appBtn" ></span>
+	            <span id="btnCancelarUsuario" class="appBtn" OnClick='$.mobile.changePage("listado.html", { transition: "slide" });' ></span>	               
+	            
+            </div>
+         </div>
+      </div>
+   </body>
 </html>

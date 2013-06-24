@@ -582,7 +582,6 @@ function insertar(tx){
     //Averiguando el tipo de dispositivo (consumiendo el web service)
     var tipodispositivo = "NO DEFINIDO";
     window.tipoclaro($("#phone").val(), function(echoValue) {
-      showAlert("El valor devuelto es:'"+echoValue+"'","Tipo de dispositivo","OK");
       //parseando el xml de vuelta
       var t = leerxmltipodispositivo(echoValue);
         if (t == "O"){
@@ -645,14 +644,12 @@ function fcorrecto_consultar_exe(tx, results){
     for (var i=0; i<len; i++){
         console.log("Fila = " + i + " ID = " + results.rows.item(i).idphone + ", Numero =  " + results.rows.item(i).number + ", Estado =  " + results.rows.item(i).state + ", Codigo =  " + results.rows.item(i).code + ", Fecha de Ingreso =  " + results.rows.item(i).register_date + ", Fecha de Activacion =  " + results.rows.item(i).activation_date + ", Principal =  " + results.rows.item(i).principal );
         //Generando codigo html con listado de telefonos
-        var subelmento = "";        
+        var subelemento = "";        
         if (results.rows.item(i).principal){
-            subelmento = '<span class="ui-li-aside">'+results.rows.item(i).principal+'</span>';
+            subelemento = '<span class="ui-li-count">'+results.rows.item(i).principal+'</span>';
         }
-        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" state="'+results.rows.item(i).state+'" numero="'+results.rows.item(i).number+'">'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+'</p><span class="ui-li-count">'+results.rows.item(i).state+'</span>'+subelmento+'</li>';
+        var elemento = '<li class="number_element" id="'+results.rows.item(i).idphone+'" state="'+results.rows.item(i).state+'" numero="'+results.rows.item(i).number+'">'+'<h3>'+results.rows.item(i).number+'</h3><p>'+results.rows.item(i).type+': '+results.rows.item(i).state+'</p>'+subelemento+'</li>';
         $('#listado').append(elemento);
-        //$(".number_element#"+results.rows.item(i).idphone).attr({"state":results.rows.item(i).state});//Agrega una atributo al elemento para hacer mas facil la validacion despues al momento de dar click a este elemento
-        //$(".number_element#"+results.rows.item(i).idphone).attr({"numero":results.rows.item(i).number});//agregando atributo de numero para consultar mas facil
         $('#listado').listview('refresh');
     }
 
@@ -1207,7 +1204,7 @@ function fcorrecto_consTelsDelete_exe(tx, results){
             subelmento = '<strong>('+results.rows.item(i).principal+')</strong>';
             clasePrincipal = "ui-disabled";
         }
-        var elemento = '<li class="number_element_delete"><a href="#">'+'<h3>'+results.rows.item(i).number+' '+subelmento+'</h3><p>'+results.rows.item(i).type+' ('+results.rows.item(i).state+')'+'</p></a><span id="'+results.rows.item(i).idphone+'"  class="ui-li-count eliminarnumero" data-icon="delete" data-role="button" data-iconpos="notext">X</span><a href="#" id="'+results.rows.item(i).idphone+'" data-rel="popup" data-position-to="window" class="establecerprincipal '+clasePrincipal+'">Establecer como principal</a></li>';
+        var elemento = '<li class="number_element_delete"><a href="#">'+'<h3>'+results.rows.item(i).number+' '+subelmento+'</h3><p>'+results.rows.item(i).type+': '+results.rows.item(i).state+' </p></a><span id="'+results.rows.item(i).idphone+'"  class="ui-li-count eliminarnumero" data-icon="delete" data-role="button" data-iconpos="notext">X</span><a href="#" id="'+results.rows.item(i).idphone+'" data-rel="popup" data-position-to="window" class="establecerprincipal '+clasePrincipal+'">Establecer como principal</a></li>';
         $('#listado_nums_config').append(elemento);
         $('#listado_nums_config').listview('refresh');
     }
@@ -1323,7 +1320,6 @@ function leerxmltipodispositivo(texto){
     var tipo = "NO DEFINIDO";
     $(texto).find("RESPONSE").each(function () {
         tipo = $(this).text();
-        //alert("Tipo reconocido:"+tipo);
         return false;
     });
     return tipo;

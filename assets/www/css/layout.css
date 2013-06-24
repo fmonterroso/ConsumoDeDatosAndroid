@@ -1,0 +1,200 @@
+/**
+ * Estilos para la App de consumo de datos	
+ * 
+ */
+
+html, body {
+	background: #F6F6F6;
+	font-family: "Century Gothic";
+	font-size: 115%;
+}
+
+ul#mainmenu, ul#mainmenu > li, ul#mainmenu > li > a, ul#mainmenu > li > a > span  {
+	background: none;
+	border: 0;
+}
+.ui-icon-shadow {
+	background: none;
+	box-shadow:none;
+}
+ul#mainmenu a {
+	padding: 4px 0;
+}
+ul#mainmenu .menuitemMenu {
+	background: #DF0100 url(images/app/lineas.png) no-repeat center center;	 
+}
+
+ul#mainmenu .menuitemHome {
+	background: #DF0100 url(images/app/casita.png) no-repeat center center;	 
+}
+
+ul#mainmenu .menuitemStore {
+	background: #DF0100 url(images/app/carretilla.png) no-repeat center center;	 
+}
+
+ul#mainmenu .menuitemConfig {
+	background: #DF0100 url(images/app/engranaje.png) no-repeat center center;	 
+}
+
+div#user_name, div#tituloConfig  {
+	font-family: Arial;
+	font-size: 135%;
+	padding: 4px;
+	color: #fff;
+	background: #000;
+}
+
+.ui-content {
+	padding: 0;
+}
+
+.greyText {
+	color: #8E8E8E;
+}
+.stripedRow {
+	padding:1%;
+	overflow: hidden;
+}
+
+
+.stripedRow.odd{
+	background: #EFEFEF;
+}
+.txtdato{
+	color: #8E8E8E;
+	width: 180px;    
+	display: inline-block;  
+	text-align: left;
+	
+}
+
+.datoimg{
+	width: 35%;
+	float:right;	
+	background:#D52B1E;  
+	display: inline-block;  
+	text-align: center;
+	padding: 0.1%;
+	text-shadow:0 0 0 !important;
+	color:#fff;
+}
+
+#central-content {
+	padding: 10px;
+}
+
+
+
+
+/** PARA FORMULARIOS  **/
+	input[type="text"]{
+		border:0;
+		background: #FFF;
+		height: 30px; 
+	}
+	
+	.ui-input-text {
+		border: 0;
+		background: none;
+	}
+	
+	.ui-shadow-inset.ui-corner-all.ui-btn-shadow, .ui-corner-all {
+		border: 0;
+		background: none;
+		background: #ffffff;
+	}
+	
+	#btnGuardarUsuario {
+		display: inline-block;
+		width: 111px;
+		height: 50px;
+		background: url(images/app/btn_Guardar.png) no-repeat center center;
+		float: right;
+		margin-left: 20px;
+	}
+	#btnCancelarUsuario {
+		display: inline-block;
+		width: 111px;
+		height: 50px;
+		background: url(images/app/btn_cancelar.png) no-repeat center center;
+		float: right;
+		margin-left: 20px;
+	}
+	
+/** AREA DE CONFIGURACION **/
+	.configMenuBox {
+		clear: both;
+		overflow: hidden;
+		display: block;
+		height: 70px;
+		background: #424242;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		margin-bottom: 15px;
+	}
+	.btnConfigArea{
+		float: left;
+		padding: 8px 0 0 0;
+		color: #fff;
+		width: 33%;
+		text-align: center;
+		cursor: pointer;
+	}
+
+	#btnEditarUsuario {
+		border-left:2px  #7d7b7c solid;
+		border-right:2px  #7d7b7c solid;
+	}	
+
+	.listdividerNums {
+		padding: 0 0;
+		border: 0px !important;
+	}
+
+	.headingTitle {
+        display:block;
+        background: #000;
+        height: 60px;
+        width: 100%;
+    }
+    
+    .headingTitle img{
+        margin: 0 auto;
+    }
+
+    .ui-listview p {
+		color: #b2b2b2;
+	}
+
+/** AREA DE CONFIGURACION DE NUMEROS **/
+	div#tituloConfig {
+		font-size: 17px;
+		height: 35px;
+		text-align: center;
+		padding: 15px 0 0 0;	
+	}
+	
+	#btnValidar {
+		display: inline-block;
+		width: 192px;
+		height: 50px;
+		background: url(images/app/btn_solicitarCodigo.png) no-repeat center center;
+		float: right;
+		margin-right: 15px;
+		padding: 11px 0;
+	}
+
+	#btnConfirmar {
+		display: inline-block;
+		width: 127px;
+		height: 50px;
+		background: url(images/app/btn_Confirmar.png) no-repeat center center;
+		float: right;
+		margin-right: 15px;
+		padding: 11px 0;
+	}
+
+	#formPhone div.ui-input-text {
+	  width: 93%;
+	}
