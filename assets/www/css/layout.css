@@ -83,7 +83,19 @@ div#user_name, div#tituloConfig  {
 	padding: 10px;
 }
 
+div.ui-tolito-progressbar-bg{
+	background-image: none;
+	background-color: #df0000;
+	text-shadow: 0 1px 1px rgb(180, 63, 63);
+}
 
+div#progressbar{
+	height: 25px;
+}
+
+div#central-content a{
+	color: rgb(223, 0, 0);
+}
 
 
 /** PARA FORMULARIOS  **/
@@ -197,4 +209,117 @@ div#user_name, div#tituloConfig  {
 
 	#formPhone div.ui-input-text {
 	  width: 93%;
+	}
+
+	/** AREA DE TERMINOS Y CONDICIONES **/
+	.tituloTerminos, .subtituloTerminos, #terminos_condiciones{
+		margin-left: 25px;
+		margin-right: 25px;
+	}
+	
+	.subtituloTerminos, #terminos_condiciones{
+		color: #8e8e8e;
+		font-size: 15px;
+	}
+
+/** AREA DE CONTACTO **/
+	#formContact div{
+		margin-left: 15px;
+		margin-right: 10px;
+		margin-bottom: 10px;
+		width: 85%;
+	}
+
+	#formContact textarea{
+		width: 290px;
+		height: 150px
+	}
+
+	#enviarCorreo {
+		display: inline-block;
+		width: 111px;
+		height: 50px;
+		background: url(images/app/btn_enviar.png) no-repeat center center;
+		float: right;
+		margin-right: 15px;
+		padding: 3px 0;
+	}
+
+	#formContactLinks div{
+		text-align: left;
+		margin-left: 15px;
+	}
+
+/** AREA DE DETALLE DEL PAQUETE **/
+	.tituloDetalle, .subtituloDetalle{
+		margin-left: 25px;
+		margin-right: 25px;
+		font-size: 18px;
+	}
+	
+	.subtituloDetalle{
+		color: #8e8e8e;		
+	}
+
+/** AREA DE CONFIGURACION DE ALARMAS **/
+	.formComboNum div.ui-select{
+		width: 186px;
+		margin-left: 25%;
+	}
+
+	.formComboNum label{
+		font-size: 17px;
+		margin-left: 15px;
+	}
+	
+	.formComboNum div.ui-slider{
+		margin-left: 10px;
+	}
+	
+	#btnGuardarAlarma {
+		display: inline-block;
+		width: 111px;
+		height: 50px;
+		background: url(images/app/btn_Guardar.png) no-repeat center center;
+		/*float: right;*/
+		margin-right: 15px;
+		padding: 3px 0;
+	}
+
+	.formComboNum div.botonGuardarAlarm{
+		text-align: center;
+		margin-top: 15px;
+		margin-bottom: -10px;
+	}
+	
+	div.advertencia{
+		text-align: center;
+	}
+
+	label.ui-select, label.ui-slider{
+		width: 60% !important;
+	}
+
+	.listado_alarmas_delete .ui-li-count, .number_element_delete .ui-li-count{
+		top: 36%;
+	}
+
+	span.eliminaralarma img, span.eliminarnumero img{
+		float:left;
+	}
+
+	span.eliminaralarma div, span.eliminarnumero div{
+		float:left; 
+		padding-top: 10px;
+	}
+
+	ul#listado_nums_config li a span[data-icon="star"] {
+		background-image:url(images/app/star.png);
+		background-position: 49% 50%;
+		background-repeat: no-repeat;
+	}
+
+	div.ui-slider-bg {
+		background-image: none;
+		background-color: #df0000;
 	}

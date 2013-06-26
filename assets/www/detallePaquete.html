@@ -33,7 +33,7 @@
 		<div id="detallePaquete" data-url="Detalle Paquete" data-role="page">
 			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
-				    <ul class="accordion accordion-1">
+				    <ul class="accordion accordion-1" id="mainmenu">
 						    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
 						    	<ul>
 							        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
@@ -64,31 +64,29 @@
 						    });
 					    </script>
 				</div><!-- /navbar -->
-
 			</div><!-- /header -->
 
 			<div data-role="content">
+				<span id="programarAlarmaTitle" class="headingTitle">
+                    <img src="css/images/app/paquetedeDatosActual.png" width="340" />
+                </span>
+
 				<div data-role="fieldcontain">
-					<div class="titulo" style="font-size: 20px; font-weight: bold; !important;">Paquete de datos actual</div>
+					<div class="tituloDetalle">Detalle del paquete de datos:</div>
+					<div class="subtituloDetalle" style="float:left; margin-right: 0px;">
+						Al día &nbsp;
+					</div>
+					<div id="dateAndTimeDetailPack" class="subtituloDetalle">
+					</div>
 				</div>
 				<div data-role="fieldcontain">
-					<h3>Detalle de paquete de datos</h3>
-					<p>
-						<div style="float:left;">Al día &nbsp;</div><div id="dateAndTimeDetailPack"></div>
-					</p>
-				</div>
-				<div data-role="fieldcontain">
-					<p>Número Claro</p>
-					<h3>
-						<div id="phoneNumDetailPack"></div>
-					</h3>
+					<div class="tituloDetalle" style="float:left; margin-right: 0px;">Número Claro:&nbsp;&nbsp;</div>
+					<div id="phoneNumDetailPack" class="subtituloDetalle"></div>
 				</div>
 				<br/>
-				<p>Paquete contratado</p>
-				<h3>
-					<div id="packNameDetailPack"></div>
-				</h3>
-				
+				<div class="tituloDetalle">Paquete contratado:</div>
+				<div id="packNameDetailPack" class="subtituloDetalle"></div>
+
 				<script type="text/javascript">
 					//conversion de fecha acutal
 					var ahora = new Date( );
@@ -106,19 +104,25 @@
 					window.obtenerhistorial(numtelefonico,"2012-05-27T15:00:00","2013-06-15T15:00:00", function(echoValue) {
 			          alert(echoValue);
 			          resultado = echoValue;
-			        });					
-	    			
+			        });
 	    			//leerxml(resultado);
 
 				</script>
 
 				<br/>
-				<br/>
-				<ul data-role="listview">
-					<li data-role="list-divider">Ultimos Paquetes contratados</li>
-					<li>
+				<ul data-role="listview" data-inset="true">
+					<li class="listdividerNums" data-role="list-divider">
+						<span id="programarAlarmaTitle" class="headingTitle">
+                    		<img src="css/images/app/ultimosPaquetesContratados.png" width="325" />
+                		</span>
+                	</li>
+					<li class="">
 						<h3>Nombre del paquete</h3>
-						<p>Fin de la vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fecha de finalizacion de vigencia</p>
+						<p style="font-size: 17px;">Inicio de vigencia:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fin de vigencia</p>
+					</li>
+					<li class="">
+						<h3>Día del lápiz, promo 3000MB.</h3>
+						<p style="font-size: 17px;">13/05/2013 - 01/06/2013</p>
 					</li>					
 				</ul>
 			</div>

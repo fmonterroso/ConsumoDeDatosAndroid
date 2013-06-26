@@ -9,60 +9,58 @@
 		    document.addEventListener("deviceready", onDeviceReady, false);
 
 		    $( document ).on( "pageshow", function(){
-				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
-				alert("pageshow");				
+				
 			});
 
 			function onDeviceReady() {
 			    // Now safe to use the Cordova API
 			    //Agregando controlador del boton ATRAS
 			    document.addEventListener("backbutton", handleBackButton, true);
-			    alert("ondeviceready");
+			    
 			}
 
 			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
 			$(document).ready(function(){
-				alert("ready");
+				
 			});//fin de document ready
 			
 		</script>
 
 	</head>
 	<body>
-
 		<div id="Consumo de Datos" data-url="Consumo de Datos" data-role="page">
 			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
-				    <ul class="accordion accordion-1">
-					    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
-					    	<ul>
-						        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
-						        <br>
-						        <br>
-						        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
-						        <br>
-						        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
-						        <br>
-						        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
-						    </ul>
-					    </li>
-					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
-				    </ul>
-				    <script type="text/javascript">
-					    $('.accordion-1').dcAccordion({
-					        eventType: 'click',
-					        autoClose: true,
-					        saveState: true,
-					        disableLink: true,
-					        speed: 'fast',
-					        showCount: false,
-					        autoExpand: false,
-					        cookie  : '',
-					        classExpand  : ''
-					    });
-				    </script>
+				    <ul class="accordion accordion-1" id="mainmenu">
+						    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
+						    	<ul>
+							        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
+							        <br>
+							        <br>
+							        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
+							        <br>
+							        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
+							        <br>
+							        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
+							    </ul>
+						    </li>
+						    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+						    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+						    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+					    </ul>
+					    <script type="text/javascript">
+						    $('.accordion-1').dcAccordion({
+						        eventType: 'click',
+						        autoClose: true,
+						        saveState: true,
+						        disableLink: true,
+						        speed: 'fast',
+						        showCount: false,
+						        autoExpand: false,
+						        cookie  : '',
+						        classExpand  : ''
+						    });
+					    </script>
 				</div><!-- /navbar -->
 			</div><!-- /header -->
 
@@ -70,30 +68,41 @@
 			<script src="js/EmailComposer.js"></script>
 
 			<div data-role="content">
-				<div class="titulo" style="font-size: 20px; font-weight: bold; !important;">Contactanos</div>
-				<br>
-				Escríbenos en Facebook &nbsp;&nbsp;
-				<a href="https://www.facebook.com/claroguatemala"><img  src="css/images/iconofb.jpg" style="width: 25px; height: 25px;" alt=""></a>
-				<br>
-				<br>
-				Escríbenos en Twitter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="https://twitter.com/claroguatemala"><img  src="css/images/iconotw.jpg" style="width: 25px; height: 25px;" alt=""></a>				
-				<br>
-				<br>
-				<div class="titulo" style="font-size: 20px; font-weight: bold; !important;">Escríbenos un mensaje</div>
-				
-				<div data-role="fieldcontain">
+				<div id="tituloConfig" style="">
+					CONTACTANOS
+				</div>
+								
+				<div data-role="fieldcontain" id="formContact">
+					<div>Escríbenos un mensaje</div>
+					
 					<input type="text" name="Nombre" id="txtNombreMensaje" placeholder="Nombre"/>
-				</div>
-				<div data-role="fieldcontain">
+					
 					<input type="text" name="Asunto" id="txtAsunto" placeholder="Asunto"/>
+					<div>
+						<textarea name="Mensaje" id="txtAreaMensaje" placeholder="Mensaje"></textarea>
+					</div>					
+					<span id="enviarCorreo" class="appBtn" ></span>
+					<br>
+					<br>
+					
 				</div>
-				<div data-role="fieldcontain">
-					<textarea name="Mensaje" id="txtAreaMensaje" rows="" cols="" placeholder="Mensaje" style="height: 150px;"></textarea>
+				<div data-role="fieldcontain" id="formContactLinks">
+					<div>
+						<img  id="linkfb" src="css/images/app/facebook.png" style="width: 53px; height: 52px;" alt="">
+						<a href="https://www.facebook.com/claroguatemala">
+						</a>
+						&nbsp;Escríbenos en facebook
+					</div>
+					<br>
+					
+					<div>
+						<img id="linktwitter" src="css/images/app/twitter.png" style="width: 48px; height: 38px;" alt="">
+						<a href="https://twitter.com/claroguatemala">							
+						</a>
+						&nbsp;Escríbenos en twitter
+					</div>
 				</div>
-				<a href='#' id="enviarCorreo" data-role="button" data-icon="check" data-theme="a">Enviar</a>				
 			</div>
 		</div>
-
 	</body>
 </html>

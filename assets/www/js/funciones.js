@@ -387,10 +387,23 @@ $(document).ready(function(){
         var cuerpocorreo = $("#txtAreaMensaje").val();
 
         if (nombrecorreo != "" && asunto != "" && cuerpocorreo != ""){
-            window.plugins.emailComposer.showEmailComposerWithCallback(null,asunto,"Nombre:"+nombrecorreo+":<br/>"+cuerpocorreo,["fmonterroso.tpp@gmail.com"],[],[],true,[]);
+            window.plugins.emailComposer.showEmailComposerWithCallback(null,asunto,"Nombre: "+nombrecorreo+":<br/>"+cuerpocorreo,["fmonterroso.tpp@gmail.com"],[],[],true,[]);
+            $("#txtNombreMensaje").val("");
+            $("#txtAsunto").val("");
+            $("#txtAreaMensaje").val("");
         }else
             showAlert("Debes completar los datos de tu mensaje.","Validación","OK");
         return false;
+    });
+
+    //funcion para abrir el link hacia fb
+    $("body").on("click","#linkfb",function(){
+        location.href="https://www.facebook.com/claroguatemala";
+    });
+
+    //funcion para abrir el link hacia twitter
+    $("body").on("click","#linktwitter",function(){
+        location.href="https://twitter.com/claroguatemala";
     });
     
 
@@ -1131,7 +1144,7 @@ function fcorrecto_consAlarms_exe(tx, results){
     for (var i=0; i<len; i++){
         console.log("Fila = " + i + " ID = " + results.rows.item(i).idalarms + ", Porcentaje =  " + results.rows.item(i).percentage + ", Estado =  " + results.rows.item(i).state + ", IdPhone =  " + results.rows.item(i).idphone);
         //Generando codigo html con listado de alarmas
-        var subelemento = '<span id="'+results.rows.item(i).idalarms+'" class="ui-li-count eliminaralarma" data-icon="delete" data-role="button" data-iconpos="notext">X</span>';
+        var subelemento = '<span id="'+results.rows.item(i).idalarms+'" class="ui-li-count eliminaralarma"><img src="css/images/app/voteBasura.png" width="30"/><div>Eliminar</div></span>';
         //console.log("subelemto:"+subelemento);
         var elemento = '<li class="listado_alarmas_delete" >'+'<h3>'+results.rows.item(i).percentage+'%</h3><p>Número:&nbsp;'+results.rows.item(i).numero+'</p>'+subelemento+'</li>';
         //console.log("elemto:"+elemento);
@@ -1204,7 +1217,7 @@ function fcorrecto_consTelsDelete_exe(tx, results){
             subelmento = '<strong>('+results.rows.item(i).principal+')</strong>';
             clasePrincipal = "ui-disabled";
         }
-        var elemento = '<li class="number_element_delete"><a href="#">'+'<h3>'+results.rows.item(i).number+' '+subelmento+'</h3><p>'+results.rows.item(i).type+': '+results.rows.item(i).state+' </p></a><span id="'+results.rows.item(i).idphone+'"  class="ui-li-count eliminarnumero" data-icon="delete" data-role="button" data-iconpos="notext">X</span><a href="#" id="'+results.rows.item(i).idphone+'" data-rel="popup" data-position-to="window" class="establecerprincipal '+clasePrincipal+'">Establecer como principal</a></li>';
+        var elemento = '<li class="number_element_delete"><a href="#">'+'<h3>'+results.rows.item(i).number+' '+subelmento+'</h3><p>'+results.rows.item(i).type+': '+results.rows.item(i).state+' </p></a><span id="'+results.rows.item(i).idphone+'" class="ui-li-count eliminarnumero"><img src="css/images/app/voteBasura.png" width="30"/><div>Eliminar</div></span><a href="#" id="'+results.rows.item(i).idphone+'" data-rel="popup" data-position-to="window" class="establecerprincipal '+clasePrincipal+'">Establecer como principal</a></li>';
         $('#listado_nums_config').append(elemento);
         $('#listado_nums_config').listview('refresh');
     }

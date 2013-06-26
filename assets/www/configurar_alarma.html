@@ -9,59 +9,57 @@
 
 		    $( document ).on( "pageshow", function(){
 				//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
-				//$("#DEMO").hide().delay( 1500 ).show( "fast" );
-				alert("pageshow");				
+				
 			});
 
 			function onDeviceReady() {
 			    // Now safe to use the Cordova API
 			    //Agregando controlador del boton ATRAS
 			    document.addEventListener("backbutton", handleBackButton, true);
-			    alert("ondeviceready");
+			    
 			}
 
 			// Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
 			$(document).ready(function(){
-				alert("ready");
+				
 			});//fin de document ready
 			
 		</script>
 	</head>
 	<body>
-
 		<div id="ConfigurarAlarma" data-url="Configurar_Alarma" data-role="page">
-			<div data-role="header" data-position="fixed" >
+			<div data-role="header" data-position="fixed">
 				<div data-role="navbar">
-				    <ul class="accordion accordion-1">
-					    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
-					    	<ul>
-						        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
-						        <br>
-						        <br>
-						        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
-						        <br>
-						        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
-						        <br>
-						        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
-						    </ul>
-					    </li>
-					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
-				    </ul>
-				    <script type="text/javascript">
-				    $('.accordion-1').dcAccordion({
-				        eventType: 'click',
-				        autoClose: true,
-				        saveState: true,
-				        disableLink: true,
-				        speed: 'fast',
-				        showCount: false,
-				        autoExpand: false,
-				        cookie  : '',
-				        classExpand  : 'dcjq-current-parent'
-				    });
-				    </script>
+				    <ul class="accordion accordion-1" id="mainmenu">
+						    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
+						    	<ul>
+							        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
+							        <br>
+							        <br>
+							        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
+							        <br>
+							        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
+							        <br>
+							        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
+							    </ul>
+						    </li>
+						    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+						    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+						    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+					    </ul>
+					    <script type="text/javascript">
+						    $('.accordion-1').dcAccordion({
+						        eventType: 'click',
+						        autoClose: true,
+						        saveState: true,
+						        disableLink: true,
+						        speed: 'fast',
+						        showCount: false,
+						        autoExpand: false,
+						        cookie  : '',
+						        classExpand  : ''
+						    });
+					    </script>
 				</div><!-- /navbar -->
 			</div><!-- /header -->
 
@@ -69,29 +67,33 @@
 				<span id="programarAlarmaTitle" class="headingTitle">
                     <img src="css/images/app/programarNuevaAlarma.png" width="350" />
                 </span>
-				<div data-role="fieldcontain">
-					<label for="cmbNumeroTel">Número telefónico</label>
+				<div class="advertencia" >El uso de alarmas puede consumir datos.</div>
+				<div data-role="fieldcontain" class="formComboNum">
+					<div>
+						<label for="cmbNumeroTel">Número telefónico</label>
+					</div>
 					<select name="cmbNumeroTel" id="cmbNumeroTel" data-native-menu="false">
 						
 					</select>
 					<script type="text/javascript">
 						consultarTelefonosAlarmasBD();
 					</script>
-				</div>
-				<div data-role="fieldcontain">
+					<br/>
 					<label for="txtporcentaje">% que dispara la alarma</label>
 					<input type="range" name="txtporcentaje" id="txtporcentaje" value="1" min="0" max="100" data-highlight="true"/>
-				</div>
-				-<br>El uso de alarmas puede consumir datos.<br>-
-				<input id="btnGuardarAlarma" type="button" data-icon="check" value="Guardar"/>
-				<input id="btnCancelarAlarma" type="button" value="Cancelar" OnClick='$.mobile.changePage("listado.html", { transition: "slide" });'/>
-
+					<div class="botonGuardarAlarm"><span id="btnGuardarAlarma" class="appBtn" ></span></div>				
+					
+				</div>				
+				
 				<ul id="listado_alarmas_config" data-role="listview" data-inset="true">
-					<li data-role="list-divider">Alarmas programadas</li>
+					<li class="listdividerNums" data-role="list-divider">
+						<span id="programarAlarmaTitle" class="headingTitle">
+                    		<img src="css/images/app/alarmas.png" width="350" />
+                		</span>
+                	</li>
 					
 				</ul>
 			</div>
 		</div>
-
 	</body>
 </html>
