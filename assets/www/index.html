@@ -45,21 +45,19 @@
          
             function drawChart() {}
             try
-           {
-         	google.load('visualization', '1.0', {'packages':['gauge']});
-         	google.setOnLoadCallback(drawChart);
-           }
-         catch(err)
-           {
-           	//alert("Error al cargar los graficos"+err);
-           	console.log("No se pudo cargar la librería para graficos.");
-           }
+            {
+             	google.load('visualization', '1.0', {'packages':['gauge']});
+             	google.setOnLoadCallback(drawChart);
+            }
+            catch(err)
+            {
+            	//alert("Error al cargar los graficos"+err);
+            	console.log("No se pudo cargar la librería para graficos.");
+            }
             
          
          $( document ).on( "pageshow", function(){
          	//$("#ConsumodeDatos").hide().delay( 1500 ).show( "fast" );
-         	//$("#DEMO").hide().delay( 1500 ).show( "fast" );
-         
          	
          });
          
@@ -94,6 +92,11 @@
           			}else{
           				consultaDatosPaquete();
           			}
+
+            //Leendo alarmas ya disparadas para removerlas del listado
+            window.obteneralarmasdisparadas(function(echoValue) {
+                quitarAlarmasDisparadas(echoValue);                
+            });
          }
          
          

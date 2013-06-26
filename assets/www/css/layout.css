@@ -94,7 +94,11 @@ div#progressbar{
 }
 
 div#central-content a{
-	color: rgb(223, 0, 0);
+	color: rgb(0, 184, 255);
+}
+
+div.ui-tolito-progressbar-label{
+	color: rgb(0, 184, 255);
 }
 
 

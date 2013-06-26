@@ -97,3 +97,13 @@ window.quitaralarmas = function(str, callback) {
     [str]
   );
 };
+
+window.obteneralarmasdisparadas = function(callback) {
+  cordova.exec(
+    callback,
+    function(err) { callback('¡Error al obtener listado de alarmas disparadas!'); },
+    "JPluginCom",
+    "readremovedalarms",
+    []
+  );
+};

@@ -1282,6 +1282,21 @@ function fcorrecto_tran_consTerms() {
 }
 
 
+//---------Funcion para remover alarmas disparadas de la base de datos
+function quitarAlarmasDisparadas(lista){
+    var lalarmas = lista.split(",");
+    for(var i = 0; i < lalarmas.length; i++) {
+        currentIdAlarm = lalarmas[i];
+        if (currentIdAlarm != ""){
+            eliminarAlarma();
+            console.log("Eliminada alarma:"+currentIdAlarm);
+        }else{
+            console.log("Error al eliminar alarmas disparadas");
+        }
+    }    
+}
+
+
 
 
 

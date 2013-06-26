@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 public class JPluginCom extends CordovaPlugin {
 	private enum Metodo {
-		isclaro, sendSMS, isclaro2, userphone,clarotype,activatedpackagelist,devicenumber,devicetype,registeralarms,removealarms;
+		isclaro, sendSMS, isclaro2, userphone,clarotype,activatedpackagelist,devicenumber,devicetype,registeralarms,removealarms,readremovedalarms;
 	}
 	Context mContext;
 	private ServicioAlarmas servicio;
@@ -76,8 +76,9 @@ public class JPluginCom extends CordovaPlugin {
 		    	alarmas = args.getString(0);
 		    	this.remover_alarmas(alarmas, callbackContext);
 			    break;
-			    
-			    
+		    case readremovedalarms:
+		    	this.leer_alarmas_removidas(callbackContext);
+			    break;
 		}
 		
         return false;
@@ -206,6 +207,18 @@ public class JPluginCom extends CordovaPlugin {
 			Configuracion.blacklist.add(alarms[i]);			
 		}		
 		callbackContext.success("EXITO");
-    }	
+    }
+	
+	private void leer_alarmas_removidas(CallbackContext callbackContext) {
+		Log.d("ServicioLocal", "Eliminando:");		
+		String listado = "";
+		int len = Configuracion.blacklist.size();
+		for (int i=0;i<len;i++){
+			listado = listado + Configuracion.blacklist.get(i);
+			if (i!=(len-1))
+				listado = listado + ",";
+		}
+		callbackContext.success(listado);
+    }
 
 }
