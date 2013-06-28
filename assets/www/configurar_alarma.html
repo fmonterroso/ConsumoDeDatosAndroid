@@ -29,37 +29,28 @@
 	<body>
 		<div id="ConfigurarAlarma" data-url="Configurar_Alarma" data-role="page">
 			<div data-role="header" data-position="fixed">
-				<div data-role="navbar">
-				    <ul class="accordion accordion-1" id="mainmenu">
-						    <li><a class="menuitemMenu dcjq-current-parent" href="#" data-icon="grid" data-role="button" data-iconpos="notext"></a>
-						    	<ul>
-							        <li><a class="submenuitem menuitemHistorial" href="#" style="width: 200px;">Mira tu historial</a></li>
-							        <br>
-							        <br>
-							        <li><a class="submenuitem menuitemContacto" href="#" style="width: 200px;">Contacto</a></li>
-							        <br>
-							        <li><a class="submenuitem menuitemTerminos" href="#" style="width: 200px;">Terminos y condiciones</a></li>
-							        <br>
-							        <li><a class="submenuitem menuitemSalir" href="#" style="width: 200px;">Salir</a></li>
-							    </ul>
-						    </li>
-						    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
-						    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
-						    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
-					    </ul>
-					    <script type="text/javascript">
-						    $('.accordion-1').dcAccordion({
-						        eventType: 'click',
-						        autoClose: true,
-						        saveState: true,
-						        disableLink: true,
-						        speed: 'fast',
-						        showCount: false,
-						        autoExpand: false,
-						        cookie  : '',
-						        classExpand  : ''
-						    });
-					    </script>
+				<div data-role="navbar">				    
+				    <ul id="mainmenu">
+					    <li>
+					    	<a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp($(this).next('ul'))"></a>
+	                 		<ul style="display: none;">
+		                        <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
+		                        <br>
+		                        <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
+		                        <br>
+		                        <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
+		                        <br>
+		                        <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
+		                     </ul>
+					    </li>
+					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+				    </ul>
+				    <script type="text/javascript">
+				    	eventMenu = 'down';
+		                $(".menuitemMenu").next('ul').css( "display", "none" );
+				    </script>
 				</div><!-- /navbar -->
 			</div><!-- /header -->
 

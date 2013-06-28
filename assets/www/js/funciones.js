@@ -137,7 +137,7 @@ function mostrarDatosPaquete(){
               chart = new google.visualization.Gauge(document.getElementById('chart_div'));
               //chart = new google.visualization.Gauge($("#chart_div")[0]);
               chart.draw(data, options);
-
+              $("#progressbar").css( "height", "0px" );
 
         }else{
             //No es una version valida de Android
@@ -188,6 +188,8 @@ function mostrarDatosPaquete(){
     $("#txtimgdisp").append(dispo+" MB");
     $("#txtimgporc").empty();
     $("#txtimgporc").append(porcentaje+"%");
+    $("#mensajeMBDisp").empty();
+    $("#mensajeMBDisp").append("Te quedan "+dispo+" MB de descarga");
     
     $("#phoneNum").empty();
     $("#phoneNum").append(numtelefonico);
@@ -222,6 +224,18 @@ function validarAvance(){
             }
         }
     });
+}
+
+function slideDownUp(id) {
+  if(eventMenu === 'up') {
+    $(id).slideUp('fast');
+    eventMenu = 'down';
+    $("ul#mainmenu").css( "height", 0);
+  } else {
+    $(id).slideDown('fast');
+    eventMenu = 'up';
+    $("ul#mainmenu").css( "height", $(window).height() );
+  }
 }
 
 
@@ -423,7 +437,7 @@ $(document).ready(function(){
 
     //-----------------------Funciones del menu-------------
     $("body").on("click",".menuitemMenu",function(){
-        //navigator.app.exitApp();
+        
         return false;
     });
 
@@ -447,6 +461,7 @@ $(document).ready(function(){
 
     
     $("body").on("click",".menuitemHome",function(){
+        eventMenu = 'down';
         $.mobile.changePage("index.html", { transition: "slide" });
         //Consulta buscando el numero principal si no fue establecido al inicio             
         if (currentId == ""){
@@ -480,16 +495,6 @@ $(document).ready(function(){
             // Si tenemos conexión
             alert("Si tenemos conexión");
         }
-        
-
-        var ref = window.open('http://internet.claro.com.gt/', '_blank','location=yes');
-        ref.addEventListener('loadstart', function(event) { console.log(event.type + ' - ' + event.url); } );
-        ref.addEventListener('loadstop', function(event) { console.log(event.type + ' - ' + event.url); } );
-        ref.addEventListener('exit', function(event) { 
-            console.log(event.type);
-            //Abriendo Base de datos
-            var db = abrirBD();
-        } );
 */
         return false;
     });

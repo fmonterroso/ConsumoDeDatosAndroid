@@ -101,6 +101,16 @@ div.ui-tolito-progressbar-label{
 	color: rgb(0, 184, 255);
 }
 
+#chart_div{
+	width: 150px;
+ 	height: 150px;	
+}
+
+#mensajeMBDisp{
+	font-size: 15px; 		
+	text-align: center;
+}
+
 
 /** PARA FORMULARIOS  **/
 	input[type="text"]{
@@ -326,4 +336,41 @@ div.ui-tolito-progressbar-label{
 	div.ui-slider-bg {
 		background-image: none;
 		background-color: #df0000;
+	}
+
+/** AREA DE MENU DESPLEGABLE **/
+	div.ui-header.ui-bar-a.ui-header-fixed{
+		background: #000000;
+	}
+
+	a.submenuitem{
+	  padding: 0 0 !important;
+	  width: 320px !important;
+	}
+
+	a.submenuitem span.ui-btn-inner span.ui-btn-text{
+		font-size: 17px;
+	}
+
+	a.submenuitem span.ui-btn-inner{
+		padding-left: 90px !important;
+		text-align: left !important;
+		height: 34px !important;
+		border-bottom: solid 1px !important;
+	}
+	
+	a.submenuitem.menuitemHistorial span.ui-btn-inner{
+		background: #000000 url(images/app/reloj.png) no-repeat 25px center;		
+	}
+
+	a.submenuitem.menuitemContacto span.ui-btn-inner{
+		background: #000000 url(images/app/sobre.png) no-repeat 25px center;		
+	}
+
+	a.submenuitem.menuitemTerminos span.ui-btn-inner{
+		background: #000000 url(images/app/check.png) no-repeat 25px center;
+	}
+
+	a.submenuitem.menuitemSalir span.ui-btn-inner{
+		background: #000000 url(images/app/flechaAtras.png) no-repeat 25px center;		
 	}
