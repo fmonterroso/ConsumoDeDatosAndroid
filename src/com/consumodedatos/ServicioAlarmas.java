@@ -20,6 +20,7 @@ import android.util.Log;
 
 public class ServicioAlarmas extends Service {
 	private Timer timer = new Timer();
+	//private static final long UPDATE_INTERVAL = 1800000;
 	private static final long UPDATE_INTERVAL = 25000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList list = new ArrayList();

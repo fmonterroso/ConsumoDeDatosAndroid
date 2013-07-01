@@ -111,38 +111,16 @@ function mostrarDatosPaquete(){
     var versionplataforma = device.version;
     if (plataforma == "Android") {
         //Es un Android
-        if (versionplataforma != "1.0" && versionplataforma != "1.1" && versionplataforma != "1.5" && versionplataforma != "1.6" && versionplataforma != "2.0" && versionplataforma != "2.1"  && versionplataforma != "2.2" && versionplataforma != "2.3" && versionplataforma != "2.3.3" ){
+        if (versionplataforma != "1.0" && versionplataforma != "1.1" && versionplataforma != "1.5" && versionplataforma != "1.6" && versionplataforma != "2.0" && versionplataforma != "2.1"  && versionplataforma.substring(0,3) != "2.2" && versionplataforma.substring(0,3) != "2.3" ){
             //Version valida de Android
             
             //Codigo para Gaugue Chart
-            var chart;
-            var data;
-            var options;
-            var valoractual = porcentaje;
-            data = google.visualization.arrayToDataTable([
-                ['Label', 'Value'],
-                ['Internet', valoractual]              
-              ]);
-
-              options = {
-                width: 200, height: 150,
-                minorTicks: 5, 
-                redFrom: 0, redTo: 10,
-                yellowFrom:10, yellowTo: 50,
-                greenFrom:50, greenTo:100,
-                duration:400, easing:'inAndOut',          
-                min:0, max: 100
-
-              };
-              chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-              //chart = new google.visualization.Gauge($("#chart_div")[0]);
-              chart.draw(data, options);
-              $("#progressbar").css( "height", "0px" );
-
+            rotarGaugeDatos(porcentaje);
+            $("#progressbar").css( "height", "0px" );
         }else{
             //No es una version valida de Android
             //Codigo para grafico comun (proressbar)                                
-            TolitoProgressBar('progressbar')
+            /*TolitoProgressBar('progressbar')
             .setOuterTheme('d')
             .setInnerTheme('b')
             .isMini(true)
@@ -153,7 +131,11 @@ function mostrarDatosPaquete(){
             .logOptions()
             .build();
             $("#totalpercentage").empty();
-            $("#totalpercentage").append("100%");            
+            $("#totalpercentage").append("100%"); */  
+            var valoractual = porcentaje;
+            valoractual = 80;
+            rotarGaugeDatos(valoractual);
+            $("#progressbar").css( "height", "0px" );         
         }
     }else{
         //No es Android
@@ -163,18 +145,13 @@ function mostrarDatosPaquete(){
     //conversion de fecha de vigencia
     $("#dateVigenciaDetalle").empty();
     if (bandera_paquete == "1"){
-        //fech = Date.parse(vigencia);
         fech = parseDate(vigencia);
-        //alert("parseada:"+fech);
         fech2 = new Date(fech);
-        //alert("como fecha:"+fech2);
         fech3 = mostrarFechaCompuesta(fech2);
         hora3 = mostrarHoraCompuesta(fech2);                            
-        //alert("aplicada funcion:"+fech3);
         $("#dateVigenciaDetalle").append(fech3 + " a las " + hora3);
     }else
         $("#dateVigenciaDetalle").append("N/A");
-
 
     $("#txtimginc").empty();
     $("#txtimginc").append(mbtotales+" MB");
@@ -204,26 +181,48 @@ function mostrarDatosPaquete(){
 }
 
 function validarAvance(){
-    $.confirm({
-        'title'     : 'Confirmación de avance',
-        'message'   : 'No se ha reconocido ningun número valido en tu dispositivo. Quieres configurarlo en tu teléfono y volver a intentarlo o proceder y configurarlo dentro de la aplicación?',
-        'buttons'   : {
-            'Regresar'   : {
-                'class' : 'blue',
-                'action': function(){
-                    //alert("Regresaras");
-                    navigator.app.exitApp();
-                }
-            },
-            'Proceder'    : {
-                'class' : 'gray',
-                'action': function(){
-                    //alert("procediste");
-                    $.mobile.changePage("listado.html", { transition: "slide" });
-                }
-            }
+    var message = "No se ha reconocido ningun número valido en tu dispositivo. ¿Quieres configurarlo en tu teléfono y volver a intentarlo o proceder y configurarlo dentro de la aplicación?";
+    var title = "Confirmación de avance";
+
+    //The first element of this list is the label for positive 
+    var buttonLabels = "Proceder,Regresar";
+
+    var callback = function(yes){
+        if(yes){
+            $.mobile.changePage("listado.html", { transition: "slide" });
+        }else{
+            navigator.app.exitApp();
         }
-    });
+    };
+
+    showConfirm(message, callback, buttonLabels, title);    
+}
+
+function showConfirm(message, callback, buttonLabels, title){
+    //Set default values if not specified by the user.
+    buttonLabels = buttonLabels || 'OK,Cancel';
+    title = title || "Alerta";
+
+    //Use Cordova version of the confirm box if possible.
+    if(navigator.notification && navigator.notification.confirm){
+
+            var _callback = function(index){
+                if(callback){
+                    callback(index == 1);
+                }
+            };
+
+            navigator.notification.confirm(
+                message,      // message
+                _callback,    // callback
+                title,        // title
+                buttonLabels  // buttonName
+            );
+
+    //Default to the usual JS confirm method.
+    }else{
+        invoke(callback, confirm(message));
+    }
 }
 
 function slideDownUp(id) {
@@ -234,8 +233,19 @@ function slideDownUp(id) {
   } else {
     $(id).slideDown('fast');
     eventMenu = 'up';
-    $("ul#mainmenu").css( "height", $(window).height() );
+    $("ul#mainmenu").css( "height", $(window).height() + "px !important" );
+    $("a.submenuitem").css( "width", $(window).width() + "px !important" );
   }
+}
+
+function rotarGaugeDatos(angulo) {
+    var anguloGauge = ((gaugeDatos_totalA*angulo)/100)-57;
+    jQuery('#porcentaje_gauge').html(angulo.toFixed(0)+'%');
+    jQuery('#gauge_datos #gauge_pointer').rotate({
+        duration: 10000,
+        angle: gaugeDatos_inicio,
+        animateTo: anguloGauge
+    });
 }
 
 
@@ -286,10 +296,10 @@ $(document).ready(function(){
 
               }else{
                 if (echoValue == "ERROR"){
-                    showAlert("Hubo un error al validar tu número de telefono. Verifica tu conexión a internet.","Validació fallida","OK");
+                    showAlert("Hubo un error al validar tu número de telefono. Verifica tu conexión a internet.","¡Validació fallida!","OK");
                     console.log("Error al validar número.");
                 }else{
-                    showAlert("El número ingresado no es un número Claro.","Número Inválido","OK");//mensaje 1
+                    showAlert("El número ingresado no es un número Claro.","¡Número Inválido!","OK");//mensaje 1
                     console.log("El número ingresado no es un número Claro.");
                 }
               }    		  
@@ -305,7 +315,7 @@ $(document).ready(function(){
         if (currentId != "" && $("#codConfirmacion").val() != ""){
             validarCodigoBD();            
         }else
-            alert("Nada que confirmar!");        
+            showAlert("No has ingresado el código de confirmación.","Código Inválido","OK");
         return false;
     });
 
@@ -340,14 +350,13 @@ $(document).ready(function(){
 
     $("body").on("click","#btnGuardarAlarma",function(){
         //boton para actualizar los datos del usuario
-        //alert("valor seleccionado:"+$("#cmbNumeroTel option:selected").val());
         var numSeleccionado = $("#cmbNumeroTel option:selected").val();
         if (numSeleccionado != "-1"){
             agregarAlarma();
-            showAlert("Tu alarma ha sido agregada correctamente.","Exito","OK");
+            showAlert("Tu alarma fue programada exitosamente.","¡Exito!","OK");
             consultarTelefonosAlarmasBD();
         }else{
-            showAlert("Debes seleccionar un numero telefónico.","Número Inválido","OK");
+            showAlert("Debes seleccionar un numero telefónico.","¡Número Inválido!","OK");
         }
         
         return false;
@@ -357,9 +366,21 @@ $(document).ready(function(){
     $("body").on("click",".eliminaralarma",function(){
         currentIdAlarm = $(this).attr("id");        
         if (currentIdAlarm != ""){
-            eliminarAlarma();
-            showAlert("Tu alarma ha sido eliminada correctamente.","Exito","OK");
-            consultarTelefonosAlarmasBD();
+            var message = "Realmente deseas eliminar esta alarma";
+            var title = "¿Eliminar Alarma?";
+
+            //The first element of this list is the label for positive 
+            var buttonLabels = "OK,Cancelar";
+
+            var callback = function(yes){
+                if(yes){
+                    eliminarAlarma();
+                    //showAlert("Tu alarma ha sido eliminada correctamente.","Exito","OK");                    
+                    consultarTelefonosAlarmasBD();
+                }
+            };
+            showConfirm(message, callback, buttonLabels, title); 
+            
         }else{
             showAlert("Ocurrio un problema al elminar la alarma, inténtalo de nuevo.","Número Inválido","OK");
         }
@@ -370,7 +391,6 @@ $(document).ready(function(){
     $("body").on("click",".eliminarnumero",function(){
         currentId = $(this).attr("id");
         if (currentId != ""){
-            //alert("Eliminaras el registro:"+currentId);
             eliminarBD(currentId);
             showAlert("Tu número ha sido eliminado correctamente.","Exito","OK");
             //Actualizando listado
@@ -384,7 +404,6 @@ $(document).ready(function(){
     $("body").on("click",".establecerprincipal",function(){
         currentId = $(this).attr("id");
         if (currentId != ""){
-            //alert("Estableciendo numero principal:"+currentId);
             actualizarPrincipal();
             showAlert("Tu número ha sido establecido como principal.","Exito","OK");
             //Actualizando listado
@@ -421,21 +440,7 @@ $(document).ready(function(){
     });
     
 
-    //-------------------Funciones del Gauge
-    /*
-    chart.clearChart()
-
-    data = google.visualization.arrayToDataTable([
-        ['Label', 'Value'],
-        ['Internet', valor]
-    ]);
-    chart.draw(data, options);
-
-    */
-    //Fin de funciones de Gauge
-
-
-    //-----------------------Funciones del menu-------------
+//-----------------------Funciones del menu-------------
     $("body").on("click",".menuitemMenu",function(){
         
         return false;
@@ -477,6 +482,7 @@ $(document).ready(function(){
     $("body").on("click",".menuitemStore",function(){
         //alert("Iniciando");
         location.href="http://internet.claro.com.gt/";
+        
         /*
         window.obtenertipo(function(echoValue) {
             console.log("El tipo reconocido es:"+echoValue);
@@ -523,7 +529,7 @@ function generar_codigo(numero){
 //-------------------------------------Funciones de persistencia de datos------------------------------------
 
 function errorCB(err) {
-    alert("Error procesando SQL, cod: "+err.code+" desc: "+err.message);
+    showAlert("Error procesando SQL, cod:"+err.code+" desc: "+err.message,"Error Base de datos","OK");
 }
 
 function abrirBD(){
@@ -618,11 +624,11 @@ function insertar(tx){
     window.enviarsms("502" + $("#phone").val(), mensaje, function(echoValue) {
       if (echoValue == "ok"){
         bandera_eliminar = "0";
-        showAlert("Debemos confirmar que este numero te pertenezca, se ha enviado un código de confirmación a tu teléfono, luego escribelo en la casilla inferior.","Envío de confirmación exitosa","OK");//mensaje 3
+        showAlert("Debemos confirmar que éste número te pertenece, se enviará un código de confirmación a tu teléfono, luego escríbelo en la casilla inferior.","Envío de confirmación exitosa","OK");//mensaje 3
         consultarTelefonosBorarBD();
       }else{
         bandera_eliminar = "1";
-        showAlert("Ocurrio un error al solicitar el código de confirmación, por favor intentalo de nuevo más tarde.","Error en la solicitud","OK");//mensaje 2
+        showAlert("Ocurrió un error al solicitar el código de confirmación, por favor inténtalo de nuevo más tarde.","Error en solicitud","OK");//mensaje 2
       }      
     });
     //alert("Bandera:"+bandera_eliminar);
@@ -772,7 +778,7 @@ function fcorrecto_validarNumero_exe(tx, results){
     if (len > 0){
         //el numero ya esta en la base de datos
         console.log("El numero ya esta en la BD");
-        showAlert("El número ingresado ya esta registrado. Por favor ingresa otro.","Número Inválido","OK")
+        showAlert("El número ingresado ya esta registrado. Por favor ingresa otro.","¡Número Inválido!","OK")
     }else{
         //Se procede a insertar pues ya fue validado en la base de datos
         insertarBD();
@@ -802,7 +808,7 @@ function fcorrecto_validarCodigo_exe(tx, results){
     if (len > 0){
         //El codigo ingresado coincide con el registrado en la BD
         console.log("El codigo es correcto!");
-        showAlert("El número ha sido agregado a tu aplicación de monitoreo de consumo de datos.","Confirmación exitosa!","OK")
+        showAlert("El número ha sido asignado a tu aplicación de monitoreo de consumo de datos.","¡Confirmación exitosa!","OK")
         //Actualizando datos del registro
         tx.executeSql('UPDATE phones SET state = "ACTIVO", activation_date = date("now") WHERE idphone=?',[currentId]);
 
@@ -811,7 +817,7 @@ function fcorrecto_validarCodigo_exe(tx, results){
 
     }else{
         //El codigo no es correcto
-        showAlert("El código de confirmación ingresado no es válido. Por favor verifica el mismo e intenta de nuevo.","Confirmación inválida","OK")
+        showAlert("El código de confirmación ingresado no es válido. Por favor verifica el mismo e intenta de nuevo.","¡Confirmación inválida!","OK")
     }
 }
 

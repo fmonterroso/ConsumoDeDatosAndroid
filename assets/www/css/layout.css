@@ -374,3 +374,9 @@ div.ui-tolito-progressbar-label{
 	a.submenuitem.menuitemSalir span.ui-btn-inner{
 		background: #000000 url(images/app/flechaAtras.png) no-repeat 25px center;		
 	}
+
+/** AREA DE GRAFICO DE GAUGE **/
+	#content_gauge { width: 210px; height: 200px; margin: 0px auto; position: relative; }
+	#gauge_datos { width: 210px; height: 200px; background: url('images/app/gauge/bg_tacometro.png'); position: relative; }
+	#gauge_pointer { width: 23px; height: 200px; margin: 0px 87px; transform: rotate(-57deg); }
+	#porcentaje_gauge { width: 60px; height: 60px; position: absolute; bottom: 13px; right: 0px; font-size: 16px; font-weight: bold; color: #FFF; text-align: center; line-height: 60px; }
