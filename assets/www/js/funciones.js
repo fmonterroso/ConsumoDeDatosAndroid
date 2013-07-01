@@ -366,21 +366,17 @@ $(document).ready(function(){
     $("body").on("click",".eliminaralarma",function(){
         currentIdAlarm = $(this).attr("id");        
         if (currentIdAlarm != ""){
-            var message = "Realmente deseas eliminar esta alarma";
-            var title = "¿Eliminar Alarma?";
-
+            var message = "¿Realmente deseas eliminar esta alarma?";
+            var title = "Eliminar Alarma";
             //The first element of this list is the label for positive 
             var buttonLabels = "OK,Cancelar";
-
             var callback = function(yes){
                 if(yes){
                     eliminarAlarma();
-                    //showAlert("Tu alarma ha sido eliminada correctamente.","Exito","OK");                    
                     consultarTelefonosAlarmasBD();
                 }
             };
-            showConfirm(message, callback, buttonLabels, title); 
-            
+            showConfirm(message, callback, buttonLabels, title);
         }else{
             showAlert("Ocurrio un problema al elminar la alarma, inténtalo de nuevo.","Número Inválido","OK");
         }
@@ -391,10 +387,18 @@ $(document).ready(function(){
     $("body").on("click",".eliminarnumero",function(){
         currentId = $(this).attr("id");
         if (currentId != ""){
-            eliminarBD(currentId);
-            showAlert("Tu número ha sido eliminado correctamente.","Exito","OK");
-            //Actualizando listado
-            consultarTelefonosBorarBD();
+            var message = "¿Realmente deseas eliminar este número?";
+            var title = "Eliminar Número";
+            //The first element of this list is the label for positive 
+            var buttonLabels = "OK,Cancelar";
+            var callback = function(yes){
+                if(yes){
+                    eliminarBD(currentId);
+                    //Actualizando listado
+                    consultarTelefonosBorarBD();
+                }
+            };
+            showConfirm(message, callback, buttonLabels, title);
         }else
             showAlert("Ocurrio un problema al elminar el número, inténtalo de nuevo.","Número Inválido","OK");
         return false;
@@ -405,7 +409,7 @@ $(document).ready(function(){
         currentId = $(this).attr("id");
         if (currentId != ""){
             actualizarPrincipal();
-            showAlert("Tu número ha sido establecido como principal.","Exito","OK");
+            showAlert("Tu número ha sido establecido como principal exitosamente.","¡Exito!","OK");
             //Actualizando listado
             consultarTelefonosBorarBD();
         }else
