@@ -19,6 +19,6 @@
 	    <plugin name="SplashScreen" value="org.apache.cordova.SplashScreen"/>
 	    <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser" />
 	    <plugin name="JPluginCom" value="com.consumodedatos.JPluginCom"/>
-	    <plugin name="EmailComposer" value="com.consumodedatos.EmailComposer"/>	    	    
+	    <plugin name="EmailComposer" value="com.consumodedatos.EmailComposer"/>	    	    	    
 	</plugins>
 	

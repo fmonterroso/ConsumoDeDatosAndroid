@@ -32,24 +32,14 @@
 				<div data-role="navbar">				    
 				    <ul id="mainmenu">
 					    <li>
-					    	<a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp($(this).next('ul'))"></a>
-	                 		<ul style="display: none;">
-		                        <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
-		                        <br>
-		                        <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
-		                        <br>
-		                        <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
-		                        <br>
-		                        <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
-		                     </ul>
+				    	<a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp('submenuMenu');"></a>
 					    </li>
 					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
 					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
 				    </ul>
 				    <script type="text/javascript">
-				    	eventMenu = 'down';
-		                $(".menuitemMenu").next('ul').css( "display", "none" );
+				    	$(".menuitemMenu").next('ul').css( "display", "none" );
 				    </script>
 				</div><!-- /navbar -->
 			</div><!-- /header -->
@@ -113,6 +103,15 @@
 						<p style="font-size: 17px;">13/05/2013 - 01/06/2013</p>
 					</li>					
 				</ul>
+				<!-- Submenu -->
+				<div class="content_submenu" style="display: none;">
+	              <ul id="submenuMenu" class="submenu clearfix">
+	                <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
+	                <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
+	                <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
+	                <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
+	              </ul>
+	            </div>
 			</div>
 		</div>
 	</body>

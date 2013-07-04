@@ -109,38 +109,28 @@ function mostrarDatosPaquete(){
     //haciendo validacion de dispositivo
     var plataforma = device.platform;
     var versionplataforma = device.version;
+    rotarGaugeDatos(porcentaje);
+    $("#progressbar").css( "height", "0px" );
+    
+    /*
     if (plataforma == "Android") {
         //Es un Android
         if (versionplataforma != "1.0" && versionplataforma != "1.1" && versionplataforma != "1.5" && versionplataforma != "1.6" && versionplataforma != "2.0" && versionplataforma != "2.1"  && versionplataforma.substring(0,3) != "2.2" && versionplataforma.substring(0,3) != "2.3" ){
             //Version valida de Android
-            
             //Codigo para Gaugue Chart
             rotarGaugeDatos(porcentaje);
             $("#progressbar").css( "height", "0px" );
         }else{
             //No es una version valida de Android
-            //Codigo para grafico comun (proressbar)                                
-            /*TolitoProgressBar('progressbar')
-            .setOuterTheme('d')
-            .setInnerTheme('b')
-            .isMini(true)
-            .setMax(100)
-            .setStartFrom(porcentaje)
-            .setInterval(50)
-            .showCounter(true)
-            .logOptions()
-            .build();
-            $("#totalpercentage").empty();
-            $("#totalpercentage").append("100%"); */  
-            var valoractual = porcentaje;
-            valoractual = 80;
+            var valoractual = 80;
+            //var valoractual = porcentaje;
             rotarGaugeDatos(valoractual);
             $("#progressbar").css( "height", "0px" );         
         }
     }else{
         //No es Android
-
     }
+    */
 
     //conversion de fecha de vigencia
     $("#dateVigenciaDetalle").empty();
@@ -226,16 +216,14 @@ function showConfirm(message, callback, buttonLabels, title){
 }
 
 function slideDownUp(id) {
-  if(eventMenu === 'up') {
-    $(id).slideUp('fast');
-    eventMenu = 'down';
-    $("ul#mainmenu").css( "height", 0);
-  } else {
-    $(id).slideDown('fast');
-    eventMenu = 'up';
-    $("ul#mainmenu").css( "height", $(window).height() + "px !important" );
-    $("a.submenuitem").css( "width", $(window).width() + "px !important" );
-  }
+    //alert(jQuery('#content_submenu').html());
+    if(jQuery('.content_submenu').is(":visible")) {
+        jQuery('.content_submenu #'+id).css({ diplay: 'none' });
+        jQuery('.content_submenu').slideUp();
+    } else {
+        jQuery('.content_submenu #'+id).css({ diplay: 'block' });
+        jQuery('.content_submenu').slideDown();
+    }  
 }
 
 function rotarGaugeDatos(angulo) {
@@ -316,11 +304,6 @@ $(document).ready(function(){
             validarCodigoBD();            
         }else
             showAlert("No has ingresado el código de confirmación.","Código Inválido","OK");
-        return false;
-    });
-
-    $("body").on("click","#goDetalleComsumo",function(){
-        $.mobile.changePage("detalleConsumo.html", { transition: "slide" });
         return false;
     });
 
@@ -452,25 +435,32 @@ $(document).ready(function(){
 
     //elementos del menu
     $("body").on("click",".menuitemHistorial",function(){
+        
+        slideDownUp('submenuMenu');
         $.mobile.changePage("detallePaquete.html", { transition: "slide" });
         return false;
     });
     $("body").on("click",".menuitemContacto",function(){
+        slideDownUp('submenuMenu');
         $.mobile.changePage("contacto.html", { transition: "slide" });
         return false;
     });
     $("body").on("click",".menuitemTerminos",function(){
+        slideDownUp('submenuMenu');
         $.mobile.changePage("terminos.html", { transition: "slide" });
         return false;
     });
     $("body").on("click",".menuitemSalir",function(){
+        slideDownUp('submenuMenu');
         navigator.app.exitApp();
         return false;
     });
 
     
     $("body").on("click",".menuitemHome",function(){
-        eventMenu = 'down';
+        if(jQuery('.content_submenu').is(":visible")) {
+            slideDownUp('submenuMenu');            
+        }
         $.mobile.changePage("index.html", { transition: "slide" });
         //Consulta buscando el numero principal si no fue establecido al inicio             
         if (currentId == ""){
@@ -484,6 +474,7 @@ $(document).ready(function(){
     });
 
     $("body").on("click",".menuitemStore",function(){
+        slideDownUp('submenuMenu');
         //alert("Iniciando");
         location.href="http://internet.claro.com.gt/";
         
@@ -511,6 +502,9 @@ $(document).ready(function(){
 
     $("body").on("click",".menuitemConfig",function(){
         if($.mobile.activePage.attr('id') != 'Listado'){
+            if(jQuery('.content_submenu').is(":visible")) {
+                slideDownUp('submenuMenu');
+            }            
             $.mobile.changePage("listado.html", { transition: "slide" });            
         }            
         return false;

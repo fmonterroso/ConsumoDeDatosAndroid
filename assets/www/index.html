@@ -5,8 +5,7 @@
       
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet"  href="css/jquery.mobile-1.3.1.css">
-      <link rel="stylesheet" type="text/css" href="css/tolito-1.0.4.css" />
+      <link rel="stylesheet"  href="css/jquery.mobile-1.3.1.css">      
       <link rel="stylesheet"  href="css/main.css">
       <link href="css/layout.css" rel="stylesheet" type="text/css" />
       <script src="js/jquery.js"></script>
@@ -14,7 +13,7 @@
       <script type="text/javascript" charset="utf-8" src="js/cordova-2.5.0.js"></script>
       <script src="js/PluginCom.js"></script>
       <script src="js/md5.js"></script>
-      <script type="text/javascript" src="js/tolito-1.0.4.js"></script>
+      
       <script type="text/javascript" src="js/jQueryRotate-2.2.min.js"></script>
       <script src="js/funciones.js"></script>
       <script>
@@ -26,8 +25,7 @@
             var currentIdAlarm="";
             var bandera_eliminar="0";
             var bandera_paquete="0";
-            var bandera_existen_numeros="0";
-            var eventMenu = 'down';
+            var bandera_existen_numeros="0";            
          
          //Valores por defecto de variables
             var vigencia = "";
@@ -49,14 +47,13 @@
          
          function onDeviceReady() {
              // Now safe to use the Cordova API
-             
+             //navigator.splashscreen.show();
              //Agregando controlador del boton ATRAS
              document.addEventListener("backbutton", handleBackButton, true);
          
              //Abriendo Base de datos
              var db = abrirBD();
-             
-             
+                          
              //Cargando librerias para el grafico de Gauge
              if(navigator.connection.type == Connection.NONE){
                  // No tenemos conexión			        
@@ -65,8 +62,7 @@
                  // Si tenemos conexión
                  console.log("Si tenemos conexión");
              }
-         
-         
+                  
              //Recorrer datos y mostrar
           			consultaInicial();
           			
@@ -84,15 +80,15 @@
                 quitarAlarmasDisparadas(echoValue);                
             });
 
-            rotarGaugeDatos(0);
+            //quitando splash
+            //navigator.splashscreen.hide();
          }
          
          
          // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
          $(document).ready(function(){
-
+            rotarGaugeDatos(0);
          });//fin de document ready
-         
       </script>
    </head>
    <body>
@@ -101,29 +97,19 @@
             <div data-role="navbar">
                <ul id="mainmenu">
                   <li>
-                     <a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp($(this).next('ul'))"></a>
-                     <ul style="display: none;">
-                        <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
-                        <br>
-                        <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
-                        <br>
-                        <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
-                        <br>
-                        <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
-                     </ul>
+                     <a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp('submenuMenu');"></a>
                   </li>
                   <li><a class="menuitemHome ui-btn-active" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
                   <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
                   <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
                </ul>
                <script type="text/javascript">
-                  eventMenu = 'down';
                   $(".menuitemMenu").next('ul').css( "display", "none" );
                </script>
             </div><!-- /navbar -->
          </div><!-- /header -->
          
-         <div data-role="content">
+         <div class="content_page" data-role="content">
             <div id="user_name">
                Usuario
             </div>
@@ -236,6 +222,15 @@
                <!-- Fin de contenido de detalle de consumo-->
             </div>
          </div>
+      </div>
+      <!-- Submenu -->
+      <div class="content_submenu" style="display: none;">
+        <ul id="submenuMenu" class="submenu clearfix">
+          <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
+          <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
+          <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
+          <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
+        </ul>
       </div>
    </body>
 </html>

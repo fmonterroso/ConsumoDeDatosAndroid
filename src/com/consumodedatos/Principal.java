@@ -11,6 +11,8 @@ public class Principal extends DroidGap {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		//setContentView(R.layout.activity_principal);
+		super.setIntegerProperty("splashscreen", R.drawable.splashmdpi);
+		
 		super.setIntegerProperty("loadUrlTimeoutValue", 60000); 
 		super.onCreate(savedInstanceState);
 		Configuracion.context = this;

@@ -9,6 +9,22 @@ html, body {
 	font-size: 115%;
 }
 
+.clearfix:before, .clearfix:after               { content: " "; display: table; }
+.clearfix:after                                 { clear: both; }
+.clearfix                                       { *zoom: 1; }  
+
+div.content_page { position: relative !important; }
+div.content_submenu { width: 100%; height: 100%; background: #000; position: fixed; top: 48px; left: 0px; }
+div.content_submenu ul { margin: 0px; padding: 0px; list-style: none; }
+div.content_submenu ul li { width: 100%; border-bottom: 1px solid #FFF; line-height: 50px !important; }
+div.content_submenu ul li a { width: 100%; padding: 4px 0px 4px 60px !important; line-height: 50px !important; color: #FFF !important; display: block; text-decoration: none; cursor: pointer; }
+
+div.content_submenu ul li a.menuitemHistorial { background: url(images/app/reloj.png) no-repeat 6px center;}
+div.content_submenu ul li a.menuitemContacto { background: url(images/app/sobre.png) no-repeat 6px center;}
+div.content_submenu ul li a.menuitemTerminos { background: url(images/app/check.png) no-repeat 6px center;}
+div.content_submenu ul li a.menuitemSalir { background: url(images/app/flechaAtras.png) no-repeat 6px center;}
+
+
 ul#mainmenu, ul#mainmenu > li, ul#mainmenu > li > a, ul#mainmenu > li > a > span  {
 	background: none;
 	border: 0;
@@ -345,7 +361,8 @@ div.ui-tolito-progressbar-label{
 
 	a.submenuitem{
 	  padding: 0 0 !important;
-	  width: 320px !important;
+	  /*width: 320px !important;*/	
+	  margin: 0px 0px 0 0 !important;
 	}
 
 	a.submenuitem span.ui-btn-inner span.ui-btn-text{
