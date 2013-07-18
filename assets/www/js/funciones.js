@@ -62,6 +62,12 @@ function parseDate(input) {
 }
 
 function consultaDatosPaquete(){
+    $.mobile.loading( 'show', {
+        text: 'Cargando',
+        textVisible: true,
+        theme: 'a',
+        html: ""
+    });
     //alert("id actual:"+currentId);
     if (currentId != ""){
         //Llamada a la funcion para consumir el web service y establecer los datos en las variables globales
@@ -72,6 +78,7 @@ function consultaDatosPaquete(){
         });                 
         if (resultado == "ERROR"){
             showAlert("Ocurrio un problema consultando tus datos. Por favor intenta mas tarde.","OK");
+            $.mobile.changePage("listado.html", { transition: "slide" });
         }else{
             leerxml(resultado);
             //validando para saber si se encontro algun paquete:
@@ -84,12 +91,14 @@ function consultaDatosPaquete(){
                 cont_paquetes = 0;
             }
             //Mostrando datos en la interfaz
-            mostrarDatosPaquete();            
+            mostrarDatosPaquete();
+            
         }
     }else{
 
     }
-
+    $.mobile.loading( 'hide', {                                
+    });
 }
 
 function mostrarDatosPaquete(){
@@ -233,6 +242,40 @@ function rotarGaugeDatos(angulo) {
         duration: 10000,
         angle: gaugeDatos_inicio,
         animateTo: anguloGauge
+    });
+}
+
+function consultaCarga(){
+    //Recorrer datos y mostrar
+    consultaInicial();
+    //Consulta buscando el numero principal si no fue establecido al inicio         
+    if (currentId == ""){
+        //no se inserto un numero al inicio
+        //realizando busqueda del principal
+        consultaPrincipal();
+    }else{
+        consultaDatosPaquete();
+    }    
+}
+
+function verificarConexion(){
+    if(navigator.connection.type == Connection.NONE){
+        // No tenemos conexión                 
+        console.log("No tenemos conexión");
+        return false;
+    }else{
+        // Si tenemos conexión
+        console.log("Si tenemos conexión");
+        return true;
+    }
+}
+
+function obtienenumeroweb(){
+    $.get("http://internet.claro.com.gt/images/he/he.php?he=he",function(data,status){
+        var SimPhone = jQuery.parseJSON(data);
+        console.log("El número reconocido es por la funcion:"+SimPhone.phone);
+        numeroPropio = SimPhone.phone;
+        //alert("El numero reconocido es :"+numReconocido);
     });
 }
 
@@ -435,23 +478,27 @@ $(document).ready(function(){
 
     //elementos del menu
     $("body").on("click",".menuitemHistorial",function(){
-        
-        slideDownUp('submenuMenu');
+        if(jQuery('.content_submenu').is(":visible")) {
+            slideDownUp('submenuMenu');
+        }
         $.mobile.changePage("detallePaquete.html", { transition: "slide" });
         return false;
     });
     $("body").on("click",".menuitemContacto",function(){
-        slideDownUp('submenuMenu');
+        if(jQuery('.content_submenu').is(":visible")) {
+            slideDownUp('submenuMenu');
+        }
         $.mobile.changePage("contacto.html", { transition: "slide" });
         return false;
     });
     $("body").on("click",".menuitemTerminos",function(){
-        slideDownUp('submenuMenu');
+        if(jQuery('.content_submenu').is(":visible")) {
+            slideDownUp('submenuMenu');
+        }
         $.mobile.changePage("terminos.html", { transition: "slide" });
         return false;
     });
     $("body").on("click",".menuitemSalir",function(){
-        slideDownUp('submenuMenu');
         navigator.app.exitApp();
         return false;
     });
@@ -459,7 +506,7 @@ $(document).ready(function(){
     
     $("body").on("click",".menuitemHome",function(){
         if(jQuery('.content_submenu').is(":visible")) {
-            slideDownUp('submenuMenu');            
+            slideDownUp('submenuMenu');
         }
         $.mobile.changePage("index.html", { transition: "slide" });
         //Consulta buscando el numero principal si no fue establecido al inicio             
@@ -474,7 +521,9 @@ $(document).ready(function(){
     });
 
     $("body").on("click",".menuitemStore",function(){
-        slideDownUp('submenuMenu');
+        if(jQuery('.content_submenu').is(":visible")) {
+            slideDownUp('submenuMenu');
+        }
         //alert("Iniciando");
         location.href="http://internet.claro.com.gt/";
         
@@ -528,6 +577,7 @@ function generar_codigo(numero){
 
 function errorCB(err) {
     showAlert("Error procesando SQL, cod:"+err.code+" desc: "+err.message,"Error Base de datos","OK");
+    console.log("ERROR:"+err.code+" desc: "+err.message);
 }
 
 function abrirBD(){
@@ -581,9 +631,7 @@ function fcorrecto_prue(tx, results){
 
 function fcorrecto_transac() {
     //alert("Correcto verificar!");
-    console.log("Se verifico la base de datos correctamente!");
-    //realizando al siguiente paso del flujo: Consulta inicial
-    //consultaInicial();
+    console.log("Se verifico la base de datos correctamente!");    
 }
 
 
@@ -849,22 +897,34 @@ function fcorrecto_consultaInicial_exe(tx, results){
         console.log("Iniciando obtencion de número propio");
         
         var numReconocido = "";
-        //comunicandose con app nativa
+        var numReconocido = numeroPropio;
+        //alert("El numero reconocido es :"+numReconocido);
+        console.log("AQUI SE CONSULTO EL NUMERO:"+numReconocido);
+        /*
+        //comunicandose con app nativa        
         window.obtenernumero(function(n) {
             console.log("El número reconocido es:"+n);
             numReconocido = n;            
         });
+        
+        $.get("http://internet.claro.com.gt/images/he/he.php?he=he",function(data,status){
+            var SimPhone = jQuery.parseJSON(data);
+            console.log("El número reconocido es:"+SimPhone.phone);
+            numReconocido = SimPhone.phone;
+            //alert("El numero reconocido es :"+numReconocido);
+        });
+        */
 
         //SIMULANDO NUMERO RECONOCIDO--------------------
         //numReconocido = "50159519";
 
         //verificacion de que se haya reconocido un numero en el telefono
-        if (numReconocido != ""){
+        if (numReconocido != "" && numReconocido != false){
             var numRecoClaro = "0";
             //Validando numero claro y tipo de dispositivo
             window.validar(numReconocido, function(nRC) {
               numRecoClaro = nRC;
-              if (numRecoClaro != "0" && numRecoClaro !="ERROR"){
+              if (numRecoClaro != "0" && numRecoClaro !="ERROR" && numRecoClaro != "undefined"){
                 console.log("El número reconocido SI es un número Claro.");
               }else{
                 console.log("El número reconocido no es un número Claro. este era:"+numReconocido);
@@ -1316,35 +1376,105 @@ function quitarAlarmasDisparadas(lista){
 function leerxml(texto){
     bandera_paquete = "0";    
     //alert(texto);
+    console.log("Resp:"+texto);
     //Comenzamos a recorrer el xml
     $(texto).find("PAQUETESACTIVOS").each(function () {
+        var codSuscriptemp = "";
         $(this).find("PAQUETECUENTA").each(function () {
            var codigopaquete = "";
+           
+           codSuscriptemp = "";
+           var codSuscrip = "";
+           var nombrepaqtemp = "";
+           var mbtotalestemp = "";
+           var vigenciatemp = "";
+           var mbconsumidostemp = "";
+
+           var contadorNodos = 0;
+
            cont_paquetes = 0;
            $(this).find("NODE").each(function () {
-               $(this).find("PAQUETE").each(function () {
-                   codigopaquete = $(this).find('CODIGO').text();
-                   if (codigopaquete != "1"){
+                contadorNodos++;
+                //aregador para arreglo de paquetes desde msj
+                codSuscriptemp = codSuscrip;
+                //alert("anterior:"+codSuscriptemp);
+                codSuscrip = $(this).find('IDSUSCRIPCION').text();
+                //alert("nuevo:"+codSuscrip);
+                if (codSuscrip == codSuscriptemp){
+                    cont_paquetes--;
+                }
+
+                $(this).find("PAQUETE").each(function () {
+                    codigopaquete = $(this).find('CODIGO').text();
+                    if (cont_paquetes<1){
+                        nombrepaqtemp = nombrepaq;
+                        nombrepaq = $(this).find('NOMBRE').text();
+                        mbtotalestemp = mbtotales;
+                        mbtotales = $(this).find('LIMITEDATOSMB').text();
+                    }
+            
+                });
+                
+                if (cont_paquetes<1){
+                    bandera_paquete = "1";
+                    vigenciatemp = vigencia;
+                    vigencia = $(this).find('FIN').text();
+                    var original = parseFloat($(this).find('CONSUMOMB').text());
+                    mbconsumidostemp = mbconsumidos;
+                    mbconsumidos = Math.round(original);
+                }
+                cont_paquetes++;
+                if (codSuscrip == codSuscriptemp){
+                    if (codigopaquete == "1"){
+                        //tomo valores anteriores porque seguramente el anteriore era el bueno
+                        nombrepaq = nombrepaqtemp;
+                        mbtotales = mbtotalestemp;
+                        vigencia = vigenciatemp;
+                        mbconsumidos = mbconsumidostemp;
+                    }
+                }               
+               //console.log("Paquete (NODE: "+cont_paquetes+") reconocido: vigencia="+$(this).find('FIN').text()+", MB consumidos="+$(this).find('CONSUMOMB').text()+", nombre="+$(this).find('NOMBRE').text()+", MB totales="+$(this).find('LIMITEDATOSMB').text()+", Banda="+$(this).find('BANDA').text()+", Codigo="+codigopaquete);
+               //alert("Paquete (NODE: "+cont_paquetes+") reconocido: vigencia="+vigencia+", MB consumidos="+mbconsumidos+", nombre="+nombrepaq+", MB totales="+mbtotales+", Codigo="+codigopaquete);
+            });
+            
+            //Funcion por si solo tiene un paquete de datos activo
+            if (contadorNodos == 0){
+                //aregador para arreglo de paquetes desde msj
+                codSuscriptemp = codSuscrip;
+                codSuscrip = $(this).find('IDSUSCRIPCION').text();
+                if (codSuscrip != ""){
+                    if (codSuscrip == codSuscriptemp){
+                        cont_paquetes--;
+                    }
+                    $(this).find("PAQUETE").each(function () {
+                       codigopaquete = $(this).find('CODIGO').text();
                         if (cont_paquetes<1){
+                            nombrepaqtemp = nombrepaq;
                             nombrepaq = $(this).find('NOMBRE').text();
+                            mbtotalestemp = mbtotales;
                             mbtotales = $(this).find('LIMITEDATOSMB').text();
                         }
-                   }                   
-               });
-               if (codigopaquete != "1" ){
+                    });
                     if (cont_paquetes<1){
                         bandera_paquete = "1";
+                        vigenciatemp = vigencia;
                         vigencia = $(this).find('FIN').text();
                         var original = parseFloat($(this).find('CONSUMOMB').text());
+                        mbconsumidostemp = mbconsumidos;
                         mbconsumidos = Math.round(original);
                     }
                     cont_paquetes++;
-                    //return false;
-               }
-               
-               //console.log("Paquete (NODE: "+cont_paquetes+") reconocido: vigencia="+$(this).find('FIN').text()+", MB consumidos="+$(this).find('CONSUMOMB').text()+", nombre="+$(this).find('NOMBRE').text()+", MB totales="+$(this).find('LIMITEDATOSMB').text()+", Banda="+$(this).find('BANDA').text()+", Codigo="+codigopaquete);               
-            });
-            
+                    if (codSuscrip == codSuscriptemp){
+                        if (codigopaquete == "1"){
+                            //tomo valores anteriores porque seguramente el anteriore era el bueno
+                            nombrepaq = nombrepaqtemp;
+                            mbtotales = mbtotalestemp;
+                            vigencia = vigenciatemp;
+                            mbconsumidos = mbconsumidostemp;
+                        }
+                    }                   
+                }
+            }
         });
 
     });

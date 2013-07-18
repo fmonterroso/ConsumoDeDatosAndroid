@@ -36,6 +36,7 @@
             var cont_paquetes = 0;
          
             var nombre_usuario = "";
+            
             //variables para el control del guage chart
             var gaugeDatos_inicio = -57;
             var gaugeDatos_final = 57;
@@ -54,16 +55,14 @@
              //Abriendo Base de datos
              var db = abrirBD();
                           
-             //Cargando librerias para el grafico de Gauge
-             if(navigator.connection.type == Connection.NONE){
+             if(!verificarConexion()){
                  // No tenemos conexión			        
-                 console.log("No tenemos conexión");
+                 $.mobile.changePage("listado.html", { transition: "slide" });
              }else{
-                 // Si tenemos conexión
-                 console.log("Si tenemos conexión");
+                consultaCarga();
              }
-                  
-             //Recorrer datos y mostrar
+/*
+                //Recorrer datos y mostrar
           			consultaInicial();
           			
           			//Consulta buscando el numero principal si no fue establecido al inicio    			
@@ -74,7 +73,8 @@
           			}else{
           				consultaDatosPaquete();
           			}
-
+*/
+                
             //Leendo alarmas ya disparadas para removerlas del listado
             window.obteneralarmasdisparadas(function(echoValue) {
                 quitarAlarmasDisparadas(echoValue);                
@@ -82,12 +82,30 @@
 
             //quitando splash
             //navigator.splashscreen.hide();
+
+
          }
          
          
          // Aqui se carga la funcion cuando se carga completament el arbol DOm de nuestra pagina index.html
          $(document).ready(function(){
             rotarGaugeDatos(0);
+            //consultaCarga();
+            var numeroPropio = "";
+            obtienenumeroweb();
+            console.log("AQUI SE RECONOCIO EL NUMERO:"+numeroPropio);
+            /*
+              //Recorrer datos y mostrar
+              consultaInicial();
+              //Consulta buscando el numero principal si no fue establecido al inicio         
+              if (currentId == ""){
+                //no se inserto un numero al inicio
+                //realizando busqueda del principal
+                consultaPrincipal();            
+              }else{
+                consultaDatosPaquete();
+              }
+            */
          });//fin de document ready
       </script>
    </head>
@@ -114,8 +132,9 @@
                Usuario
             </div>
             <script type="text/javascript">
-               //Consultando datos del usuario
-               			consultarUsuarioBD();
+                //Consultando datos del usuario
+               	consultarUsuarioBD();
+
             </script>
             
             <div id="central-content">

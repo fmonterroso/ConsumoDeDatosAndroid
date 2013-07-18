@@ -29,22 +29,22 @@
 	<body>
 		<div id="terminos" data-url="Terminos y Condiciones" data-role="page">
 			<div data-role="header" data-position="fixed">
-				<div data-role="navbar">				    
-				    <ul id="mainmenu">
-					    <li>
-					    <a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp('submenuMenu');"></a>
-					    </li>
-					    <li><a class="menuitemHome" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
-					    <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
-				    </ul>
-				    <script type="text/javascript">
-				    	$(".menuitemMenu").next('ul').css( "display", "none" );
-				    </script>
-				</div><!-- /navbar -->
+				<div data-role="navbar">
+	               <ul id="mainmenu">
+	                  <li>
+	                     <a class="menuitemMenu" href="#" data-icon="grid" data-role="button" data-iconpos="notext" onclick="slideDownUp('submenuMenu');"></a>
+	                  </li>
+	                  <li><a class="menuitemHome ui-btn-active" href="#" data-icon="home" data-role="button" data-iconpos="notext"></a></li>
+	                  <li><a class="menuitemStore" href="#" data-icon="star" data-role="button" data-iconpos="notext"></a></li>
+	                  <li><a class="menuitemConfig" href="#" data-icon="gear" data-role="button" data-iconpos="notext"></a></li>
+	               </ul>
+	               <script type="text/javascript">
+	                  $(".menuitemMenu").next('ul').css( "display", "none" );
+	               </script>
+	            </div><!-- /navbar -->
 			</div><!-- /header -->
 
-			<div data-role="content">
+			<div class="content_page" data-role="content">
 				<div id="tituloConfig" style="">
 					DATOS DE LA APLICACIÓN
 				</div>
@@ -61,16 +61,17 @@
 					//consultando terminos y condiciones
 					consultaTerminosBD();					
 				</script>
-				<!-- Submenu -->
-				<div class="content_submenu" style="display: none;">
-	              <ul id="submenuMenu" class="submenu clearfix">
-	                <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
-	                <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
-	                <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
-	                <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
-	              </ul>
-	            </div>
+				
 			</div>
 		</div>
+		<!-- Submenu -->
+		<div class="content_submenu" style="display: none;">
+	        <ul id="submenuMenu" class="submenu clearfix">
+	          <li><a class="submenuitem menuitemHistorial" href="#">Mira tu historial</a></li>
+	          <li><a class="submenuitem menuitemContacto" href="#">Contacto</a></li>
+	          <li><a class="submenuitem menuitemTerminos" href="#">Terminos y condiciones</a></li>
+	          <li><a class="submenuitem menuitemSalir" href="#">Salir</a></li>
+	        </ul>
+	    </div>
 	</body>
 </html>
