@@ -23,9 +23,6 @@ public class ServicioAlarmas extends Service {
 	//private static final long UPDATE_INTERVAL = 1800000;
 	private static final long UPDATE_INTERVAL = 25000;
 	private final IBinder mBinder = new MyBinder();
-	private ArrayList list = new ArrayList();
-	private String[] fixedList = { "Cupcake", "Donut", "Eclair", "Froyo",
-	  "Gingerbread", "Honeycomb", "Ice Cream Sandwich" };
 	
 	
 	public void onCreate() {
