@@ -12,7 +12,7 @@ public class Principal extends DroidGap {
 	public void onCreate(Bundle savedInstanceState) {
 		//setContentView(R.layout.activity_principal);
 		
-		super.setIntegerProperty("splashscreen", R.drawable.splashmdpi);
+		//super.setIntegerProperty("splashscreen", R.drawable.splashmdpi);
 		
 		super.setIntegerProperty("loadUrlTimeoutValue", 60000); 
 		super.onCreate(savedInstanceState);

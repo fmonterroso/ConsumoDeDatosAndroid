@@ -472,7 +472,7 @@ $(document).ready(function(){
 
 //-----------------------Funciones del menu-------------
     $("body").on("click",".menuitemMenu",function(){
-        
+        alert("Menu");
         return false;
     });
 
