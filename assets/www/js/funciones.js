@@ -472,7 +472,7 @@ $(document).ready(function(){
 
 //-----------------------Funciones del menu-------------
     $("body").on("click",".menuitemMenu",function(){
-        alert("Menu");
+        
         return false;
     });
 
@@ -668,6 +668,7 @@ function insertar(tx){
     //se procede a enviar el codigo
     var mensaje = "El codigo para validar tu telefono es: "+codigo;
     window.enviarsms("502" + $("#phone").val(), mensaje, function(echoValue) {
+      console.log("Respuesta SMS:"+echoValue);
       if (echoValue == "ok"){
         bandera_eliminar = "0";
         showAlert("Debemos confirmar que éste número te pertenece, se enviará un código de confirmación a tu teléfono, luego escríbelo en la casilla inferior.","Envío de confirmación exitosa","OK");//mensaje 3
